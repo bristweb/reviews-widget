@@ -1,8 +1,6 @@
 # Reviews widget
 
-## <a href="https://bristweb.github.io/reviews-widget/?source=https://bristweb.github.io/reviews-widget/example/" target="_blank" rel="noopener">▶ Live demo</a>
-
-**<a href="https://bristweb.github.io/reviews-widget/?source=https://bristweb.github.io/reviews-widget/example/" target="_blank" rel="noopener">Open the demo</a>** · **<a href="https://bristweb.github.io/reviews-widget/?source=https://bristweb.github.io/reviews-widget/example/&theme=light" target="_blank" rel="noopener">Light</a>** · **<a href="https://bristweb.github.io/reviews-widget/?source=https://bristweb.github.io/reviews-widget/example/&theme=dark" target="_blank" rel="noopener">Dark</a>**
+## <a href="https://bristweb.github.io/reviews-widget/?source=https://bristweb.github.io/reviews-widget/example/&theme=light" target="_blank" rel="noopener">▶ Live demo light</a> · <a href="https://bristweb.github.io/reviews-widget/?source=https://bristweb.github.io/reviews-widget/example/&theme=dark" target="_blank" rel="noopener">▶ Live demo dark</a>
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/example-widget-dark-v2.png" />
