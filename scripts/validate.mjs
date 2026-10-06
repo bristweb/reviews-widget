@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * Validate a reviews data repo against the JSON Schemas in schemas/, plus filesystem checks
- * the schemas cannot express (icons and avatars exist, years list matches files, newest-first, etc.).
+ * the schemas cannot express (icons exist, relative avatars resolve, years list matches files, newest-first, etc.).
  *
  *   node reviews-widget/scripts/validate.mjs <data-repo-dir>   # default: .
  *
@@ -40,7 +40,6 @@ const readJson = f => {
   catch (e) { err(`${f}: ${e.code === 'ENOENT' ? 'missing' : 'invalid JSON (' + e.message + ')'}`); return null; }
 };
 const fmt = (prefix, e) => `${prefix}: ${e.instancePath || '/'} ${e.message}${e.params?.allowedValues ? ` (${e.params.allowedValues.join('|')})` : ''}`;
-const safeId = s => String(s).replace(/[^A-Za-z0-9_-]/g, '_');
 const isIso = s => typeof s === 'string' && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2}(\.\d+)?)?(Z|[+-]\d{2}:\d{2})$/.test(s) && !Number.isNaN(Date.parse(s));
 
 const config = readJson('config.json');
@@ -78,17 +77,19 @@ for (const y of years) {
     if (seen.has(key)) err(`${at}: duplicate review ${key} (also ${seen.get(key)})`);
     seen.set(key, at);
     if (r.reviewer_image) {
-      const want = `images/reviewers/${r.platform}-${safeId(r.platform_review_id)}`;
-      if (r.reviewer_image.replace(/\.[^.]+$/, '') !== want) err(`${at}: reviewer_image must be ${want}.<ext>, got ${r.reviewer_image}`);
-      if (!existsSync(path.join(root, r.reviewer_image))) err(`${at}: reviewer_image ${r.reviewer_image} not found`);
-      used.add(r.reviewer_image);
+      const img = String(r.reviewer_image);
+      // Absolute / data URLs are fine as-is. Relative paths should exist under the data root.
+      if (!/^(https?:|data:|\/)/i.test(img)) {
+        if (!existsSync(path.join(root, img))) err(`${at}: reviewer_image ${img} not found`);
+        else used.add(img);
+      }
     }
     counts[r.platform] = (counts[r.platform] || 0) + 1;
     total++;
   });
 }
 const imgDir = path.join(root, 'images', 'reviewers');
-if (existsSync(imgDir)) for (const f of readdirSync(imgDir)) if (!used.has(`images/reviewers/${f}`)) err(`images/reviewers/${f}: not used by any review`);
+if (existsSync(imgDir)) for (const f of readdirSync(imgDir)) if (!used.has(`images/reviewers/${f}`)) warn(`images/reviewers/${f}: not referenced by any review (ok if unused)`);
 
 for (const w of warnings) console.warn('warning:', w);
 if (errors.length) { console.error(errors.join('\n')); console.error(`\n${errors.length} problem(s)`); process.exit(1); }

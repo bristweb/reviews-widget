@@ -25,7 +25,8 @@
         "type": [
           "string",
           "number"
-        ]
+        ],
+        "description": "Suggested identity key with platform for sync tooling (unique per platform). Not a hard layout rule."
       },
       "reviewer_name": {
         "type": [
@@ -41,7 +42,8 @@
       },
       "reviewer_image": {
         "type": "string",
-        "pattern": "^images/reviewers/[^/]+\\.(jpg|jpeg|png|webp|gif|svg)$"
+        "minLength": 1,
+        "description": "Avatar URL or path relative to the data root. Any working URL/path is fine; images/reviewers/<platform>-<id>.<ext> is only a sync-tooling convention."
       },
       "reviewer_image_source_url": {
         "type": [

@@ -119,7 +119,7 @@ Plain files at the data root, served over HTTPS with CORS open enough for your p
 ```
 config.json              business, platforms, display, strings, schema, summary, reviews.years, …
 reviews/<year>.json      reviews dated that year (array, newest first)
-images/reviewers/        <platform>-<platform_review_id>.<ext> (filesystem-safe id)
+images/reviewers/        optional local avatars (any path/URL works in records)
 icons/                   platform logos
 theme/theme.css          @font-face + --rw-* variables
 theme/fonts/             optional self-hosted fonts
@@ -161,9 +161,9 @@ Array of records for that calendar year, newest first. Store full names, full te
 }
 ```
 
-Identity is `platform` + `platform_review_id` (no separate `id` field). How a review was collected belongs in your tooling/config, not on the record.
+`platform` + `platform_review_id` is a **suggested** identity for sync tooling (keep them unique per platform). How a review was collected belongs in your tooling/config, not on the record.
 
-Avatars: `images/reviewers/<platform>-<id>.<ext>` with characters other than `A-Z a-z 0-9 _ -` replaced by `_`.
+`reviewer_image` may be any working URL or path (absolute, `data:`, or relative to the data root). A local convention like `images/reviewers/<platform>-<id>.<ext>` is only a suggestion for sync scripts — not required.
 
 Formal shape: `schemas/reviews.schema.json` in this repo.
 
@@ -182,7 +182,7 @@ Formal shape: `schemas/reviews.schema.json` in this repo.
 | `schemas/config.schema.json` | `config.json` |
 | `schemas/reviews.schema.json` | each `reviews/<year>.json` array |
 
-`scripts/validate.mjs` checks both schemas (via [Ajv](https://ajv.js.org/)) and filesystem rules: icons and avatars exist, `reviews.years` matches the files and is newest-first, dates sit in the right year file, `(platform, platform_review_id)` is unique, avatar paths match the safe-id pattern.
+`scripts/validate.mjs` checks both schemas (via [Ajv](https://ajv.js.org/)) and light filesystem rules: icons exist, relative `reviewer_image` paths resolve, `reviews.years` matches files and is newest-first, dates sit in the right year file, `(platform, platform_review_id)` is unique. Avatar naming is not enforced.
 
 ```bash
 # from a checkout of this repo (once):
@@ -213,7 +213,7 @@ That workflow checks out this repo, runs `npm ci`, then `node scripts/validate.m
 ## Updating data
 
 1. Edit `reviews/<year>.json` (newest first); add the year to `reviews.years` when you add a file.
-2. Place avatars under `images/reviewers/`.
+2. Set `reviewer_image` to any working URL or path (optional local files under `images/reviewers/` are fine).
 3. Run `node scripts/validate.mjs <data-dir>`.
 4. Publish the data files (`cache: no-cache` on fetches means the widget picks them up quickly after your host updates).
 
