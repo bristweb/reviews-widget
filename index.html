@@ -11,8 +11,10 @@
 </head>
 <body>
 <!-- Bare widget page (safe to iframe). Defaults to the bundled fictional example/.
-     Override with ?source=<data-repo-url>. Options: &layout=&platform=&limit=&summary=off
-     Constrained box: &constrained=true  (optional overrides: fixed-height, arrows, overflow, hover-lift, focus-ring, cards, padding) -->
+     Override with ?source=<data-repo-url>. Options: &layout=&platform=&limit=&summary=off&theme=light|dark|auto
+     Constrained box: &constrained=true  (optional overrides: fixed-height, arrows, overflow, hover-lift, focus-ring, cards, padding)
+     theme=dark paints page chrome #0d1117 so the widget isn’t on a white sheet; theme=light uses #fff;
+     omit / auto keeps transparent (best when iframed into a host page that already has a background). -->
 <script>
   (function () {
     var q = new URLSearchParams(location.search);
@@ -20,6 +22,14 @@
       q.set('source', new URL('example/', location.href).href);
       history.replaceState(null, '', location.pathname + '?' + q + location.hash);
     }
+    var theme = (q.get('theme') || '').toLowerCase();
+    if (theme !== 'light' && theme !== 'dark') return; // auto / omit: leave transparent for host/iframe
+    var dark = theme === 'dark';
+    var bg = dark ? '#0d1117' : '#ffffff';
+    document.documentElement.style.colorScheme = dark ? 'dark' : 'light';
+    document.documentElement.style.background = bg;
+    document.body.style.background = bg;
+    document.documentElement.setAttribute('data-theme', theme);
   })();
 </script>
 <script src="assets/js/reviews-widget.js" defer data-overflow="visible"></script>
