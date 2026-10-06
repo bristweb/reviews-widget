@@ -32,7 +32,7 @@
 .rw-root img{border:0;max-width:none;margin:0;padding:0}
 .rw-loading{padding:40px;text-align:center;color:var(--rw-muted,#888)}
 .rw-tabs{order:2;flex:1 1 auto;min-width:0;display:flex;align-items:center;align-self:center;gap:6px;flex-wrap:nowrap;justify-content:center}
-.rw-tab:focus-visible,.rw-write:focus-visible,.rw-nav:focus-visible,.rw-accolade:focus-visible{outline:2px solid var(--rw-accent,#333);outline-offset:2px}
+.rw-tab:focus-visible,.rw-write:focus-visible,.rw-nav:focus-visible,.rw-accolade-card:focus-visible{outline:2px solid var(--rw-accent,#333);outline-offset:2px}
 .rw-tab{display:inline-flex;align-items:center;gap:6px;flex:none;border:1px solid var(--rw-line,#e3e3e3);background:var(--rw-card,#fff);border-radius:999px;padding:6px 12px;font:inherit;font-size:13.5px;color:var(--rw-ink,#111);cursor:pointer;transition:all .15s;white-space:nowrap}
 .rw-tab img{width:16px;height:16px}
 .rw-tab em{font-style:normal;font-size:12px;color:var(--rw-accent-2,#555);background:var(--rw-tint,#f1f1f1);border-radius:999px;padding:1px 7px}
@@ -90,14 +90,10 @@
 .rw-ai-icon svg{width:14px;height:14px;fill:var(--rw-on-accent,#fff)}
 .rw-ai-text{margin:0;font-size:14px;line-height:1.55;color:var(--rw-body,#444);flex:1;min-height:0;overflow-y:auto;scrollbar-width:thin}
 .rw-ai-text.rw-ai-more{-webkit-mask-image:linear-gradient(#000 calc(100% - 2.4em),transparent);mask-image:linear-gradient(#000 calc(100% - 2.4em),transparent)}
-/* Accolades: badge strip under the summary header.
-   Logos keep aspect ratio (no square clip). Global size via --rw-accolade-size (display.accolade_size, default 120px). */
-.rw-accolades{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:12px 22px;margin:-4px 0 14px;padding:0 4px}
-.rw-accolade{display:inline-flex;flex-direction:column;align-items:center;gap:4px;text-decoration:none;color:var(--rw-ink,#111);border-radius:10px;padding:4px 6px;transition:opacity .15s,transform .15s;max-width:100%}
-.rw-accolade:hover{opacity:.85;transform:translateY(-1px)}
-.rw-accolade:focus{outline:none}
-.rw-accolade:focus-visible{outline:2px solid var(--rw-accent,#333);outline-offset:2px}
-.rw-accolade img{width:auto;height:auto;max-width:var(--rw-accolade-size,120px);max-height:var(--rw-accolade-size,120px);object-fit:contain;object-position:center;display:block}
+/* Accolade badge cards: interspersed in the track by year (before the first review of that year).
+   Not review-styled — centered logo/caption. Global size via --rw-accolade-size (display.accolade_size, default 120px). */
+.rw-accolade-card{align-items:center;justify-content:center;text-align:center;gap:10px;background:var(--rw-card,#fff)}
+.rw-accolade-card img{width:auto;height:auto;max-width:var(--rw-accolade-size,120px);max-height:var(--rw-accolade-size,120px);object-fit:contain;object-position:center;display:block;margin:0 auto}
 .rw-accolade-caption{font-size:12px;font-weight:500;text-align:center;max-width:11rem;line-height:1.3;color:var(--rw-ink,#111)}
 .rw-nav:disabled{opacity:0;pointer-events:none}
 @container rw (max-width:575px){.rw-nav{display:none}}
@@ -146,7 +142,7 @@
 .rw-fixed.rw-layout-carousel .rw-text{flex:1 1 auto;min-height:0;overflow-x:hidden;overflow-y:auto;scrollbar-width:thin}
 .rw-fixed.rw-layout-grid .rw-track{overflow-y:auto;align-content:start;scrollbar-width:thin}
 .rw-fixed .rw-card-top,.rw-fixed .rw-stars,.rw-fixed .rw-rec,.rw-fixed .rw-link,.rw-fixed .rw-ai-top{flex:none}
-.rw-fixed .rw-accolades{margin:0 0 8px;gap:6px 12px;flex:none}.rw-fixed .rw-accolade{padding:2px 4px}.rw-fixed .rw-accolade img{max-width:min(72px,var(--rw-accolade-size,120px));max-height:min(72px,var(--rw-accolade-size,120px))}
+.rw-fixed .rw-accolade-card{padding:12px;gap:6px}.rw-fixed .rw-accolade-card img{max-width:min(72px,var(--rw-accolade-size,120px));max-height:min(72px,var(--rw-accolade-size,120px))}
 @container rw (max-height:460px){
   .rw-fixed .rw-header{padding:9px 12px;margin-bottom:10px;gap:8px 12px}.rw-fixed .rw-score{font-size:30px}
   .rw-fixed .rw-label,.rw-fixed .rw-based-pre{display:none}.rw-fixed .rw-card{padding:14px;gap:8px}}

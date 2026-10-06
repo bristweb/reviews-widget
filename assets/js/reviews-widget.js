@@ -518,13 +518,64 @@
         ${tabs}
       </header>`;
 
-      // Summary card: first card in "All reviews" only; not a link, not counted, not in the JSON-LD.
-      const ai = cfg.summary && active === 'all' && summary && !isBlank(summary.text)
-        ? `<div class="rw-card rw-ai" role="note" aria-label="${esc(fill(S.ai_summary_aria, { count: all.length }))}">
-          <div class="rw-ai-top"><span class="rw-ai-icon">${SPARKLE}</span><span class="rw-ai-label">${esc(S.ai_summary)}</span></div>
-          <p class="rw-ai-text">${esc(summary.text)}</p>
-        </div>` : '';
-      const cards = ai + shown.map(r => {
+      // Accolades: filter reviews only; merge badge cards into the track at year boundaries
+      // (newest year first). Always included after the platform filter/limit on reviews.
+      const accoladesList = Array.isArray(config.accolades)
+        ? config.accolades
+            .filter(a => a && a.url && a.year != null && String(a.year).trim() && (a.icon || a.label || a.name))
+            .slice()
+            .sort((a, b) => {
+              const ya = Number(a.year), yb = Number(b.year);
+              const na = Number.isFinite(ya) ? ya : 0, nb = Number.isFinite(yb) ? yb : 0;
+              return nb - na;
+            })
+        : [];
+      const reviewYear = r => {
+        const y = Number(String(r.date || '').slice(0, 4));
+        return Number.isFinite(y) ? y : 0;
+      };
+      // Insert each year's accolades once, before the first review of that year in `shown`.
+      // Years newer than every shown review go first; years with no matching review go last.
+      const byAccYear = new Map();
+      for (const a of accoladesList) {
+        const y = Number(a.year);
+        const key = Number.isFinite(y) ? y : 0;
+        if (!byAccYear.has(key)) byAccYear.set(key, []);
+        byAccYear.get(key).push(a);
+      }
+      const trackItems = [];
+      const placedYears = new Set();
+      const flushYear = y => {
+        if (placedYears.has(y)) return;
+        placedYears.add(y);
+        for (const a of byAccYear.get(y) || []) trackItems.push({ kind: 'accolade', accolade: a });
+      };
+      if (shown.length) {
+        const maxY = Math.max(...shown.map(reviewYear));
+        [...byAccYear.keys()].filter(y => y > maxY).sort((a, b) => b - a).forEach(flushYear);
+      } else {
+        [...byAccYear.keys()].sort((a, b) => b - a).forEach(flushYear);
+      }
+      for (const r of shown) {
+        flushYear(reviewYear(r));
+        trackItems.push({ kind: 'review', review: r });
+      }
+      [...byAccYear.keys()].filter(y => !placedYears.has(y)).sort((a, b) => b - a).forEach(flushYear);
+
+      const accoladeCard = a => {
+        // Optional freeform caption (label preferred over name). Year sorts the timeline; not shown alone.
+        const rawCap = [a.label, a.name].find(v => v != null && String(v).trim());
+        const yearStr = String(a.year).trim();
+        const caption = rawCap ? `${String(rawCap).trim()} ${yearStr}` : '';
+        const aria = caption || yearStr || 'Award';
+        const img = a.icon ? `<img src="${esc(url(a.icon))}" alt="" loading="lazy">` : '';
+        const capEl = caption ? `<span class="rw-accolade-caption">${esc(caption)}</span>` : '';
+        // Logo-only: no visible text. Text-only (no icon): caption alone.
+        const body = img || capEl;
+        const extra = img && capEl ? capEl : '';
+        return `<a class="rw-card rw-accolade-card" href="${esc(a.url)}" target="_blank" rel="${esc(linkRel(a))}" title="${esc(aria)}" aria-label="${esc(aria)}">${body}${extra}</a>`;
+      };
+      const reviewCard = r => {
         const name = pname(r.platform);
         const rating = typeof r.rating === 'number' ? stars(r.rating) : `<span class="rw-rec">${THUMB}${esc(S.recommends)}</span>`;
         const aria = fill(S.card_aria, { name: r.display_name, platform: name });
@@ -542,42 +593,17 @@
           ${hasText(r) ? `<p class="rw-text">${esc(r.snippet_text)}</p>` : ''}
           <span class="rw-link" aria-hidden="true">${esc(fill(S.view_on, { platform: name }))} <span class="rw-arrow">→</span></span>
         </a>`;
-      }).join('');
+      };
 
-      const accoladesList = Array.isArray(config.accolades)
-        ? config.accolades
-            .filter(a => a && a.url && a.year != null && String(a.year).trim() && (a.icon || a.label || a.name))
-            .slice()
-            .sort((a, b) => {
-              const ya = Number(a.year), yb = Number(b.year);
-              const na = Number.isFinite(ya) ? ya : 0, nb = Number.isFinite(yb) ? yb : 0;
-              return nb - na;
-            })
-        : [];
-      const accolades = accoladesList.length ? `<div class="rw-accolades" role="list" aria-label="${esc(S.accolades_aria)}">
-        ${accoladesList.map(a => {
-          // Optional freeform caption (label preferred over name). Year sorts the strip; not shown alone.
-          const rawCap = [a.label, a.name].find(v => v != null && String(v).trim());
-          const yearStr = String(a.year).trim();
-          const caption = rawCap
-            ? `${String(rawCap).trim()} ${yearStr}`
-            : '';
-          const aria = caption || yearStr || 'Award';
-          const img = a.icon
-            ? `<img src="${esc(url(a.icon))}" alt="" loading="lazy">`
-            : '';
-          const capEl = caption
-            ? `<span class="rw-accolade-caption">${esc(caption)}</span>`
-            : '';
-          // Logo-only: no visible text. Text-only (no icon): caption alone.
-          const body = img || capEl;
-          const extra = img && capEl ? capEl : '';
-          return `<a class="rw-accolade" role="listitem" href="${esc(a.url)}" target="_blank" rel="${esc(linkRel(a))}" title="${esc(aria)}" aria-label="${esc(aria)}">${body}${extra}</a>`;
-        }).join('')}
-      </div>` : '';
+      // Summary card: first card in "All reviews" only; not a link, not counted, not in the JSON-LD.
+      const ai = cfg.summary && active === 'all' && summary && !isBlank(summary.text)
+        ? `<div class="rw-card rw-ai" role="note" aria-label="${esc(fill(S.ai_summary_aria, { count: all.length }))}">
+          <div class="rw-ai-top"><span class="rw-ai-icon">${SPARKLE}</span><span class="rw-ai-label">${esc(S.ai_summary)}</span></div>
+          <p class="rw-ai-text">${esc(summary.text)}</p>
+        </div>` : '';
+      const cards = ai + trackItems.map(item => item.kind === 'accolade' ? accoladeCard(item.accolade) : reviewCard(item.review)).join('');
 
       el.innerHTML = `${header}
-        ${accolades}
         <div class="rw-viewport">
           ${cfg.layout === 'carousel' && cfg.arrows !== 'off' ? `<button class="rw-nav rw-prev" aria-label="${esc(S.previous)}">‹</button>` : ''}
           <div class="rw-track">${cards}</div>

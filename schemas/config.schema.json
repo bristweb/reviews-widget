@@ -120,7 +120,7 @@
           "type": "number",
           "minimum": 24,
           "maximum": 240,
-          "description": "Max edge (px) for every accolade logo in the strip. Default 120 (promotional award size). One global setting \u2014 no per-item size/width/height."
+          "description": "Max edge (px) for every accolade logo in badge cards. Default 120 (promotional award size). One global setting \u2014 no per-item size/width/height."
         }
       }
     },
@@ -253,7 +253,7 @@
     },
     "accolades": {
       "type": "array",
-      "description": "Optional award badges under the summary. Each item needs url + year (strip sorts newest year first) plus icon and/or optional freeform label (name is an alias). Logo-only is fine when label is omitted. Size is global via display.accolade_size. Same optional nofollow/noreferrer/rel as platforms.",
+      "description": "Optional award badge cards interspersed among reviews by year (newest first; inserted at year boundaries after the platform filter on reviews). Each item needs url + year plus icon and/or optional freeform label (name is an alias). Logo-only is fine when label is omitted. Size is global via display.accolade_size. Same optional nofollow/noreferrer/rel as platforms.",
       "items": {
         "type": "object",
         "required": [
@@ -295,7 +295,7 @@
               "integer",
               "number"
             ],
-            "description": "Required. Used to sort the badge strip (newest first). Appended to a freeform caption when label/name is set; not shown alone for logo-only entries."
+            "description": "Required. Places the badge on the shared review timeline (newest year first, at that year\u2019s boundary). Appended to a freeform caption when label/name is set; not shown alone for logo-only entries."
           },
           "icon": {
             "type": "string",
