@@ -77,8 +77,6 @@ The widget renders where the tag is. It loads CSS from this repo and `theme/them
 2. Else unfilled `[data-reviews-widget]` elements.
 3. Else in place (a `<head>` script with no target goes to the end of `<body>`).
 
-If the page builder hides the script URL, set `data-base="https://bristweb.github.io/reviews-widget/"`.
-
 ### Google Sites / Similar
 
 If your host gives you a box with limited ability to adjust sizing and responsiveness (Google Sites: *Insert → Embed → Embed code*), turn on **one** toggle:
@@ -89,7 +87,7 @@ If your host gives you a box with limited ability to adjust sizing and responsiv
         data-constrained="true"></script>
 ```
 
-`data-constrained="true"` packs the widget into that box: fill the height, arrows inside, nothing drawn outside the box, no hover lift, focus rings drawn inside. It is named “constrained” (not “fixed proportions”) because it follows the box you give it rather than locking an aspect ratio. Stretch the box full width and about **420px** tall; swap `data-source` for your data when you go live. See [Header behavior](#header-behavior) for short heights (tested down to 140px). Individual fitting attributes remain available as overrides ([Options](#options)).
+`data-constrained="true"` packs the widget into that box: fill the height, arrows inside, nothing drawn outside the box, no hover lift, focus rings drawn inside. It is named “constrained” (not “fixed proportions”) because it follows the box you give it rather than locking an aspect ratio. Stretch the box full width and about **420px** tall; swap `data-source` for your data when you go live. See [Header behavior](#header-behavior) for short heights (tested down to 140px). Extra fitting tweaks (beyond this preset) are CSS classes — see [Options](#options).
 
 ### Iframe
 
@@ -112,27 +110,20 @@ If your host gives you a box with limited ability to adjust sizing and responsiv
 
 ## Options
 
-| Attribute | Query param | Values | Default |
-|---|---|---|---|
-| `data-source` | `source` | Data repo root URL (trailing `/` added if missing). **Required** on real embeds. `?source=` applies only when there is no `data-source` | none |
-| `data-layout` | `layout` | `carousel` \| `grid` | `display.layout` |
-| `data-platform` | `platform` | `all` or a `platforms` key | `all` |
-| `data-limit` | `limit` | max review cards (`0` = no limit) | `0` |
-| `data-summary` | `summary` | `off` hides the summary card | shown |
-| `data-theme` | `theme` | `light` \| `dark` \| `auto` (follow host page theme) | `display.theme` or `auto` |
-| `data-schema` | n/a | `off` skips JSON-LD | injected |
-| `data-base` | n/a | this code repo’s root | from the script URL |
-| `data-constrained` | `constrained` | `true` = tight-box preset (fixed height, arrows inside, overflow hidden, no hover lift, focus rings inside). Prefer this over setting the fine-grained attrs below | `false` |
-| `data-cards` | `cards` | max cards across (carousel 1–3, grid 1–4; `0` = auto) | `0` |
-| `data-padding` | `padding` | px around the widget | `6` |
-| *Fine-grained (optional overrides)* | | | |
-| `data-fixed-height` | `fixed-height` | fill parent/viewport height and fit inside | off unless `constrained` |
-| `data-overflow` | `overflow` | `clip` \| `visible` \| `hidden` | `clip` (or `hidden` if constrained) |
-| `data-arrows` | `arrows` | `outside` \| `inside` \| `off` | `outside` (or `inside` if constrained) |
-| `data-hover-lift` | `hover-lift` | `true` \| `false` | `true` (or off if constrained) |
-| `data-focus-ring` | `focus-ring` | `outside` \| `inside` | `outside` (or `inside` if constrained) |
+Each option below is set as `data-<name>` on the script (or target element) and/or as `?<name>=` in the URL. Query wins over `data-*`, which wins over `display` in `config.json`, which wins over the built-in default. Omit an option to keep its default. `source` is special: `?source=` applies only when there is no `data-source`.
 
-Precedence: query param → `data-*` → `display` in config (and the `constrained` preset when that toggle is on) → built-in default.
+| Option | Values | Default |
+|---|---|---|
+| `source` | Data repo root URL (trailing `/` added if missing). **Required** on real embeds | — |
+| `layout` | `carousel` \| `grid` | `display.layout` or `carousel` |
+| `platform` | One key from `config.platforms` (filters to that tab). Omit for every platform | all platforms |
+| `limit` | Max review cards (`0` = no limit) | `0` |
+| `summary` | `off` hides the summary card | shown |
+| `theme` | `light` \| `dark` \| `auto` (follow host page theme) | `display.theme` or `auto` |
+| `schema` | `off` skips JSON-LD (`data-schema` only; no query param) | injected |
+| `constrained` | `true` = tight-box preset: fill height, arrows inside, overflow hidden, no hover lift, focus rings inside | off |
+
+**CSS knobs** (no `data-*`): cards across are responsive by default. Optional classes on `.rw-host` / `.rw-root` — `.rw-clip` / `.rw-overflow-hidden`, `.rw-arrows-inside`, `.rw-nolift`, `.rw-focus-inside`, `.rw-fixed` + `.rw-fixed-host` (usually from `constrained`), `.rw-cards-1`…`4`, and `--rw-pad` for outer padding.
 
 ---
 
@@ -156,7 +147,7 @@ theme/fonts/             optional self-hosted fonts
 | `business` | `name` (required), optional `website` and extras |
 | `platforms` | review platforms in **tab order**: `name`, `icon`, `write_url`, `page_url`, `card_link` (`review`\|`page`), optional `invert_icon_when_active`. Extra fields (scrape URLs, notes, …) are ignored by the widget |
 | `default_write_platform` | `write_url` used on the “All” tab |
-| `display.*` | layout, snippets, diversity, dates, fitting defaults, … |
+| `display.*` | layout, snippets, diversity, dates, `theme`, `constrained`, … |
 | `schema.*` | JSON-LD on/off, `@type`, `max_reviews`, `extra` |
 | `rating_labels`, `strings` | score words and UI copy |
 | `summary` | `{ "text", "generated_at" }` for the summary card |
@@ -269,7 +260,7 @@ Built in the browser and injected once per page as `#reviews-widget-schema`. `@t
 
 ## Header behavior
 
-Container queries on the widget’s own width (and height when `data-fixed-height`):
+Container queries on the widget’s own width (and height when constrained / `.rw-fixed`):
 
 | Width | Header |
 |---|---|

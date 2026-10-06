@@ -11,26 +11,16 @@
  *
  * Usage (JS embed) — one script tag renders the widget right where the tag is (defer/async are fine):
  *   <script src="…/reviews-widget/assets/js/reviews-widget.js"
- *           data-source="…/<your-data-repo>/" data-layout="carousel|grid"
- *           data-platform="all|<platform>" data-limit="0" defer></script>
- * data-source is required (the bare pages index.html / embed.html default to ./example/ via ?source=).
- * Explicit target instead of in place:
- *   data-target="#some-id" on the script tag, or element(s) with a data-reviews-widget attribute (their own
- *   data-source/-layout/-platform/-limit override the script's). If the page has unclaimed [data-reviews-widget]
- *   elements, the script fills those instead of rendering in place. A script inside <head> with no target
- *   renders at the end of <body>.
- * Each script tag renders its own widget; config, reviews and CSS are fetched once per page and source.
- * The script finds its own repo root from its URL (override with data-base="https://.../"), loads the CSS
- * (assets/css/reviews-widget.css + <source>theme/theme.css) if the page doesn't already have it, then renders.
- * Also: data-summary="off" hides the summary card; data-schema="off" skips the JSON-LD injection.
- * Constrained embeds (Google Sites and other fixed-height boxes): one toggle packs the widget into the box —
- *   data-theme="light|dark|auto"  color scheme (auto = follow host page theme; also config display.theme).
- *   data-constrained="true"  (= fixed-height + arrows inside + overflow hidden + no hover-lift + focus-ring inside).
- *   Named "constrained" (not "fixed-proportions") because it adapts to the box you give it rather than locking an aspect ratio.
- * Optional fine-grained overrides (still work; defaults in config.json `display`):
- *   data-fixed-height, data-overflow, data-arrows, data-hover-lift, data-focus-ring, data-cards, data-padding
- * URL params (?layout=&platform=&limit=&summary=off&constrained=true…) override data attributes.
- * ?source= is used only when no data-source is set (so a link can't swap a site's data).
+ *           data-source="…/<your-data-repo>/" defer></script>
+ * Public options: data-source (required), data-layout, data-platform (one platforms key, or omit for all),
+ *   data-limit, data-summary="off", data-theme="light|dark|auto", data-schema="off", data-constrained="true".
+ * Bare pages index.html / embed.html default data via ?source= when the script has no data-source.
+ * Explicit target: data-target="#id" on the script, or [data-reviews-widget] elements (their data-* override the script).
+ * Code root is inferred from the script URL. CSS loads from this repo + <source>theme/theme.css.
+ * data-constrained="true" = tight-box preset (fixed height, arrows inside, overflow hidden, no hover-lift,
+ *   focus rings inside). Further fitting tweaks are CSS classes on .rw-host / .rw-root (see README).
+ * URL params (?layout=&platform=&limit=&summary=off&theme=&constrained=true) override data attributes.
+ * ?source= applies only when there is no data-source.
  */
 (function () {
   // Captured at execution time (works for plain, defer and async scripts; null only for ES modules).
@@ -52,8 +42,7 @@
     layout: 'carousel', snippet_chars: 160, abbreviate_last_names: true, max_same_platform_run: 2,
     diversity_window_days: 548, date_locale: 'en-US', date_options: { year: 'numeric', month: 'short', day: 'numeric' },
     font_timeout_ms: 1200, show_rating_only_reviews: false, show_summary: true,
-    // fitting options (script data- attributes / URL params override these)
-    theme: 'auto', constrained: false, fixed_height: false, overflow: 'clip', arrows: 'outside', hover_lift: true, focus_ring: 'outside', cards: 0, padding: null,
+    theme: 'auto', constrained: false,
   };
   const RATING_LABELS = [{ min: 4.75, label: 'Excellent' }, { min: 4.25, label: 'Great' }, { min: 3.5, label: 'Good' }, { min: 0, label: 'Reviews' }];
   const STAR = '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 1.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L10 14.9l-5.2 2.7 1-5.8L1.5 7.7l5.9-.9z"/></svg>';
@@ -162,13 +151,13 @@
 
   async function mount(host, opts) {
     const q = new URLSearchParams(location.search);
-    let code = opts.base || DEFAULT_BASE;
+    let code = DEFAULT_BASE;
     if (!code.endsWith('/')) code += '/';
     // data-source (script tag or target) wins; ?source= is for the bare pages, whose script tag has none.
     let base = opts.source || q.get('source') || '';
     if (base && !base.endsWith('/')) base += '/';
     host.classList.add('rw-host');
-    if (opts.overflow !== 'visible') host.classList.add('rw-clip');
+    host.classList.add('rw-clip');
     host.innerHTML = `<div class="rw-sizer" aria-hidden="true">${'<i></i> '.repeat(24)}</div>`;
     const el = document.createElement('div');
     host.appendChild(el);
@@ -176,8 +165,7 @@
     el.style.opacity = '0'; // hidden until CSS, fonts and the first layout are ready (CSS takes over afterwards)
     // Stay invisible until the webfont is ready AND the first render is laid out, then fade in once, so there's
     // no font swap or re-fit flash. Header steps are pure CSS container queries.
-    // data-fixed-height: the host fills its parent's height when the parent has a definite height, otherwise the
-    // viewport below the widget's top (e.g. a fixed-height iframe whose page is just the script tag).
+    // Constrained / fixed host: fill parent height when definite, else viewport below the widget top.
     let fixedHeight = false;
     function fitHeight() {
       const parent = host.parentElement;
@@ -212,36 +200,33 @@
     const D = { ...DISPLAY, ...(config.display || {}) };
     const PLATFORMS = config.platforms || {};
     const RL = (config.rating_labels || RATING_LABELS).slice().sort((a, b) => b.min - a.min);
-    // URL param > data- attribute > config.json display > built-in default.
-    // data-constrained packs the Google Sites / fixed-box preset; individual fitting attrs still override it.
+    // URL param > data-* > config.json display > built-in default.
     const opt = (param, key, dkey) => (q.get(param) !== null ? q.get(param) : opts[key] != null ? opts[key] : D[dkey]);
     const constrained = toBool(opt('constrained', 'constrained', 'constrained'));
-    if (constrained) Object.assign(D, {
-      fixed_height: true, overflow: 'hidden', arrows: 'inside', hover_lift: false, focus_ring: 'inside',
-    });
+    // One platform key from config.platforms, or omit / empty → all. ("all" still accepted.)
+    let platform = String(q.get('platform') || opts.platform || '').trim();
+    if (!platform) platform = 'all';
     const cfg = {
-      layout: q.get('layout') || opts.layout || D.layout,
-      platform: q.get('platform') || opts.platform || 'all',
+      layout: q.get('layout') || opts.layout || D.layout || 'carousel',
+      platform,
       limit: +(q.get('limit') || opts.limit || 0),
       summary: (q.get('summary') || opts.summary) !== 'off' && D.show_summary !== false,
       constrained,
-      fixed: toBool(opt('fixed-height', 'fixedHeight', 'fixed_height')),
-      overflow: String(opt('overflow', 'overflow', 'overflow') || 'clip'),
-      arrows: String(opt('arrows', 'arrows', 'arrows') || 'outside'),
-      lift: toBool(opt('hover-lift', 'hoverLift', 'hover_lift')),
-      focus: String(opt('focus-ring', 'focusRing', 'focus_ring') || 'outside'),
-      cards: Math.max(0, Math.min(4, parseInt(opt('cards', 'cards', 'cards'), 10) || 0)),
-      padding: opt('padding', 'padding', 'padding'),
+      // Fitting: only data-constrained toggles these in JS. Further tweaks → CSS classes (README).
+      fixed: constrained,
+      arrows: constrained ? 'inside' : 'outside',
     };
     fixedHeight = cfg.fixed;
-    host.classList.toggle('rw-clip', cfg.overflow !== 'visible' && cfg.overflow !== 'hidden');
-    host.classList.toggle('rw-overflow-hidden', cfg.overflow === 'hidden');
+    host.classList.toggle('rw-clip', !constrained);
+    host.classList.toggle('rw-overflow-hidden', constrained);
     el.classList.add('rw-layout-' + cfg.layout);
-    if (cfg.arrows === 'inside') el.classList.add('rw-arrows-inside');
-    if (!cfg.lift) el.classList.add('rw-nolift');
-    if (cfg.focus === 'inside') el.classList.add('rw-focus-inside');
-    if (cfg.cards) el.classList.add('rw-cards-' + cfg.cards);
-    if (cfg.padding != null && cfg.padding !== '' && isFinite(cfg.padding)) el.style.setProperty('--rw-pad', Math.max(0, +cfg.padding) + 'px');
+    if (constrained) {
+      el.classList.add('rw-arrows-inside', 'rw-nolift', 'rw-focus-inside');
+      host.classList.add('rw-fixed-host');
+      el.classList.add('rw-fixed');
+      fitHeight();
+      addEventListener('resize', fitHeight);
+    }
     // Theme: light | dark | auto (follow host). Query / data-theme / display.theme.
     let themePref = String(opt('theme', 'theme', 'theme') || 'auto').toLowerCase();
     if (!/^(light|dark|auto)$/.test(themePref)) themePref = 'auto';
@@ -257,12 +242,6 @@
         mo.observe(el, { attributes: true, attributeFilter: ['class', 'data-theme', 'data-color-scheme', 'data-bs-theme'] });
       });
       try { matchMedia('(prefers-color-scheme: dark)').addEventListener('change', applyTheme); } catch (_) {}
-    }
-    if (cfg.fixed) {
-      host.classList.add('rw-fixed-host');
-      el.classList.add('rw-fixed');
-      fitHeight();
-      addEventListener('resize', fitHeight);
     }
     el.innerHTML = `<div class="rw-loading">${esc(S.loading)}</div>`;
     await fontsReady(el, D.font_timeout_ms);
@@ -506,9 +485,8 @@
   }
 
   // ---- where to render (no class-name selectors) ----
-  const OPTION_KEYS = ['source', 'layout', 'platform', 'limit', 'base', 'overflow', 'schema', 'summary',
-    'theme', 'constrained', 'fixedHeight', 'arrows', 'hoverLift', 'focusRing', 'cards', 'padding'];
-  const BOOL_KEYS = ['constrained', 'fixedHeight', 'hoverLift']; // a bare attribute (data-constrained) means true
+  const OPTION_KEYS = ['source', 'layout', 'platform', 'limit', 'schema', 'summary', 'theme', 'constrained', 'target'];
+  const BOOL_KEYS = ['constrained']; // bare data-constrained means true
   const pick = ds => Object.fromEntries(OPTION_KEYS.filter(k => ds && ds[k] != null && (ds[k] !== '' || BOOL_KEYS.includes(k)))
     .map(k => [k, ds[k] === '' ? 'true' : ds[k]]));
   const scriptOpts = pick(ME && ME.dataset);
