@@ -1,6 +1,6 @@
 # Comparison
 
-Side-by-side look at this open, static reviews widget versus common **hosted review-widget** products and **reputation / review-management** platforms. Features and plans change — check each vendor’s docs for the current product.
+Side-by-side look at this open, static reviews widget versus common **hosted review-widget** products, **reputation / review-management** suites, and **review platforms / source networks** (e.g. Google Business Profile, Yelp — where reviews live, not where you manage every channel). Features and plans change — check each vendor’s docs for the current product.
 
 **Key**
 
@@ -40,12 +40,12 @@ Columns: **reviews-widget** first; other products sorted by score (✅×2 + 🟡
 9. Google, Facebook, Trustpilot, Yelp, and more.
 11. Trustpilot-first; third-party re-embeds are restricted.
 12. Plain JSON + JS you can fork; no account required.
-13. Not applicable — Google / Yelp are the review surfaces themselves, not a third-party embed you swap out.
+13. Not applicable — Google Business Profile and Yelp are review platforms / source networks (the graph where reviews are posted), not a third-party review-management suite or swappable on-site embed vendor.
 14. No built-in inbox or reply UI — but you keep the full review records (including stored owner replies), so you can build your own response / follow-up workflows on top of that data.
 
 ### Review / social platforms you can show
 
-Because this widget is self-hosted, **any platform is supported**: you store the records yourself, so nothing depends on a vendor’s connector catalog (including sources other services may not offer). The table below is about *built-in connectors / official integrations* for the other products — not whether a human could paste text by hand. Rows cover 100+ common review, directory, marketplace, app-store, B2B, vertical, and social surfaces.
+Because this widget is self-hosted, **any platform is supported**: you store the records yourself, so nothing depends on a vendor’s connector catalog (including sources other services may not offer). The table below is about *built-in connectors / official integrations* for the other products (including whether a review platform only “connects” to itself) — not whether a human could paste text by hand. Rows cover 100+ common review, directory, marketplace, app-store, B2B, vertical, and social surfaces.
 
 | Platform | **reviews-widget** | Birdeye | SociableKIT | Reputation.com | Elfsight | Podium | Tagembed | EmbedSocial | ProvenExpert | Google Business Profile | Trustpilot | Yelp |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
@@ -202,8 +202,8 @@ Marks for other vendors are based on their public docs and connector lists (and 
 Each matrix sorts competitor columns by its own score: **✅ × 2 + 🟡** (reviews-widget always first). Feature-matrix order and platform-support order can differ.
 
 - **reviews-widget** is only the on-site display layer plus a data format. Collection (scrapers, hand entry, …) and any owner-reply / response automation live in each data store’s own tooling if you want them — there is no native inbox, but the data you own makes those workflows possible.
-- **Birdeye**, **Reputation.com**, **Podium** — reputation / messaging suites: widgets exist, but the core product is listing management, outreach, and inbox.
-- **Trustpilot**, **Google Business Profile**, **ProvenExpert**, **Yelp** — review platforms with their own badges/widgets; not drop-in self-hosted multi-source carousels.
-- **Elfsight**, **EmbedSocial**, **SociableKIT**, **Tagembed** — hosted multi-source review embeds.
+- **Birdeye**, **Reputation.com**, **Podium** — reputation / review-management / messaging suites: widgets exist, but the core product is listing management, outreach, and inbox across many sources.
+- **Google Business Profile**, **Yelp**, **Trustpilot**, **ProvenExpert** — review platforms / source networks (reviews are posted on their graph). They may offer badges or first-party embeds; they are not multi-source reputation suites and not self-hosted carousels.
+- **Elfsight**, **EmbedSocial**, **SociableKIT**, **Tagembed** — hosted multi-source review embeds (pull from networks like Google/Yelp into a vendor widget).
 
 Corrections welcome via PR.
