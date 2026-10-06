@@ -32,7 +32,7 @@
   const SHARED = (window.__reviewsWidget ??= { css: {}, loads: {} });
   const STRINGS = {
     loading: 'Loading reviews…', unavailable: 'Reviews are unavailable right now.',
-    tabs_aria: 'Filter reviews by platform, awards, or testimonials', tab_all: 'All', tab_all_suffix: ' reviews',
+    tabs_aria: 'Filter reviews by platform, awards, or testimonials', tab_all: 'All', tab_all_suffix: '',
     tab_title: '{name}: {count} reviews', tab_aria: '{name}, {count} reviews',
     tab_accolades: 'Awards', tab_accolades_title: '{name}: {count} awards', tab_accolades_aria: '{name}, {count} awards',
     tab_testimonials: 'Testimonials', tab_testimonials_title: '{name}: {count} testimonials', tab_testimonials_aria: '{name}, {count} testimonials',
@@ -643,23 +643,19 @@
         ${tabs}
       </header>`;
 
-      // Accolades + testimonials: merge into the track by date after the platform filter/limit on
-      // reviews (Awards / Testimonials tabs: that kind only). Accolades sort as YYYY-12-31 so they
-      // lead that year; testimonials use their real date like reviews. Testimonials appear on All
-      // (and their own tab), not on platform filters. Always keep at least one accolade before the
-      // first review when merging accolades with reviews.
+      // Track contents follow the active filter: Awards = accolades only, Testimonials = testimonials only, a
+      // platform = that platform's reviews only. Only All mixes kinds: accolades (sorted as YYYY-12-31 so they lead
+      // that year) and testimonials merge with the reviews by date, with at least one accolade before the first review.
       let trackItems;
       if (onAccolades) {
         trackItems = accoladesList.map(a => ({ kind: 'accolade', accolade: a, sortDate: accoladeSortDate(a) }));
       } else if (onTestimonials) {
         trackItems = testimonialsList.map(t => ({ kind: 'testimonial', testimonial: t, sortDate: reviewSortDate(t) }));
       } else {
-        const includeTestimonials = active === 'all';
+        const mixed = active === 'all';
         trackItems = [
-          ...accoladesList.map(a => ({ kind: 'accolade', accolade: a, sortDate: accoladeSortDate(a) })),
-          ...(includeTestimonials
-            ? testimonialsList.map(t => ({ kind: 'testimonial', testimonial: t, sortDate: reviewSortDate(t) }))
-            : []),
+          ...(mixed ? accoladesList.map(a => ({ kind: 'accolade', accolade: a, sortDate: accoladeSortDate(a) })) : []),
+          ...(mixed ? testimonialsList.map(t => ({ kind: 'testimonial', testimonial: t, sortDate: reviewSortDate(t) })) : []),
           ...shown.map(r => ({ kind: 'review', review: r, sortDate: reviewSortDate(r) })),
         ].sort((a, b) => {
           if (a.sortDate !== b.sortDate) return a.sortDate < b.sortDate ? 1 : -1;
@@ -777,7 +773,7 @@
         return `<div class="rw-card" data-platform="${esc(r.platform)}" role="article" aria-label="${esc(aria)}">${inner}</div>`;
       };
 
-      // Summary card: first card in "All reviews" only; not a link, not counted, not in the JSON-LD.
+      // Summary card: first card in "All" only; not a link, not counted, not in the JSON-LD.
       // Headline: summary.title (config) or language/strings ai_summary (e.g. "Highlights").
       const summaryTitle = (summary && summary.title != null && String(summary.title).trim())
         ? String(summary.title).trim()

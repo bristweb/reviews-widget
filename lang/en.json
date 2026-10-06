@@ -3,7 +3,7 @@
   "unavailable": "Reviews are unavailable right now.",
   "tabs_aria": "Filter reviews by platform, awards, or testimonials",
   "tab_all": "All",
-  "tab_all_suffix": " reviews",
+  "tab_all_suffix": "",
   "tab_title": "{name}",
   "tab_aria": "{name}, {count} reviews",
   "write_review": "Write a review",

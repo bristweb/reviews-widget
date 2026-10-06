@@ -285,7 +285,7 @@
     },
     "accolades": {
       "type": "array",
-      "description": "Optional award badge cards merged into the review track by date after the platform filter (and listed alone on the Awards tab when present). Each item sorts as YYYY-12-31 so it leads that year (newest first). When any accolades exist, at least one appears before the first review (newest award promoted if its year is older than the newest review). Each item needs year plus icon and/or freeform label (name is an alias). Optional url: when set the card is a link with a View award cue; when omitted the card is not clickable and has no footer cue. Logo fills the card free space by default; optional global max via display.accolade_size. Same optional nofollow/noreferrer/rel as platforms.",
+      "description": "Optional award badge cards merged into the review track by date on the All tab (and listed alone on the Awards tab when present; platform filters omit them). Each item sorts as YYYY-12-31 so it leads that year (newest first). When any accolades exist, at least one appears before the first review (newest award promoted if its year is older than the newest review). Each item needs year plus icon and/or freeform label (name is an alias). Optional url: when set the card is a link with a View award cue; when omitted the card is not clickable and has no footer cue. Logo fills the card free space by default; optional global max via display.accolade_size. Same optional nofollow/noreferrer/rel as platforms.",
       "items": {
         "type": "object",
         "required": [
