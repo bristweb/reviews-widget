@@ -1,6 +1,6 @@
 # Reviews widget
 
-## <a href="https://bristweb.github.io/reviews-widget/?source=https://bristweb.github.io/reviews-widget/example/&theme=light" target="_blank" rel="noopener">▶ Live demo light</a> · <a href="https://bristweb.github.io/reviews-widget/?source=https://bristweb.github.io/reviews-widget/example/&theme=dark" target="_blank" rel="noopener">▶ Live demo dark</a>
+## <a href="https://bristweb.github.io/reviews-widget/?source=https://bristweb.github.io/reviews-widget/example/&theme=light" target="_blank" rel="noopener">▶ Live demo (light mode)</a> · <a href="https://bristweb.github.io/reviews-widget/?source=https://bristweb.github.io/reviews-widget/example/&theme=dark" target="_blank" rel="noopener">▶ Live demo (dark mode)</a>
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/example-widget-dark-v2.png" />
@@ -79,9 +79,9 @@ The widget renders where the tag is. It loads CSS from this repo and `theme/them
 
 If the page builder hides the script URL, set `data-base="https://bristweb.github.io/reviews-widget/"`.
 
-### Google Sites and other fixed-height boxes
+### Google Sites / Similar
 
-When the host gives you a box whose height you set and the code can’t change (Google Sites: *Insert → Embed → Embed code*), turn on **one** toggle:
+If your host gives you a box with limited ability to adjust sizing and responsiveness (Google Sites: *Insert → Embed → Embed code*), turn on **one** toggle:
 
 ```html
 <script src="https://bristweb.github.io/reviews-widget/assets/js/reviews-widget.js"
