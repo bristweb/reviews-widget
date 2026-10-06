@@ -89,16 +89,16 @@
   },
   "accolades": [
     {
-      "name": "Couples' Choice Award",
+      "name": "Local Shop Awards — Editors' Pick",
       "year": 2025,
       "icon": "icons/award-choice.svg",
-      "url": "https://example.com/awards/couples-choice-2025"
+      "url": "https://example.com/awards/local-shop-editors-pick-2025"
     },
     {
-      "name": "Best of Local Weddings",
+      "name": "Trail Town Best Bike Shop",
       "year": 2024,
       "icon": "icons/award-bestof.svg",
-      "url": "https://example.com/awards/best-of-local-2024"
+      "url": "https://example.com/awards/trail-town-best-bike-shop-2024"
     }
   ]
 }
