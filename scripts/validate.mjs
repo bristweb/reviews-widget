@@ -53,6 +53,7 @@ const relIcon = (where, icon) => {
 };
 for (const [k, p] of Object.entries(platforms)) relIcon(`platforms.${k}`, p.icon || `icons/${k}.svg`);
 for (const l of (config && config.links) || []) relIcon(`links.${l.platform}`, l.icon);
+for (const k of ['accolades_icon', 'testimonials_icon']) if (config?.display?.[k]) relIcon(`display.${k}`, String(config.display[k]));
 (Array.isArray(config?.accolades) ? config.accolades : []).forEach((a, i) => {
   if (!a || typeof a !== 'object') return;
   if (a.icon) relIcon(`accolades[${i}]`, a.icon);

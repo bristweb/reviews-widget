@@ -64,6 +64,12 @@
   const STAR = '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 1.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L10 14.9l-5.2 2.7 1-5.8L1.5 7.7l5.9-.9z"/></svg>';
   const SPARKLE = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 2.5l1.9 5.6 5.6 1.9-5.6 1.9L10 17.5l-1.9-5.6L2.5 10l5.6-1.9zM18.5 13l.95 2.55L22 16.5l-2.55.95L18.5 20l-.95-2.55L15 16.5l2.55-.95z"/></svg>';
   const THUMB = '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M2 9h3v9H2zM7 18h7.6a2 2 0 0 0 2-1.6l1.2-6A2 2 0 0 0 15.8 8H12V4.5A2.5 2.5 0 0 0 9.5 2L7 8z"/></svg>';
+  // Default Awards / Testimonials pill icons: Lucide "trophy" and "message-square-quote" (ISC; assets/icons/ATTRIBUTION.md).
+  // Drawn in currentColor so they follow the theme; display.accolades_icon / display.testimonials_icon replace them.
+  const TAB_ICONS = {
+    accolades: '<svg class="rw-tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14.66V17a1 1 0 0 1-1 1 2 2 0 0 0-2 2v2"/><path d="M14 14.66V17a1 1 0 0 0 1 1 2 2 0 0 1 2 2v2"/><path d="M17.916 10H19.5A2.5 2.5 0 0 0 22 7.5V5a1 1 0 0 0-1-1h-3"/><path d="M4 22h16"/><path d="M6 9a6 6 0 0 0 12 0V3a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1z"/><path d="M6.084 10H4.5A2.5 2.5 0 0 1 2 7.5V5a1 1 0 0 1 1-1h3"/></svg>',
+    testimonials: '<svg class="rw-tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 14a2 2 0 0 0 2-2V8h-2"/><path d="M22 17a2 2 0 0 1-2 2H6.828a2 2 0 0 0-1.414.586l-2.202 2.202A.71.71 0 0 1 2 21.286V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2z"/><path d="M8 14a2 2 0 0 0 2-2V8H8"/></svg>',
+  };
   const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const fill = (tpl, vars) => String(tpl).replace(/\{(\w+)\}/g, (m, k) => (k in vars ? vars[k] : m));
   const isBlank = t => !String(t ?? '').replace(/[\s\u200b-\u200d\u2060\ufeff]+/g, '');
@@ -383,6 +389,8 @@
       const fallback = SIMPLE_ICONS + encodeURIComponent(P.simple_icon || p);
       return `<img${c ? ` class="${c}"` : ''} src="${esc(url(P.icon || `icons/${p}.svg`))}" data-fallback="${esc(fallback)}" alt="">`;
     };
+    // Awards / Testimonials pills: display.accolades_icon / display.testimonials_icon (path or URL), else the built-in icon.
+    const tabIcon = p => (D[p + '_icon'] ? `<img src="${esc(url(D[p + '_icon']))}" alt="">` : TAB_ICONS[p]);
     const useFallbackIcons = root => root.querySelectorAll('img[data-fallback]').forEach(img => {
       const swap = () => { if (img.dataset.fallback) { img.src = img.dataset.fallback; delete img.dataset.fallback; } };
       img.addEventListener('error', swap, { once: true }); // attached in the same task as innerHTML, before any load result
@@ -594,9 +602,9 @@
           const labelHtml = p === 'all'
             ? `<span class="rw-tab-name">${esc(S.tab_all)}<span class="rw-tab-long">${esc(allSuffixSp)}</span></span>`
             : isAcc
-              ? `<span class="rw-tab-name">${esc(S.tab_accolades)}</span>`
+              ? `${tabIcon('accolades')}<span class="rw-tab-name">${esc(S.tab_accolades)}</span>`
               : isTes
-                ? `<span class="rw-tab-name">${esc(S.tab_testimonials)}</span>`
+                ? `${tabIcon('testimonials')}<span class="rw-tab-name">${esc(S.tab_testimonials)}</span>`
                 : `${icon(p)}<span class="rw-tab-name">${esc(name)}</span>`;
           return `<button type="button" role="tab" class="rw-tab ${p === active ? 'is-active' : ''}" data-p="${p}" aria-selected="${p === active}"
             title="${esc(fill(titleTpl, { name, count: n }))}" aria-label="${esc(fill(ariaTpl, { name, count: n }))}">

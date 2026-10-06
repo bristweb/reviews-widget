@@ -137,6 +137,16 @@
           },
           "uniqueItems": true,
           "description": "Review keys to hide, each <platform>-<platform_review_id> (the reviewer image file name convention). Hidden reviews stay in the data but are not shown, counted, averaged or included in the JSON-LD. data-hide / ?hide= (comma-separated) add to this list."
+        },
+        "accolades_icon": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Optional icon for the Awards filter pill: path relative to the data root or an absolute URL (SVG or image, shown at the platform icon size). Omit to use the built-in trophy icon."
+        },
+        "testimonials_icon": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Optional icon for the Testimonials filter pill: path relative to the data root or an absolute URL (SVG or image, shown at the platform icon size). Omit to use the built-in quote bubble icon."
         }
       }
     },
