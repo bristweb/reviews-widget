@@ -14,20 +14,6 @@
     "reviewer_image_source_url": null
   },
   {
-    "platform": "trustpilot",
-    "platform_review_id": "ex-trustpilot-004",
-    "reviewer_name": "Emery Okada",
-    "reviewer_profile_url": null,
-    "rating": 5,
-    "text": "Demo day \u2014 tried three gravel builds. Honest about what fits my weekend loops.",
-    "date": "2023-10-20T06:46:50Z",
-    "review_url": "https://example.com/trustpilot/reviews/ex-trustpilot-004",
-    "owner_reply": null,
-    "collected_at": "2026-10-06T18:00:00Z",
-    "reviewer_image": "images/reviewers/trustpilot-ex-trustpilot-004.svg",
-    "reviewer_image_source_url": null
-  },
-  {
     "platform": "google",
     "platform_review_id": "ex-google-013",
     "reviewer_name": "Drew Okada",
@@ -70,23 +56,6 @@
     },
     "collected_at": "2026-10-06T18:00:00Z",
     "reviewer_image": "images/reviewers/google-ex-google-009.svg",
-    "reviewer_image_source_url": null
-  },
-  {
-    "platform": "trustpilot",
-    "platform_review_id": "ex-trustpilot-012",
-    "reviewer_name": "Jamie Hughes",
-    "reviewer_profile_url": null,
-    "rating": 5,
-    "text": "Winterized my road bike: grease, new bar tape, true wheels. Ready for wet season commuting.",
-    "date": "2023-04-24T02:26:57Z",
-    "review_url": "https://example.com/trustpilot/reviews/ex-trustpilot-012",
-    "owner_reply": {
-      "text": "Glad we could help \u2014 see you on the next tune-up!",
-      "date": "2023-04-25T01:26:57Z"
-    },
-    "collected_at": "2026-10-06T18:00:00Z",
-    "reviewer_image": "images/reviewers/trustpilot-ex-trustpilot-012.svg",
     "reviewer_image_source_url": null
   },
   {

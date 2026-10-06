@@ -79,20 +79,6 @@
     "reviewer_image_source_url": null
   },
   {
-    "platform": "trustpilot",
-    "platform_review_id": "ex-trustpilot-006",
-    "reviewer_name": "Harper Kowalski",
-    "reviewer_profile_url": null,
-    "rating": 5,
-    "text": "Helmet fit for a nervous new rider. Left more confident about city lanes.",
-    "date": "2024-09-12T21:11:01Z",
-    "review_url": "https://example.com/trustpilot/reviews/ex-trustpilot-006",
-    "owner_reply": null,
-    "collected_at": "2026-10-06T18:00:00Z",
-    "reviewer_image": "images/reviewers/trustpilot-ex-trustpilot-006.svg",
-    "reviewer_image_source_url": null
-  },
-  {
     "platform": "google",
     "platform_review_id": "ex-google-004",
     "reviewer_name": "Remy Garcia",
@@ -152,23 +138,6 @@
     },
     "collected_at": "2026-10-06T18:00:00Z",
     "reviewer_image": "images/reviewers/yelp-ex-yelp-009.svg",
-    "reviewer_image_source_url": null
-  },
-  {
-    "platform": "trustpilot",
-    "platform_review_id": "ex-trustpilot-014",
-    "reviewer_name": "Cameron Fischer",
-    "reviewer_profile_url": null,
-    "rating": 5,
-    "text": "Cleat install and brief fit tips. Pedaling feels more efficient already.",
-    "date": "2024-01-22T12:24:04Z",
-    "review_url": "https://example.com/trustpilot/reviews/ex-trustpilot-014",
-    "owner_reply": {
-      "text": "Appreciate the kind words. Stop by anytime.",
-      "date": "2024-01-23T20:24:04Z"
-    },
-    "collected_at": "2026-10-06T18:00:00Z",
-    "reviewer_image": "images/reviewers/trustpilot-ex-trustpilot-014.svg",
     "reviewer_image_source_url": null
   }
 ]

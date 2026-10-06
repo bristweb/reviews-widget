@@ -2,7 +2,7 @@
 
 Sample data for [bristweb/reviews-widget](https://github.com/bristweb/reviews-widget). **Northwind Cycles** is an invented bike shop — not a real business. Do not present these as real testimonials.
 
-Demo platforms: **Google**, **Yelp**, **Facebook**, and **Trustpilot** (common review sources). The business and review text are fictional; the platform names identify where each sample would appear.
+Demo platforms: **Google**, **Yelp**, and **Facebook** (common review sources). The business and review text are fictional; the platform names identify where each sample would appear.
 
 Copy this whole folder to start a new data repo (includes `.github/workflows/validate.yml`, `.nojekyll`, and `.gitignore`).
 
@@ -28,4 +28,4 @@ Google Sites / fixed-height box: add `data-constrained="true"`.
 
 ## Credits
 
-Platform logos (**Google**, **Yelp**, **Facebook**, **Trustpilot**) are from [Simple Icons](https://simpleicons.org/) ([CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/)); see [`icons/ATTRIBUTION.md`](icons/ATTRIBUTION.md). All marks belong to their owners and are used only to identify where each review was posted. This example is not affiliated with those platforms. Placeholder award badges in `config.json` are fictional (Local Shop Editors' Pick + Trail Town Best Bike Shop; title + year up top, View award link at bottom; Awards tab + YYYY-12-31 track merge; see attribution). Two fictional corporate testimonials (Contoso Logistics, Summit Athletics) interleave on All by date; source logos sit in the avatar slot.
+Platform logos (**Google**, **Yelp**, **Facebook**) are from [Simple Icons](https://simpleicons.org/) ([CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/)); see [`icons/ATTRIBUTION.md`](icons/ATTRIBUTION.md). All marks belong to their owners and are used only to identify where each review was posted. This example is not affiliated with those platforms. Placeholder award badges in `config.json` are fictional (Local Shop Editors' Pick + Trail Town Best Bike Shop; title + year up top, View award link at bottom; Awards tab + YYYY-12-31 track merge; see attribution). Two fictional corporate testimonials (Contoso Logistics, Summit Athletics) interleave on All by date; source logos sit in the avatar slot.

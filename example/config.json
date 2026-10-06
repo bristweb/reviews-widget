@@ -26,13 +26,6 @@
       "write_url": "https://example.com/facebook/write-review",
       "page_url": "https://example.com/facebook/northwind-cycles",
       "card_link": "page"
-    },
-    "trustpilot": {
-      "name": "Trustpilot",
-      "icon": "icons/trustpilot.svg",
-      "write_url": "https://example.com/trustpilot/write-review",
-      "page_url": "https://example.com/trustpilot/northwind-cycles",
-      "card_link": "review"
     }
   },
   "languages": [
