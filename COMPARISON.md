@@ -49,7 +49,7 @@ Because this widget is self-hosted, **any platform is supported**: you can gathe
 | Platform | **reviews-widget** | Birdeye | SociableKIT | Reputation.com | Elfsight | Podium | Tagembed | EmbedSocial | ProvenExpert | Trustpilot |
 |---|---|---|---|---|---|---|---|---|---|---|
 | Google Maps / Business Profile | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | 🟡 | ❌ |
-| Yelp¹⁵ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | 🟡 | ❌ | ❌ |
+| Yelp | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | 🟡¹⁵ | ❌ | ❌ |
 | Facebook | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | 🟡 | ❌ |
 | BBB | ✅ | ✅ | ✅ | ✅ | ✅ | 🟡 | ❌ | ❌ | ❌ | ❌ |
 | Yellow Pages | ✅ | ✅ | 🟡 | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
