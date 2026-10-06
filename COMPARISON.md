@@ -44,7 +44,7 @@ Columns: **reviews-widget** first; other products sorted by score (✅×2 + 🟡
 
 ### Review / social platforms you can show
 
-Because this widget is self-hosted, **any platform is supported**: you store the records yourself, so nothing depends on a vendor’s connector catalog (including sources other services may not offer). The table below is about *built-in connectors / official integrations* for the other products (including whether a review platform only “connects” to itself) — not whether a human could paste text by hand. Rows cover 100+ common review, directory, marketplace, app-store, B2B, vertical, and social surfaces.
+Because this widget is self-hosted, **any platform is supported**: you can gather the records however you like (automation or by hand), so nothing depends on a vendor’s connector catalog (including sources other services may not offer). The table below is about *built-in connectors / official integrations* for the other products (including whether a review platform only “connects” to itself). Rows cover 100+ common review, directory, marketplace, app-store, B2B, vertical, and social surfaces.
 
 | Platform | **reviews-widget** | Birdeye | SociableKIT | Reputation.com | Elfsight | Podium | Tagembed | EmbedSocial | ProvenExpert | Trustpilot |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
