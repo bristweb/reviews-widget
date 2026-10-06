@@ -3,9 +3,9 @@
 ## <a href="https://bristweb.github.io/reviews-widget/?source=https://bristweb.github.io/reviews-widget/example/&theme=light" target="_blank" rel="noopener">▶ Live demo (light mode)</a> · <a href="https://bristweb.github.io/reviews-widget/?source=https://bristweb.github.io/reviews-widget/example/&theme=dark" target="_blank" rel="noopener">▶ Live demo (dark mode)</a>
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/example-widget-dark-v4.png" />
-  <source media="(prefers-color-scheme: light)" srcset="docs/example-widget-light-v4.png" />
-  <img src="docs/example-widget-light-v4.png" alt="Live example: Northwind Cycles (fictional bike shop)" />
+  <source media="(prefers-color-scheme: dark)" srcset="docs/example-widget-dark-v5.png" />
+  <source media="(prefers-color-scheme: light)" srcset="docs/example-widget-light-v5.png" />
+  <img src="docs/example-widget-light-v5.png" alt="Live example: Northwind Cycles (fictional bike shop)" />
 </picture>
 
 
