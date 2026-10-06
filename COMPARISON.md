@@ -173,9 +173,6 @@ Because this widget is self-hosted, **any platform is supported**: you can gathe
 | Niche | ✅ | ✅ | 🟡 | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | Rate My Professors | ✅ | 🟡 | 🟡 | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | Course Report | ✅ | 🟡 | 🟡 | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| Reddit¹⁸ | ✅ | 🟡 | 🟡 | 🟡 | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| X (Twitter)¹⁸ | ✅ | 🟡 | 🟡 | 🟡 | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| Instagram¹⁸ | ✅ | 🟡 | 🟡 | 🟡 | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | LinkedIn | ✅ | 🟡 | 🟡 | 🟡 | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | TikTok | ✅ | 🟡 | 🟡 | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | YouTube | ✅ | 🟡 | 🟡 | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
@@ -192,7 +189,6 @@ Because this widget is self-hosted, **any platform is supported**: you can gathe
 15. Yelp via EmbedSocial is capped (about three random reviews per business) because of Yelp’s API limits.
 16. Amazon often needs a manual / CSV-style import on several hosted widgets; not always a full live API sync.
 17. Trustpilot generally does not allow third-party widgets to re-embed Trustpilot reviews; use Trustpilot’s own embeds or store a copy yourself (as with this widget).
-18. Instagram / X / Reddit are not classic star-review graphs; some vendors treat them as social feeds or recommendations. This widget can still store and display whatever review-shaped records you collect there.
 
 Marks for other vendors are based on their public docs and connector lists (and may change). Treat 🟡 as “partial, plan-gated, manual import, monitoring-only, or limited API.” **reviews-widget** is ✅ on every row because any source you can turn into the data format can be displayed. Elfsight also offers a custom/manual source for platforms without a connector — that is still not a live connector, so unlisted rows stay ❌ here.
 
