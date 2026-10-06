@@ -175,7 +175,7 @@ Formal shape: `schemas/reviews.schema.json` in this repo.
 
 Optional check: from a checkout of this repo, run `node scripts/validate.mjs <data-dir>` (install deps in this repo first with `npm ci`). It checks the JSON schemas plus light filesystem rules (icons exist, relative `reviewer_image` paths resolve, `reviews.years` matches files, newest-first, dates in the right year file, unique `platform` + `platform_review_id`).
 
-A data repo can run the same check on every push:
+A data repo can run the same check on every push. The sample at `example/.github/workflows/validate.yml` is that thin caller — copy `example/` and it becomes `.github/workflows/validate.yml` at the repo root:
 
 ```yaml
 # .github/workflows/validate.yml
@@ -232,7 +232,7 @@ Carousel: 4 / 3 / 2 / 1 cards by width breakpoints.
 
 ## New data repo
 
-Clone this repo’s `example/` folder (or copy it into a new repo) and replace the fictional content with yours — `config.json`, `reviews/`, `icons/`, `theme/`, and optional images. Publish on any static host (GitHub Pages: branch `main`, site root, keep `.nojekyll`). Point the widget’s `data-source` at that published URL. Optionally add the validate workflow from [JSON Schema and validation](#json-schema-and-validation).
+Clone this repo’s `example/` folder (or copy it into a new repo) and replace the fictional content with yours — `config.json`, `reviews/`, `icons/`, `theme/`, optional images, and `.github/workflows/validate.yml` (already under `example/`, so a full copy of that tree gets the workflow at the data-repo root). Publish on any static host (GitHub Pages: branch `main`, site root, keep `.nojekyll`). Point the widget’s `data-source` at that published URL.
 
 ---
 
