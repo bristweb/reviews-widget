@@ -114,8 +114,8 @@ if (Array.isArray(years) && years.some((y, i) => i && y >= years[i - 1])) err('c
 const files = existsSync(path.join(root, 'reviews')) ? readdirSync(path.join(root, 'reviews')).filter(f => f.endsWith('.json')) : [];
 for (const f of files) if (!years.includes(Number(f.replace(/\.json$/, '')))) err(`reviews/${f}: not listed in config.json reviews.years`);
 
-const seen = new Map(), used = new Set(), counts = {};
-let total = 0;
+const seen = new Map(), used = new Set(), counts = {}, hideKeys = new Set();
+let total = 0, hidden = 0;
 for (const y of years) {
   const f = `reviews/${y}.json`;
   const list = readJson(f);
@@ -138,6 +138,8 @@ for (const y of years) {
         else used.add(img);
       }
     }
+    hideKeys.add(`${r.platform}-${r.platform_review_id}`);
+    if (r.hidden === true) hidden++;
     counts[r.platform] = (counts[r.platform] || 0) + 1;
     total++;
   });
@@ -147,6 +149,9 @@ for (const y of years) {
   const img = String(t.reviewer_image);
   if (!/^(https?:|data:|\/)/i.test(img)) used.add(img);
 });
+// display.hide keys are <platform>-<platform_review_id>; a key that matches no review is probably a typo.
+const hideList = Array.isArray(config?.display?.hide) ? config.display.hide : [];
+for (const k of hideList) if (!hideKeys.has(String(k))) warn(`config.json display.hide: "${k}" matches no review (expected <platform>-<platform_review_id>)`);
 const imgDir = path.join(root, 'images', 'reviewers');
 if (existsSync(imgDir)) for (const f of readdirSync(imgDir)) if (!used.has(`images/reviewers/${f}`)) warn(`images/reviewers/${f}: not referenced by any review or testimonial (ok if unused)`);
 
@@ -155,6 +160,8 @@ if (errors.length) { console.error(errors.join('\n')); console.error(`\n${errors
 const nAcc = Array.isArray(config?.accolades) ? config.accolades.length : 0;
 const nTes = Array.isArray(config?.testimonials) ? config.testimonials.length : 0;
 console.log(`ok: ${total} reviews (${Object.entries(counts).map(([k, n]) => `${k} ${n}`).join(', ') || 'none'}) in ${years.length} year file(s)` +
+  (hidden || hideList.length ? `; hidden: ${hidden} record(s) marked hidden, ${hideList.length} display.hide key(s)` : '') +
+  (config?.display?.min_rating ? `; min_rating ${config.display.min_rating}` : '') +
   (nAcc ? `; ${nAcc} accolade(s)` : '') +
   (nTes ? `; ${nTes} testimonial(s)` : '') +
   (config?.summary ? `; summary generated ${config.summary.generated_at}` : ''));

@@ -121,6 +121,22 @@
           "minimum": 0,
           "maximum": 480,
           "description": "Optional max edge (px) for accolade logos in badge cards. Omit or 0 = fill the card\u2019s free space (with padding). Positive values cap the logo. One global setting \u2014 no per-item size/width/height."
+        },
+        "min_rating": {
+          "type": "number",
+          "minimum": 1,
+          "maximum": 5,
+          "description": "Hide rated reviews (and rated testimonials) below this star rating. Omit to show all. Unrated reviews and accolades are unaffected. Hidden reviews are not counted, averaged or included in the JSON-LD. Overridden by data-min-rating / ?min_rating=."
+        },
+        "hide": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 3,
+            "pattern": "^[^-\\s]+-.+$"
+          },
+          "uniqueItems": true,
+          "description": "Review keys to hide, each <platform>-<platform_review_id> (the reviewer image file name convention). Hidden reviews stay in the data but are not shown, counted, averaged or included in the JSON-LD. data-hide / ?hide= (comma-separated) add to this list."
         }
       }
     },

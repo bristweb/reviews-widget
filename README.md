@@ -104,6 +104,8 @@ Each option below is set as `data-<name>` on the script (or target element) and/
 | `schema` | `off` skips JSON-LD (`data-schema` only; no query param) | injected |
 | `constrained` | `true` = tight-box preset: fill height, arrows inside, overflow hidden, no hover lift, focus rings inside | off |
 | `lang` | ISO tag matching `config.languages[].lang` (e.g. `en`, `es`) | page language, then `defaultLanguage`, then English |
+| `min_rating` | Hide rated reviews below this many stars (`data-min-rating`, `?min_rating=`, `display.min_rating`). Unrated reviews and accolades stay | show all |
+| `hide` | Comma-separated review keys `<platform>-<platform_review_id>` to hide (`data-hide`, `?hide=`, `display.hide` array; all combine). `"hidden": true` on a review record hides it too | none |
 
 **CSS knobs** (no `data-*`): cards across are responsive by default. Optional classes on `.rw-host` / `.rw-root` — `.rw-clip` / `.rw-overflow-hidden`, `.rw-arrows-inside`, `.rw-nolift`, `.rw-focus-inside`, `.rw-fixed` + `.rw-fixed-host` (usually from `constrained`), `.rw-cards-1`…`4`, and `--rw-pad` for outer padding.
 
@@ -216,7 +218,7 @@ Edit the cloned data repo (same shape as `example/`): add or change records in `
 
 ## Structured data (JSON-LD)
 
-Built in the browser and injected once per page as `#reviews-widget-schema`. `@type` from `schema.type` (default `LocalBusiness`), `aggregateRating` from 1–5 ratings only, `review` items in card order. Disable with `schema.enabled: false` or `data-schema="off"`. Google often withholds review stars for self-serving business markup; the JSON-LD still describes the entity accurately.
+Built in the browser and injected once per page as `#reviews-widget-schema`. `@type` from `schema.type` (default `LocalBusiness`), `aggregateRating` from 1–5 ratings only, `review` items in card order. Hidden reviews (`hide`, `min_rating`, `"hidden": true`) are left out of both, like the counts and filter tabs. Disable with `schema.enabled: false` or `data-schema="off"`. Google often withholds review stars for self-serving business markup; the JSON-LD still describes the entity accurately.
 
 ---
 

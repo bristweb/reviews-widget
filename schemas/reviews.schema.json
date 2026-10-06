@@ -122,6 +122,10 @@
       "rel": {
         "type": "string",
         "description": "Optional space-separated rel tokens; when set (or with nofollow/noreferrer), overrides the platform for this card. noopener is always applied."
+      },
+      "hidden": {
+        "type": "boolean",
+        "description": "Optional. true keeps the review in the data but hides it: not shown, counted, averaged or included in the JSON-LD."
       }
     }
   }

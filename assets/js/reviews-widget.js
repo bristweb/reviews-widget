@@ -446,7 +446,14 @@
     }
 
     const summary = config.summary || null;
-    const all = reviews;
+    // Hidden reviews stay in the data but are never shown, counted, averaged or put in the JSON-LD:
+    // "hidden": true on the record, keys <platform>-<platform_review_id> in display.hide / data-hide / ?hide=
+    // (all three combine), and rated reviews below min_rating (unrated reviews stay).
+    const minRating = Number(opt('min_rating', 'minRating', 'min_rating')) || 0;
+    const keyList = v => (Array.isArray(v) ? v : String(v ?? '').split(',')).map(k => String(k).trim()).filter(Boolean);
+    const hideKeys = new Set([...keyList(D.hide), ...keyList(opts.hide), ...keyList(q.get('hide'))]);
+    const belowMin = x => minRating > 0 && typeof x.rating === 'number' && x.rating < minRating;
+    const all = reviews.filter(r => r.hidden !== true && !hideKeys.has(`${r.platform}-${r.platform_review_id}`) && !belowMin(r));
     for (const r of all) {
       r.id = r.id || `${r.platform}:${r.platform_review_id}`;
       r.display_name = displayName(r.reviewer_name);
@@ -528,7 +535,7 @@
     };
     const testimonialsList = Array.isArray(config.testimonials)
       ? config.testimonials
-          .filter(t => t && !isBlank(t.text) && t.date && t.reviewer_name != null && String(t.reviewer_name).trim())
+          .filter(t => t && !isBlank(t.text) && t.date && t.reviewer_name != null && String(t.reviewer_name).trim() && !belowMin(t))
           .map(t => ({
             ...t,
             _source: testimonialSource(t),
@@ -551,6 +558,7 @@
     let active = cfg.platform;
     if (active === 'accolades' && !accoladesList.length) active = 'all';
     if (active === 'testimonials' && !testimonialsList.length) active = 'all';
+    if (!['all', 'accolades', 'testimonials', ...present].includes(active)) active = 'all';
 
     function render() {
       const onAccolades = active === 'accolades';
@@ -947,7 +955,7 @@
   }
 
   // ---- where to render (no class-name selectors) ----
-  const OPTION_KEYS = ['source', 'layout', 'platform', 'limit', 'schema', 'summary', 'theme', 'constrained', 'lang', 'target'];
+  const OPTION_KEYS = ['source', 'layout', 'platform', 'limit', 'schema', 'summary', 'theme', 'constrained', 'lang', 'minRating', 'hide', 'target'];
   const BOOL_KEYS = ['constrained']; // bare data-constrained means true
   const pick = ds => Object.fromEntries(OPTION_KEYS.filter(k => ds && ds[k] != null && (ds[k] !== '' || BOOL_KEYS.includes(k)))
     .map(k => [k, ds[k] === '' ? 'true' : ds[k]]));
