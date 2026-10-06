@@ -97,7 +97,8 @@
   ],
   "testimonials": [
     {
-      "reviewer_name": "Riley Chen",
+      "title": "Riley Chen",
+      "subtitle": "Fleet Manager, Contoso Logistics",
       "reviewer_image": "images/reviewers/testimonial-riley-chen.svg",
       "text": "Northwind keeps our warehouse e-bike fleet rolling. Tune-ups are booked same week, parts are stocked, and the techs explain wear without the hard sell. Our facilities team trusts them with every unit.",
       "date": "2025-06-18T14:30:00Z",
@@ -109,8 +110,8 @@
       }
     },
     {
-      "reviewer_name": "Avery Kim",
-      "reviewer_image": "images/reviewers/testimonial-avery-kim.svg",
+      "title": "Summit Athletics",
+      "subtitle": "Team sponsor since 2023",
       "text": "We outfit our coaching staff and youth ride leaders through Northwind. Fits are careful, demos are honest, and group orders land on time. They feel like an extension of our athletics program.",
       "date": "2024-05-22T16:00:00Z",
       "url": "https://example.com/testimonials/summit-athletics",

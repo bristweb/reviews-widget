@@ -50,8 +50,8 @@
     accolade_card_aria_nolink: '{label} ({year})',
     card_aria_nolink: "{name}'s review on {platform}",
     testimonial_from: '{name} from {source}',
-    testimonial_card_aria: "Read {name}'s testimonial{source_clause} (opens in a new tab)",
-    testimonial_card_aria_nolink: "{name}'s testimonial{source_clause}",
+    testimonial_card_aria: 'Read testimonial from {name}{source_clause} (opens in a new tab)',
+    testimonial_card_aria_nolink: 'Testimonial from {name}{source_clause}',
     testimonial_source_clause: ' ({source})',
   };
   const DISPLAY = {
@@ -543,12 +543,14 @@
     };
     const testimonialsList = Array.isArray(config.testimonials)
       ? config.testimonials
-          .filter(t => t && !isBlank(t.text) && t.date && t.reviewer_name != null && String(t.reviewer_name).trim() && !belowMin(t))
+          .filter(t => t && !isBlank(t.text) && t.date && t.title != null && String(t.title).trim() && !belowMin(t))
           .map(t => ({
             ...t,
             _source: testimonialSource(t),
-            display_name: displayName(t.reviewer_name),
-            snippet_text: snippet(t.text, t.reviewer_name),
+            // title / subtitle are freeform (a person, a team, a company…): shown as written, never abbreviated.
+            display_name: String(t.title).trim(),
+            subtitle: t.subtitle != null ? String(t.subtitle).trim() : '',
+            snippet_text: snippet(t.text, t.title),
           }))
           .sort((a, b) => String(b.date).localeCompare(String(a.date)))
       : [];
@@ -700,11 +702,13 @@
         return `<div class="rw-card rw-accolade-card" role="article" aria-label="${esc(aria)}">${inner}</div>`;
       };
       const testimonialCard = t => {
-        // Review-like chrome. Source logo (when set) takes the avatar slot; reviewer image is secondary.
-        // Reviewer name stays on its own line; source name is a separate prominent line (never “Name from Org”).
+        // Review-like chrome: title (same type as review names), then optional subtitle, then date. Source logo
+        // (when set) takes the avatar slot and reviewer_image is secondary. source.name is only used in the
+        // accessible label (when there is no subtitle); the visible second line is always just `subtitle`.
         const source = t._source;
-        const sourceClause = source
-          ? fill(S.testimonial_source_clause, { source: source.name })
+        const clause = t.subtitle || (source && source.name) || '';
+        const sourceClause = clause && clause !== t.display_name
+          ? fill(S.testimonial_source_clause, { source: clause })
           : '';
         const hasUrl = t.url && String(t.url).trim();
         const ariaTpl = hasUrl ? S.testimonial_card_aria : S.testimonial_card_aria_nolink;
@@ -719,7 +723,7 @@
         } else if (reviewerImg) {
           primary = `<img class="rw-avatar" src="${esc(url(reviewerImg))}" alt="" loading="lazy" width="44" height="44">`;
         } else {
-          primary = initialsAvatar(t.reviewer_name);
+          primary = initialsAvatar(t.display_name);
         }
         const rating = typeof t.rating === 'number' ? stars(t.rating) : '';
         const text = !isBlank(t.snippet_text) ? `<p class="rw-text">${esc(t.snippet_text)}</p>` : '';
@@ -728,14 +732,12 @@
         const linkCue = hasUrl
           ? `<span class="rw-link" aria-hidden="true">${esc(linkLabel)} <span class="rw-arrow">→</span></span>`
           : '';
-        const sourceLine = source
-          ? `<div class="rw-source-name">${esc(source.name)}</div>`
-          : '';
+        const subtitleLine = t.subtitle ? `<div class="rw-subtitle">${esc(t.subtitle)}</div>` : '';
         const inner = `<div class="rw-card-top">
             ${primary}
             <div class="rw-who">
               <div class="rw-name">${esc(t.display_name)}</div>
-              ${sourceLine}
+              ${subtitleLine}
               <time datetime="${esc(t.date)}">${fmtDate(t.date)}</time>
             </div>
             ${secondary}

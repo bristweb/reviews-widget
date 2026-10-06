@@ -352,26 +352,28 @@
     },
     "testimonials": {
       "type": "array",
-      "description": "Optional testimonial cards merged into the review track by date (newest first) on the All tab, like accolades. Not tied to a review platform. When present, a Testimonials filter tab lists only these cards. Platform filters omit them. Each item needs reviewer_name, text, and date. Optional url (when set the card links with a footer cue; when omitted not clickable and no footer cue), link_text (footer cue when url is set; default Learn more / strings.view_testimonial), rating (1\u20135), reviewer_image. Optional source: if set, name is required; source.logo (when set) replaces the usual platform icon and is shown in the avatar position (reviewer image moves secondary). Same optional nofollow/noreferrer/rel as platforms.",
+      "description": "Optional testimonial cards merged into the review track by date (newest first) on the All tab, like accolades. Not tied to a review platform. When present, a Testimonials filter tab lists only these cards. Platform filters omit them. Each item needs title, text, and date; optional subtitle. Optional url (when set the card links with a footer cue; when omitted not clickable and no footer cue), link_text (footer cue when url is set; default Learn more / strings.view_testimonial), rating (1\u20135), reviewer_image. Optional source: if set, name is required; source.logo (when set) replaces the usual platform icon and is shown in the avatar position (reviewer image moves secondary). Same optional nofollow/noreferrer/rel as platforms.",
       "items": {
         "type": "object",
         "required": [
-          "reviewer_name",
+          "title",
           "text",
           "date"
         ],
         "additionalProperties": true,
         "properties": {
-          "reviewer_name": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "description": "Person giving the testimonial."
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Card title, shown like a reviewer name (not abbreviated). Freeform: a person, a team, a company."
+          },
+          "subtitle": {
+            "type": "string",
+            "description": "Optional second line under the title, less prominent (e.g. role and company, or \"Team sponsor since 2023\"). Not filled in from source.name."
           },
           "reviewer_image": {
             "type": "string",
-            "description": "Optional avatar URL or path relative to the data root. Secondary when source.logo is set."
+            "description": "Optional avatar URL or path relative to the data root (initials of the title when omitted). Secondary when source.logo is set."
           },
           "text": {
             "type": "string",
@@ -408,7 +410,7 @@
               "name"
             ],
             "additionalProperties": true,
-            "description": "Optional organization for corporate credibility. name required when source is present; shown as its own prominent line under the reviewer name (not folded into the name). logo shown in the avatar slot when set.",
+            "description": "Optional organization: logo shown in the avatar slot when set; name is used in the card's accessible label when there is no subtitle (it is not shown as a visible line). name required when source is present.",
             "properties": {
               "name": {
                 "type": "string",

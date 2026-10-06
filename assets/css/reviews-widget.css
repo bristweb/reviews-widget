@@ -119,7 +119,8 @@ div.rw-card:not(.rw-ai):hover,div.rw-card:not(.rw-ai):focus-visible,div.rw-card:
 /* Testimonials: review-like cards. Source logo sits in the avatar slot (slightly squared); reviewer photo is secondary. */
 .rw-testimonial-card{background:var(--rw-card,#fff)}
 .rw-source-logo{border-radius:10px;object-fit:contain;background:var(--rw-tint,#f1f1f1);padding:3px}
-.rw-source-name{font-size:13px;font-weight:600;line-height:1.25;color:var(--rw-ink,#111);margin-top:1px}
+/* Testimonial subtitle: own line under the title, date-sized but a step stronger than the date; wraps, never ellipsized. */
+.rw-subtitle{font-size:12.5px;font-weight:500;line-height:1.3;color:var(--rw-body,#555);margin:1px 0}
 .rw-avatar-secondary{width:22px;height:22px;border-radius:50%;object-fit:cover;flex:none;background:var(--rw-tint,#f1f1f1)}
 .rw-initials{display:grid;place-items:center;font-size:14px;font-weight:700;line-height:1;letter-spacing:.02em;user-select:none}
 .rw-nav:disabled{opacity:0;pointer-events:none}

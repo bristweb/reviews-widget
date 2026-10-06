@@ -60,6 +60,7 @@ for (const k of ['accolades_icon', 'testimonials_icon']) if (config?.display?.[k
 });
 (Array.isArray(config?.testimonials) ? config.testimonials : []).forEach((t, i) => {
   if (!t || typeof t !== 'object') return;
+  if (t.reviewer_name != null) err(`config.json testimonials[${i}]: reviewer_name is obsolete; use title (and optional subtitle)`);
   if (t.source && typeof t.source === 'object' && t.source.logo) relIcon(`testimonials[${i}].source`, t.source.logo);
   if (t.reviewer_image) {
     const img = String(t.reviewer_image);
