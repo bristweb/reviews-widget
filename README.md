@@ -128,7 +128,7 @@ theme/fonts/             optional self-hosted fonts
 | Key | Role |
 |---|---|
 | `business` | `name` (required), optional `website` and extras |
-| `platforms` | review platforms in **tab order**: `name`, `icon`, `write_url`, `page_url`, `card_link` (`review`\|`page`), optional `invert_icon_when_active`. Extra fields (scrape URLs, notes, …) are ignored by the widget |
+| `platforms` | review platforms in **tab order**: `name`, `icon`, `write_url`, `page_url`, `card_link` (`review`\|`page`), optional `invert_icon_when_active`, optional `nofollow` / `noreferrer` (or `rel`) for outbound write/card links. Extra fields (scrape URLs, notes, …) are ignored by the widget |
 | `default_write_platform` | `write_url` used on the “All” tab |
 | `display.*` | layout, snippets, diversity, dates, `theme`, `constrained`, … |
 | `schema.*` | JSON-LD on/off, `@type`, `max_reviews`, `extra` |
@@ -137,6 +137,7 @@ theme/fonts/             optional self-hosted fonts
 | `strings` | optional inline UI copy overrides (object only; merged last) |
 | `rating_labels` | score words (`[{ min, label }, …]`); overrides language-file labels when set |
 | `summary` | `{ "text", "generated_at" }` for the summary card |
+| `accolades` | optional `[{ name, year?, icon, url }]` — badge strip under the summary; each links out (same optional `nofollow` / `noreferrer` / `rel` as platforms) |
 | `reviews.years` | year files to fetch, newest first, e.g. `[2026, 2025]` |
 
 Formal shape: `schemas/config.schema.json` in this repo.
@@ -175,6 +176,8 @@ Array of records for that calendar year, newest first. Store full names, full te
 `platform` + `platform_review_id` is a **suggested** identity for sync tooling (keep them unique per platform). How a review was collected belongs in your tooling/config, not on the record.
 
 `reviewer_image` may be any working URL or path (absolute, `data:`, or relative to the data root). A local convention like `images/reviewers/<platform>-<id>.<ext>` is only a suggestion for sync scripts — not required.
+
+Optional per-review `nofollow` / `noreferrer` (or `rel`) override the platform for that card’s link. Outbound links always keep `noopener`; unset review → platform → just `noopener`.
 
 Formal shape: `schemas/reviews.schema.json` in this repo.
 

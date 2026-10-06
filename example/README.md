@@ -28,4 +28,4 @@ Google Sites / fixed-height box: add `data-constrained="true"`.
 
 ## Credits
 
-Platform logos (**Google**, **Yelp**, **Facebook**, **Trustpilot**) are from [Simple Icons](https://simpleicons.org/) ([CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/)); see [`icons/ATTRIBUTION.md`](icons/ATTRIBUTION.md). All marks belong to their owners and are used only to identify where each review was posted. This example is not affiliated with those platforms.
+Platform logos (**Google**, **Yelp**, **Facebook**, **Trustpilot**) are from [Simple Icons](https://simpleicons.org/) ([CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/)); see [`icons/ATTRIBUTION.md`](icons/ATTRIBUTION.md). All marks belong to their owners and are used only to identify where each review was posted. This example is not affiliated with those platforms. Placeholder award badges and the Couples' Choice / Best of Local Weddings names in `config.json` are fictional (see attribution).

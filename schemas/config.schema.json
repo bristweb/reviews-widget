@@ -66,6 +66,18 @@
           },
           "invert_icon_when_active": {
             "type": "boolean"
+          },
+          "nofollow": {
+            "type": "boolean",
+            "description": "When true, outbound write/card links for this platform include rel=nofollow (noopener is always kept)."
+          },
+          "noreferrer": {
+            "type": "boolean",
+            "description": "When true, outbound write/card links for this platform include rel=noreferrer (noopener is always kept)."
+          },
+          "rel": {
+            "type": "string",
+            "description": "Optional space-separated rel tokens for outbound links (e.g. \"nofollow noreferrer\"). Booleans nofollow/noreferrer override matching tokens when set. noopener is always applied."
           }
         }
       }
@@ -145,7 +157,7 @@
     },
     "languages": {
       "type": "array",
-      "description": "Translation catalogs as { lang, url }. lang is an ISO language tag (en, en-us, es, …); url is absolute or relative to the data root. Partial catalogs are fine; missing keys fall through to the widget's lang/en.json.",
+      "description": "Translation catalogs as { lang, url }. lang is an ISO language tag (en, en-us, es, \u2026); url is absolute or relative to the data root. Partial catalogs are fine; missing keys fall through to the widget's lang/en.json.",
       "items": {
         "type": "object",
         "required": [
@@ -232,6 +244,49 @@
     "sources": {
       "type": "object",
       "additionalProperties": true
+    },
+    "accolades": {
+      "type": "array",
+      "description": "Optional award badges shown as a strip under the summary. Each item links out to a verification or profile URL.",
+      "items": {
+        "type": "object",
+        "required": [
+          "name",
+          "url"
+        ],
+        "additionalProperties": true,
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "year": {
+            "type": [
+              "string",
+              "integer",
+              "number"
+            ]
+          },
+          "icon": {
+            "type": "string",
+            "description": "Image URL or path relative to the data root. When omitted, the name is shown as text."
+          },
+          "url": {
+            "type": "string",
+            "minLength": 1
+          },
+          "nofollow": {
+            "type": "boolean"
+          },
+          "noreferrer": {
+            "type": "boolean"
+          },
+          "rel": {
+            "type": "string",
+            "description": "Optional space-separated rel tokens; same rules as platforms.*.rel."
+          }
+        }
+      }
     }
   }
 }

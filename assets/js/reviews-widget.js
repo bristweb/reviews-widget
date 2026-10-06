@@ -38,7 +38,7 @@
     stars_aria: '{rating} out of 5 stars', recommends: 'Recommends', view_on: 'View on {platform}',
     card_aria: "Read {name}'s review on {platform} (opens in a new tab)", anonymous: 'Anonymous',
     previous: 'Previous reviews', next: 'Next reviews', ai_summary: 'Summary',
-    ai_summary_aria: 'Summary of {count} reviews',
+    ai_summary_aria: 'Summary of {count} reviews', accolades_aria: 'Awards and accolades',
   };
   const DISPLAY = {
     layout: 'carousel', snippet_chars: 160, abbreviate_last_names: true, max_same_platform_run: 2,
@@ -57,6 +57,31 @@
   const byNewest = (a, b) => b.date.localeCompare(a.date) || a.id.localeCompare(b.id);
   // 'true' / '' (bare attribute) / '1' / 'on' / 'yes' -> true; 'false' / '0' / 'off' / 'no' -> false
   const toBool = v => (typeof v === 'boolean' ? v : v != null && !/^(false|0|off|no)$/i.test(String(v).trim()));
+  // Outbound link rel: always noopener; optional nofollow/noreferrer (or a `rel` token string).
+  // First scope that sets any of those wins (review overrides platform; neither → just noopener).
+  function linkRel(...scopes) {
+    let nofollow = false, noreferrer = false, extra = [];
+    let found = false;
+    for (const scope of scopes) {
+      if (!scope || typeof scope !== 'object') continue;
+      const hasRel = typeof scope.rel === 'string' && scope.rel.trim();
+      const hasNf = typeof scope.nofollow === 'boolean';
+      const hasNr = typeof scope.noreferrer === 'boolean';
+      if (!hasRel && !hasNf && !hasNr) continue;
+      found = true;
+      const toks = new Set();
+      if (hasRel) for (const t of scope.rel.trim().split(/\s+/)) if (t) toks.add(t.toLowerCase());
+      nofollow = hasNf ? scope.nofollow : toks.has('nofollow');
+      noreferrer = hasNr ? scope.noreferrer : toks.has('noreferrer');
+      extra = [...toks].filter(t => t !== 'noopener' && t !== 'nofollow' && t !== 'noreferrer');
+      break;
+    }
+    const parts = ['noopener'];
+    if (found && nofollow) parts.push('nofollow');
+    if (found && noreferrer) parts.push('noreferrer');
+    for (const t of extra) if (!parts.includes(t)) parts.push(t);
+    return parts.join(' ');
+  }
 
   // ---- loading helpers ----
   const fetchJson = url => fetch(url, { cache: 'no-cache' }).then(r => { if (!r.ok) throw new Error(r.status + ' ' + url); return r.json(); });
@@ -380,6 +405,8 @@
     }
     // Card link: the individual review URL, or the platform page when the platform sets card_link: "page".
     const cardHref = r => ((PLATFORMS[r.platform] || {}).card_link === 'page' ? PLATFORMS[r.platform].page_url : r.review_url);
+    const platformRel = key => linkRel(PLATFORMS[key] || {});
+    const cardRel = r => linkRel(r, PLATFORMS[r.platform] || {});
 
     // Card order: deterministic, newest first, with gentle platform diversity (same on every load).
     function diverseOrder(list) {
@@ -483,7 +510,7 @@
             <div class="rw-based"><span class="rw-based-pre">${esc((S.based_on || '').trimEnd())} </span><strong>${pool.length}</strong> ${esc(pool.length === 1 ? S.review_one : S.review_many)}<span class="rw-based-pre">${active === 'all' ? '' : esc(fill(S.on_platform, { platform: pname(active) }))}</span></div>
           </div>
         </div>
-        <a class="rw-write" href="${esc(write)}" target="_blank" rel="noopener" aria-label="${esc(S.write_review)}"><span class="rw-write-long">${esc(S.write_review)}</span><span class="rw-write-short">${esc(S.write_review_short)}</span></a>
+        <a class="rw-write" href="${esc(write)}" target="_blank" rel="${esc(platformRel(active === 'all' ? writeDefault : active))}" aria-label="${esc(S.write_review)}"><span class="rw-write-long">${esc(S.write_review)}</span><span class="rw-write-short">${esc(S.write_review_short)}</span></a>
         ${tabs}
       </header>`;
 
@@ -498,7 +525,7 @@
         const rating = typeof r.rating === 'number' ? stars(r.rating) : `<span class="rw-rec">${THUMB}${esc(S.recommends)}</span>`;
         const aria = fill(S.card_aria, { name: r.display_name, platform: name });
         // The whole card is one link; nothing inside it is interactive (no nested links).
-        return `<a class="rw-card" data-platform="${esc(r.platform)}" href="${esc(cardHref(r))}" target="_blank" rel="noopener" aria-label="${esc(aria)}">
+        return `<a class="rw-card" data-platform="${esc(r.platform)}" href="${esc(cardHref(r))}" target="_blank" rel="${esc(cardRel(r))}" aria-label="${esc(aria)}">
           <div class="rw-card-top">
             <img class="rw-avatar" src="${esc(url(r.reviewer_image))}" alt="" loading="lazy" width="44" height="44">
             <div class="rw-who">
@@ -513,7 +540,20 @@
         </a>`;
       }).join('');
 
+      const accoladesList = Array.isArray(config.accolades) ? config.accolades.filter(a => a && (a.icon || a.name) && a.url) : [];
+      const accolades = accoladesList.length ? `<div class="rw-accolades" role="list" aria-label="${esc(S.accolades_aria)}">
+        ${accoladesList.map(a => {
+          const label = [a.name, a.year].filter(v => v != null && String(v).trim()).join(' ');
+          const body = a.icon
+            ? `<img src="${esc(url(a.icon))}" alt="" loading="lazy" width="48" height="48">`
+            : `<span class="rw-accolade-name">${esc(a.name || '')}</span>`;
+          const year = a.year != null && String(a.year).trim() ? `<span class="rw-accolade-year">${esc(a.year)}</span>` : '';
+          return `<a class="rw-accolade" role="listitem" href="${esc(a.url)}" target="_blank" rel="${esc(linkRel(a))}" title="${esc(label)}" aria-label="${esc(label)}">${body}${year}</a>`;
+        }).join('')}
+      </div>` : '';
+
       el.innerHTML = `${header}
+        ${accolades}
         <div class="rw-viewport">
           ${cfg.layout === 'carousel' && cfg.arrows !== 'off' ? `<button class="rw-nav rw-prev" aria-label="${esc(S.previous)}">‹</button>` : ''}
           <div class="rw-track">${cards}</div>

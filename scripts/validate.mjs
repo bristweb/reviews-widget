@@ -53,6 +53,10 @@ const relIcon = (where, icon) => {
 };
 for (const [k, p] of Object.entries(platforms)) relIcon(`platforms.${k}`, p.icon || `icons/${k}.svg`);
 for (const l of (config && config.links) || []) relIcon(`links.${l.platform}`, l.icon);
+(Array.isArray(config?.accolades) ? config.accolades : []).forEach((a, i) => {
+  if (!a || typeof a !== 'object') return;
+  if (a.icon) relIcon(`accolades[${i}]`, a.icon);
+});
 if (!existsSync(path.join(root, 'theme', 'theme.css'))) warn('theme/theme.css not found (the widget loads it)');
 
 // Language files listed in config.languages: [{ lang, url }, …]. defaultLanguage is a fallback ISO tag.

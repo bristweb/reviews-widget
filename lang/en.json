@@ -21,6 +21,7 @@
   "next": "Next reviews",
   "ai_summary": "Summary",
   "ai_summary_aria": "Summary of {count} reviews",
+  "accolades_aria": "Awards and accolades",
   "rating_labels": [
     {
       "min": 4.75,

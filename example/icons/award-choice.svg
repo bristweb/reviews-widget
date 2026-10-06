@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-hidden="true">
+  <circle cx="32" cy="28" r="18" fill="#c9a227"/>
+  <circle cx="32" cy="28" r="13" fill="#f5e6a8"/>
+  <path d="M26 44l-4 16 10-6 10 6-4-16" fill="#8b1e3f"/>
+  <text x="32" y="33" text-anchor="middle" font-family="Georgia,serif" font-size="14" font-weight="700" fill="#6b4f12">★</text>
+</svg>
