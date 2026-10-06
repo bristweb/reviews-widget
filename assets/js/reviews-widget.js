@@ -1,8 +1,8 @@
 /* Reviews widget — static, no dependencies, no site-specific code. https://github.com/bristweb/reviews-widget
  * The code lives in this repo; everything about a site lives in a separate data repo, named by data-source:
- *   <source>config.json          business, platforms, display defaults, lang/strings, schema settings, summary card,
- *                                and reviews.years (which yearly review files exist)
- *   <source>lang/<code>.json     UI wording (optional; config.lang or config.strings path). Inline config.strings override.
+ *   <source>config.json          business, platforms, display defaults, languages/default_language/strings, schema,
+ *                                summary card, and reviews.years (which yearly review files exist)
+ *   <source>lang/<code>.json     optional UI wording files listed in config.languages (ISO → URL/path). Partial OK.
  *   <source>reviews/<year>.json  the reviews (plain records, newest first) — the only copy of the review data
  *   <source>theme/theme.css      fonts + CSS custom properties (colors, radius)
  *   <source>icons/, images/      platform icons, reviewer avatars
@@ -14,13 +14,14 @@
  *   <script src="…/reviews-widget/assets/js/reviews-widget.js"
  *           data-source="…/<your-data-repo>/" defer></script>
  * Public options: data-source (required), data-layout, data-platform (one platforms key, or omit for all),
- *   data-limit, data-summary="off", data-theme="light|dark|auto", data-schema="off", data-constrained="true".
+ *   data-limit, data-summary="off", data-theme="light|dark|auto", data-schema="off", data-constrained="true",
+ *   data-lang (ISO language code).
  * Bare pages index.html / embed.html default data via ?source= when the script has no data-source.
  * Optional: data-target="#id" on the script for a non-in-place mount (compatibility / special layouts).
  * Code root is inferred from the script URL. CSS loads from this repo + <source>theme/theme.css.
  * data-constrained="true" = tight-box preset (fixed height, arrows inside, overflow hidden, no hover-lift,
  *   focus rings inside). Further fitting tweaks are CSS classes on .rw-host / .rw-root (see README).
- * URL params (?layout=&platform=&limit=&summary=off&theme=&constrained=true) override data attributes.
+ * URL params (?layout=&platform=&limit=&summary=off&theme=&constrained=true&lang=) override data attributes.
  * ?source= applies only when there is no data-source.
  */
 (function () {
@@ -80,15 +81,13 @@
   const loads = SHARED.loads;
   // One fetch of config + reviews + CSS per data source, shared by every widget on the page. The stylesheets and
   // config start at once; every yearly review file listed in config.reviews.years is then fetched in parallel.
-  // Resolve a language / strings file URL from config: strings as a path string, or lang / language → lang/<code>.json.
-  function langUrl(src, c) {
-    let rel = null;
-    if (typeof c.strings === 'string' && c.strings.trim()) rel = c.strings.trim();
-    else if (c.lang) rel = 'lang/' + String(c.lang).trim() + '.json';
-    else if (c.language) rel = 'lang/' + String(c.language).trim() + '.json';
-    if (!rel) return null;
-    if (/^(https?:)?\/\//i.test(rel) || rel.startsWith('/')) return rel;
-    return src + rel.replace(/^\.\//, '');
+  // Resolve a path/URL relative to a root (data source or widget code root).
+  function resolveUrl(root, rel) {
+    if (rel == null) return null;
+    const s = String(rel).trim();
+    if (!s) return null;
+    if (/^(https?:)?\/\//i.test(s) || s.startsWith('/')) return s;
+    return root + s.replace(/^\.\//, '');
   }
   // Split a lang file into string catalog + optional rating_labels. Accepts a flat catalog or { strings, rating_labels }.
   function pickLang(pack) {
@@ -100,18 +99,57 @@
     for (const [k, v] of Object.entries(pack)) if (k !== 'rating_labels' && typeof v === 'string') strings[k] = v;
     return { strings, rating_labels: labels };
   }
+  const normLang = c => String(c || '').trim().replace(/_/g, '-').toLowerCase();
+  // Map ISO codes (normalized) → translation file path/URL from config.languages.
+  function languageMap(c) {
+    const raw = (c && c.languages && typeof c.languages === 'object' && !Array.isArray(c.languages)) ? c.languages : {};
+    const out = {};
+    for (const [k, v] of Object.entries(raw)) {
+      const n = normLang(k);
+      if (n && v != null && String(v).trim()) out[n] = String(v).trim();
+    }
+    return out;
+  }
+  // Match a tag against available ISO codes: exact, then primary subtag (en-US → en).
+  function matchAvailable(tag, available) {
+    const n = normLang(tag);
+    if (!n) return null;
+    if (available[n]) return n;
+    const primary = n.split('-')[0];
+    return (primary && available[primary]) ? primary : null;
+  }
+  // Priority: embed lang attr/param → page/browser → config default_language → null (widget English only).
+  function resolveLanguage(opts, q, available, config) {
+    const tryCode = tag => matchAvailable(tag, available);
+    const fromEmbed = q.get('lang') || opts.lang;
+    let hit = tryCode(fromEmbed);
+    if (hit) return hit;
+    const tags = [];
+    const htmlLang = document.documentElement && document.documentElement.lang;
+    if (htmlLang) tags.push(htmlLang);
+    if (navigator.languages && navigator.languages.length) tags.push(...navigator.languages);
+    else if (navigator.language) tags.push(navigator.language);
+    for (const t of tags) { hit = tryCode(t); if (hit) return hit; }
+    const def = config.default_language || config.defaultLanguage;
+    hit = tryCode(def);
+    if (hit) return hit;
+    return null;
+  }
+  const langLoads = (SHARED.lang ??= {});
+  function loadLang(url) {
+    if (!url) return Promise.resolve(null);
+    return (langLoads[url] ??= fetchJson(url).catch(e => {
+      console.warn('[reviews-widget] language file', e);
+      return null;
+    }));
+  }
   function load(code, src) {
     return (loads[src] ??= (() => {
       const css = Promise.all([ensureCss(code + 'assets/css/reviews-widget.css'), ensureCss(src + 'theme/theme.css')]);
       const config = fetchJson(src + 'config.json');
       const reviews = config.then(c => Promise.all(((c.reviews && c.reviews.years) || []).map(y => fetchJson(`${src}reviews/${y}.json`))))
         .then(years => [].concat(...years));
-      const lang = config.then(c => {
-        const url = langUrl(src, c);
-        if (!url) return null;
-        return fetchJson(url).catch(e => { console.warn('[reviews-widget] lang/strings file', e); return null; });
-      });
-      return Promise.all([config, reviews, css, lang]);
+      return Promise.all([config, reviews, css]);
     })());
   }
   // schema.org JSON-LD, built from the reviews on load -> one <script type="application/ld+json"> in <head> per page.
@@ -212,23 +250,30 @@
       el.style.removeProperty('opacity');
       if (!fixedHeight) notifyHeight();
     }));
-    let config, reviews, langPack;
+    let config, reviews;
     try {
       if (!base) throw new Error('[reviews-widget] data-source is required (URL of a data repo root, ending in /)');
-      [config, reviews, , langPack] = await load(code, base);
+      [config, reviews] = await load(code, base);
     } catch (e) {
       console.warn(e);
       el.innerHTML = `<div class="rw-loading">${esc(STRINGS.unavailable)}</div>`;
       reveal();
       return;
     }
-    // UI copy: built-in English ← lang/<code>.json (or strings path) ← inline config.strings object overrides.
-    const fromLang = pickLang(langPack);
+    // UI copy: JS fallback ← widget lang/en.json ← selected site language file (partial OK) ← inline strings.
+    const available = languageMap(config);
+    const selected = resolveLanguage(opts, q, available, config);
+    const [enPack, selPack] = await Promise.all([
+      loadLang(code + 'lang/en.json'),
+      selected ? loadLang(resolveUrl(base, available[selected])) : Promise.resolve(null),
+    ]);
+    const fromEn = pickLang(enPack);
+    const fromSel = pickLang(selPack);
     const inline = (config.strings && typeof config.strings === 'object' && !Array.isArray(config.strings)) ? config.strings : {};
-    const S = { ...STRINGS, ...fromLang.strings, ...inline };
+    const S = { ...STRINGS, ...fromEn.strings, ...fromSel.strings, ...inline };
     const D = { ...DISPLAY, ...(config.display || {}) };
     const PLATFORMS = config.platforms || {};
-    const RL = (config.rating_labels || fromLang.rating_labels || RATING_LABELS).slice().sort((a, b) => b.min - a.min);
+    const RL = (config.rating_labels || fromSel.rating_labels || fromEn.rating_labels || RATING_LABELS).slice().sort((a, b) => b.min - a.min);
     // URL param > data-* > config.json display > built-in default.
     const opt = (param, key, dkey) => (q.get(param) !== null ? q.get(param) : opts[key] != null ? opts[key] : D[dkey]);
     const constrained = toBool(opt('constrained', 'constrained', 'constrained'));
@@ -516,7 +561,7 @@
   }
 
   // ---- where to render (no class-name selectors) ----
-  const OPTION_KEYS = ['source', 'layout', 'platform', 'limit', 'schema', 'summary', 'theme', 'constrained', 'target'];
+  const OPTION_KEYS = ['source', 'layout', 'platform', 'limit', 'schema', 'summary', 'theme', 'constrained', 'lang', 'target'];
   const BOOL_KEYS = ['constrained']; // bare data-constrained means true
   const pick = ds => Object.fromEntries(OPTION_KEYS.filter(k => ds && ds[k] != null && (ds[k] !== '' || BOOL_KEYS.includes(k)))
     .map(k => [k, ds[k] === '' ? 'true' : ds[k]]));

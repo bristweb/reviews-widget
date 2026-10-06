@@ -1,0 +1,27 @@
+{
+  "loading": "Cargando reseñas…",
+  "unavailable": "Las reseñas no están disponibles en este momento.",
+  "tabs_aria": "Filtrar reseñas por plataforma",
+  "tab_all": "Todas",
+  "tab_all_suffix": " las reseñas",
+  "write_review": "Escribir una reseña",
+  "write_review_short": "Reseña",
+  "based_on": "Basado en ",
+  "review_one": "reseña",
+  "review_many": "reseñas",
+  "on_platform": " en {platform}",
+  "stars_aria": "{rating} de 5 estrellas",
+  "recommends": "Recomienda",
+  "view_on": "Ver en {platform}",
+  "previous": "Reseñas anteriores",
+  "next": "Reseñas siguientes",
+  "ai_summary": "Resumen",
+  "ai_summary_aria": "Resumen de {count} reseñas",
+  "rating_labels": [
+    { "min": 4.75, "label": "Excelente" },
+    { "min": 4.25, "label": "Genial" },
+    { "min": 3.5, "label": "Bueno" },
+    { "min": 2.5, "label": "Regular" },
+    { "min": 0, "label": "Malo" }
+  ]
+}

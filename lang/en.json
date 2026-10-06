@@ -1,0 +1,46 @@
+{
+  "loading": "Loading reviews…",
+  "unavailable": "Reviews are unavailable right now.",
+  "tabs_aria": "Filter reviews by platform",
+  "tab_all": "All",
+  "tab_all_suffix": " reviews",
+  "tab_title": "{name}",
+  "tab_aria": "{name}, {count} reviews",
+  "write_review": "Write a review",
+  "write_review_short": "Review",
+  "based_on": "Based on ",
+  "review_one": "review",
+  "review_many": "reviews",
+  "on_platform": " on {platform}",
+  "stars_aria": "{rating} out of 5 stars",
+  "recommends": "Recommends",
+  "view_on": "View on {platform}",
+  "card_aria": "Read {name}'s review on {platform} (opens in a new tab)",
+  "anonymous": "Anonymous",
+  "previous": "Previous reviews",
+  "next": "Next reviews",
+  "ai_summary": "Summary",
+  "ai_summary_aria": "Summary of {count} reviews",
+  "rating_labels": [
+    {
+      "min": 4.75,
+      "label": "Excellent"
+    },
+    {
+      "min": 4.25,
+      "label": "Great"
+    },
+    {
+      "min": 3.5,
+      "label": "Good"
+    },
+    {
+      "min": 2.5,
+      "label": "Average"
+    },
+    {
+      "min": 0,
+      "label": "Poor"
+    }
+  ]
+}

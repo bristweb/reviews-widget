@@ -143,21 +143,25 @@
         }
       }
     },
+    "languages": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string",
+        "minLength": 1
+      },
+      "description": "Map of ISO 639 language codes to a translation JSON file (URL or path relative to the data root). Partial catalogs are fine; missing keys fall through to the widget's lang/en.json."
+    },
+    "default_language": {
+      "type": "string",
+      "minLength": 1,
+      "description": "ISO language code from languages used when embed/page/browser do not select an available language."
+    },
     "strings": {
-      "oneOf": [
-        {
-          "type": "object",
-          "additionalProperties": {
-            "type": "string"
-          },
-          "description": "Inline UI copy overrides (merged on top of lang file / built-ins)."
-        },
-        {
-          "type": "string",
-          "minLength": 1,
-          "description": "Path (relative to data root) or URL of a translation JSON file. Takes precedence over lang for which file to load."
-        }
-      ]
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      },
+      "description": "Inline UI copy overrides (merged on top of the selected language file and the widget's lang/en.json)."
     },
     "avatars": {
       "type": "object",
@@ -212,16 +216,6 @@
     "sources": {
       "type": "object",
       "additionalProperties": true
-    },
-    "lang": {
-      "type": "string",
-      "minLength": 1,
-      "description": "Language code \u2192 load lang/<code>.json for UI wording (and optional rating_labels). Overridden by inline config.strings object keys."
-    },
-    "language": {
-      "type": "string",
-      "minLength": 1,
-      "description": "Alias of lang."
     }
   }
 }

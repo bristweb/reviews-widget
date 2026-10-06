@@ -105,6 +105,7 @@ Each option below is set as `data-<name>` on the script (or target element) and/
 | `theme` | `light` \| `dark` \| `auto` (follow host page theme) | `display.theme` or `auto` |
 | `schema` | `off` skips JSON-LD (`data-schema` only; no query param) | injected |
 | `constrained` | `true` = tight-box preset: fill height, arrows inside, overflow hidden, no hover lift, focus rings inside | off |
+| `lang` | ISO language code from `config.languages` (e.g. `en`, `es`). If set and available, wins over page/browser language | page/browser → `default_language` → widget English |
 
 **CSS knobs** (no `data-*`): cards across are responsive by default. Optional classes on `.rw-host` / `.rw-root` — `.rw-clip` / `.rw-overflow-hidden`, `.rw-arrows-inside`, `.rw-nolift`, `.rw-focus-inside`, `.rw-fixed` + `.rw-fixed-host` (usually from `constrained`), `.rw-cards-1`…`4`, and `--rw-pad` for outer padding.
 
@@ -115,8 +116,8 @@ Each option below is set as `data-<name>` on the script (or target element) and/
 Plain files at the data root, served over HTTPS with CORS open enough for your pages to fetch them (GitHub Pages does this by default with branch `main`, site root, and `.nojekyll`; any static host works). The widget reads only these paths; other folders (e.g. your own `scripts/`) are never loaded.
 
 ```
-config.json              business, platforms, display, lang/strings, schema, summary, reviews.years, …
-lang/<code>.json         UI wording (optional; see lang / strings below)
+config.json              business, platforms, display, languages, default_language, strings, schema, summary, reviews.years, …
+lang/<code>.json         optional UI wording files (paths listed in config.languages; partial overlays OK)
 reviews/<year>.json      reviews dated that year (array, newest first)
 images/reviewers/        optional local avatars (any path/URL works in records)
 icons/                   platform logos
@@ -133,9 +134,10 @@ theme/fonts/             optional self-hosted fonts
 | `default_write_platform` | `write_url` used on the “All” tab |
 | `display.*` | layout, snippets, diversity, dates, `theme`, `constrained`, … |
 | `schema.*` | JSON-LD on/off, `@type`, `max_reviews`, `extra` |
-| `lang` / `language` | language code → load `lang/<code>.json` for UI wording (and optional `rating_labels`) |
-| `strings` | object = inline UI copy overrides; **or** a path/URL string pointing at a translation JSON file (wins over `lang` for which file to load) |
-| `rating_labels` | score words (`[{ min, label }, …]`); overrides labels from the lang file when set |
+| `languages` | map of ISO language codes → translation JSON URL or path (relative to the data root) |
+| `default_language` | ISO code from `languages` used when embed/page/browser do not select an available language |
+| `strings` | optional inline UI copy overrides (object only; merged last) |
+| `rating_labels` | score words (`[{ min, label }, …]`); overrides labels from the selected language file when set |
 | `summary` | `{ "text", "generated_at" }` for the summary card |
 | `reviews.years` | year files to fetch, newest first, e.g. `[2026, 2025]` |
 
@@ -143,13 +145,30 @@ Formal shape: `schemas/config.schema.json` in this repo.
 
 ### Language / UI wording
 
-Built-in English copy lives in the widget script. A data repo can supply translations (or alternate wording) without forking the JS:
+The widget ships a default English catalog at `lang/en.json` (same host as the script). A data repo can add more languages — or override only some English strings — without forking the JS.
 
-1. **`lang/<code>.json`** — flat string catalog (same keys as `config.strings`), optionally including a `rating_labels` array. Set `"lang": "en"` (or `"es"`, …) in `config.json`.
-2. **`strings` as a path** — e.g. `"strings": "lang/fr.json"` (or any URL) loads that file instead of `lang/<code>.json`.
-3. **`strings` as an object** — merged on top of the loaded file (and built-ins) for one-off overrides.
+**Config**
 
-Merge order: built-in defaults ← language file ← inline `strings` object. `tab_all_suffix` should start with a space when you want “All reviews” (the widget also inserts a leading space if the suffix is non-empty after trim).
+```json
+"languages": {
+  "en": "lang/en.json",
+  "es": "lang/es.json"
+},
+"default_language": "en"
+```
+
+Each value is a URL or a path relative to the data root. Files are flat string catalogs (same keys as `config.strings`), optionally with a `rating_labels` array. **Partial files are fine** — omit any key you do not want to change.
+
+**Runtime selection** (first match wins):
+
+1. Embed `data-lang` / `?lang=` when that ISO code is a key in `languages`
+2. Host page / browser language (`document.documentElement.lang`, then `navigator.languages` / `navigator.language`) — exact match, then primary subtag (`en-US` → `en`)
+3. `default_language`
+4. Widget English only (`lang/en.json` + script fallbacks)
+
+**Merge order:** widget `lang/en.json` (and script fallbacks) ← selected language file ← optional inline `strings` object.
+
+`tab_all_suffix` should start with a space when you want “All reviews” (the widget also inserts a leading space if the suffix is non-empty after trim).
 
 ### `reviews/<year>.json`
 

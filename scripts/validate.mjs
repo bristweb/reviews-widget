@@ -55,23 +55,36 @@ for (const [k, p] of Object.entries(platforms)) relIcon(`platforms.${k}`, p.icon
 for (const l of (config && config.links) || []) relIcon(`links.${l.platform}`, l.icon);
 if (!existsSync(path.join(root, 'theme', 'theme.css'))) warn('theme/theme.css not found (the widget loads it)');
 
-// Language / strings file: config.strings as a path, or config.lang / config.language → lang/<code>.json
+// Language files listed in config.languages (ISO → path/URL). default_language should be a key in that map.
 if (config) {
-  let langRel = null;
-  if (typeof config.strings === 'string' && config.strings.trim()) langRel = config.strings.trim();
-  else if (config.lang) langRel = `lang/${String(config.lang).trim()}.json`;
-  else if (config.language) langRel = `lang/${String(config.language).trim()}.json`;
-  if (langRel && !/^(https?:)?\/\//i.test(langRel) && !langRel.startsWith('/')) {
-    if (!existsSync(path.join(root, langRel))) err(`config.json: language/strings file ${langRel} not found`);
-    else {
-      const pack = readJson(langRel);
-      if (pack && typeof pack === 'object') {
-        // Flat catalog or { strings, rating_labels } — both fine; warn if empty
-        const keys = pack.strings && typeof pack.strings === 'object' ? Object.keys(pack.strings) : Object.keys(pack).filter(k => k !== 'rating_labels' && typeof pack[k] === 'string');
-        if (!keys.length) warn(`${langRel}: no string entries`);
+  const langs = (config.languages && typeof config.languages === 'object' && !Array.isArray(config.languages)) ? config.languages : null;
+  if (langs) {
+    const keys = Object.keys(langs);
+    for (const [code, rel] of Object.entries(langs)) {
+      if (rel == null || !String(rel).trim()) { err(`config.json: languages.${code} must be a non-empty path or URL`); continue; }
+      const langRel = String(rel).trim();
+      if (/^(https?:)?\/\//i.test(langRel) || langRel.startsWith('/')) continue;
+      if (!existsSync(path.join(root, langRel))) err(`config.json: languages.${code} file ${langRel} not found`);
+      else {
+        const pack = readJson(langRel);
+        if (pack && typeof pack === 'object') {
+          const sk = pack.strings && typeof pack.strings === 'object' ? Object.keys(pack.strings) : Object.keys(pack).filter(k => k !== 'rating_labels' && typeof pack[k] === 'string');
+          if (!sk.length) warn(`${langRel}: no string entries`);
+        }
       }
     }
+    const def = config.default_language || config.defaultLanguage;
+    if (def != null && String(def).trim()) {
+      const want = String(def).trim().toLowerCase().replace(/_/g, '-');
+      const have = new Set(keys.map(k => String(k).trim().toLowerCase().replace(/_/g, '-')));
+      if (!have.has(want) && !have.has(want.split('-')[0])) {
+        err(`config.json: default_language "${def}" is not a key in languages`);
+      }
+    } else if (keys.length) {
+      warn('config.json: languages set but default_language missing');
+    }
   }
+  if (typeof config.strings === 'string') err('config.json: strings must be an object of inline overrides (use languages for translation files)');
 }
 
 const years = (config && config.reviews && config.reviews.years) || [];
