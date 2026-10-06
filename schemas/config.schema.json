@@ -253,7 +253,7 @@
     },
     "accolades": {
       "type": "array",
-      "description": "Optional award badge cards interspersed among reviews by year (newest first; inserted at year boundaries after the platform filter on reviews). Each item needs url + year plus icon and/or optional freeform label (name is an alias). Logo-only is fine when label is omitted. Size is global via display.accolade_size. Same optional nofollow/noreferrer/rel as platforms.",
+      "description": "Optional award badge cards merged into the review track by date after the platform filter. Each item sorts as YYYY-12-31 so it leads that year (newest first). When any accolades exist, at least one appears before the first review (newest award promoted if its year is older than the newest review). Each item needs url + year plus icon and/or optional freeform label (name is an alias). Logo-only is fine when label is omitted. Size is global via display.accolade_size. Same optional nofollow/noreferrer/rel as platforms.",
       "items": {
         "type": "object",
         "required": [
@@ -295,7 +295,7 @@
               "integer",
               "number"
             ],
-            "description": "Required. Places the badge on the shared review timeline (newest year first, at that year\u2019s boundary). Appended to a freeform caption when label/name is set; not shown alone for logo-only entries."
+            "description": "Required. Sort key is YYYY-12-31 on the shared review timeline (leads that year when scrolling newest to oldest). Appended to a freeform caption when label/name is set; not shown alone for logo-only entries."
           },
           "icon": {
             "type": "string",

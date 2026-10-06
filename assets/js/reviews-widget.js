@@ -518,8 +518,10 @@
         ${tabs}
       </header>`;
 
-      // Accolades: filter reviews only; merge badge cards into the track at year boundaries
-      // (newest year first). Always included after the platform filter/limit on reviews.
+      // Accolades: filter reviews only; merge badge cards into the track by date after the
+      // platform filter/limit on reviews. Each accolade sorts as YYYY-12-31 so it leads that
+      // year when scrolling newest→oldest. Always keep at least one accolade before the first
+      // review (promote the newest award when its year is older than the newest review).
       const accoladesList = Array.isArray(config.accolades)
         ? config.accolades
             .filter(a => a && a.url && a.year != null && String(a.year).trim() && (a.icon || a.label || a.name))
@@ -530,37 +532,32 @@
               return nb - na;
             })
         : [];
-      const reviewYear = r => {
-        const y = Number(String(r.date || '').slice(0, 4));
-        return Number.isFinite(y) ? y : 0;
-      };
-      // Insert each year's accolades once, before the first review of that year in `shown`.
-      // Years newer than every shown review go first; years with no matching review go last.
-      const byAccYear = new Map();
-      for (const a of accoladesList) {
+      const accoladeSortDate = a => {
         const y = Number(a.year);
-        const key = Number.isFinite(y) ? y : 0;
-        if (!byAccYear.has(key)) byAccYear.set(key, []);
-        byAccYear.get(key).push(a);
-      }
-      const trackItems = [];
-      const placedYears = new Set();
-      const flushYear = y => {
-        if (placedYears.has(y)) return;
-        placedYears.add(y);
-        for (const a of byAccYear.get(y) || []) trackItems.push({ kind: 'accolade', accolade: a });
+        const year = Number.isFinite(y) ? Math.trunc(y) : 0;
+        return `${String(year).padStart(4, '0')}-12-31`;
       };
-      if (shown.length) {
-        const maxY = Math.max(...shown.map(reviewYear));
-        [...byAccYear.keys()].filter(y => y > maxY).sort((a, b) => b - a).forEach(flushYear);
-      } else {
-        [...byAccYear.keys()].sort((a, b) => b - a).forEach(flushYear);
+      const reviewSortDate = r => {
+        const d = String(r.date || '').slice(0, 10);
+        return /^\d{4}-\d{2}-\d{2}$/.test(d) ? d : '0000-00-00';
+      };
+      const trackItems = [
+        ...accoladesList.map(a => ({ kind: 'accolade', accolade: a, sortDate: accoladeSortDate(a) })),
+        ...shown.map(r => ({ kind: 'review', review: r, sortDate: reviewSortDate(r) })),
+      ].sort((a, b) => {
+        if (a.sortDate !== b.sortDate) return a.sortDate < b.sortDate ? 1 : -1;
+        if (a.kind !== b.kind) return a.kind === 'accolade' ? -1 : 1;
+        return 0;
+      });
+      // Guarantee an award card ahead of the first review when any accolades exist.
+      if (accoladesList.length && trackItems.length) {
+        const firstReviewIdx = trackItems.findIndex(i => i.kind === 'review');
+        const firstAccoladeIdx = trackItems.findIndex(i => i.kind === 'accolade');
+        if (firstAccoladeIdx > 0 && (firstReviewIdx < 0 || firstAccoladeIdx > firstReviewIdx)) {
+          const [item] = trackItems.splice(firstAccoladeIdx, 1);
+          trackItems.unshift(item);
+        }
       }
-      for (const r of shown) {
-        flushYear(reviewYear(r));
-        trackItems.push({ kind: 'review', review: r });
-      }
-      [...byAccYear.keys()].filter(y => !placedYears.has(y)).sort((a, b) => b - a).forEach(flushYear);
 
       const accoladeCard = a => {
         // Optional freeform caption (label preferred over name). Year sorts the timeline; not shown alone.

@@ -137,7 +137,7 @@ theme/fonts/             optional self-hosted fonts
 | `strings` | optional inline UI copy overrides (object only; merged last) |
 | `rating_labels` | score words (`[{ min, label }, …]`); overrides language-file labels when set |
 | `summary` | `{ "text", "generated_at" }` for the summary card |
-| `accolades` | optional award badges interspersed among review cards by year (newest first; inserted at year boundaries after the platform filter). Each item needs `url` + `year` plus `icon` and/or optional freeform `label` (`name` alias). Logo-only when caption omitted. Logo size is global: `display.accolade_size` (px, default 120). Same optional `nofollow` / `noreferrer` / `rel` as platforms |
+| `accolades` | optional award badges merged into the review track by date (each sorts as `YYYY-12-31` so it leads that year; newest first after the platform filter). Always at least one accolade before the first review when any exist (newest award promoted if needed). Each item needs `url` + `year` plus `icon` and/or optional freeform `label` (`name` alias). Logo-only when caption omitted. Logo size is global: `display.accolade_size` (px, default 120). Same optional `nofollow` / `noreferrer` / `rel` as platforms |
 | `reviews.years` | year files to fetch, newest first, e.g. `[2026, 2025]` |
 
 Formal shape: `schemas/config.schema.json` in this repo.
