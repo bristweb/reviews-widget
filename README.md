@@ -1,6 +1,6 @@
 # Reviews widget
 
-A static, dependency-free reviews widget for any site. This repository holds **only the code**: the widget script and stylesheet, two bare demo pages, JSON Schemas for the data format, a validator, and a fictional [example/](example/) data set. It holds no real reviews.
+A static, dependency-free reviews widget for any site. Host the files anywhere that can serve static assets (GitHub Pages works out of the box; any other static host is fine). This repository holds **only the code**: the widget script and stylesheet, two bare demo pages, JSON Schemas for the data format, a validator, and a fictional [example/](example/) data set. It holds no real reviews. License is TBD — there is no LICENSE file yet.
 
 Each site you embed on points the widget at its own **data repo** (or folder) with `data-source`. Counts, averages, card order and schema.org JSON-LD are computed in the browser. There is no build step and no generated index file.
 
@@ -117,7 +117,7 @@ Precedence: query param → `data-*` → `display` in config → built-in defaul
 
 ## Data format
 
-Plain files at the data root (GitHub Pages: branch `main`, root, `.nojekyll`). The widget reads only these paths; other folders (e.g. your own `scripts/`) are never loaded.
+Plain files at the data root, served over HTTPS with CORS open enough for your pages to fetch them (GitHub Pages does this by default with branch `main`, site root, and `.nojekyll`; any static host works). The widget reads only these paths; other folders (e.g. your own `scripts/`) are never loaded.
 
 ```
 config.json              business, platforms, display, strings, schema, summary, reviews.years, …
@@ -222,7 +222,7 @@ That workflow checks out this repo, runs `npm ci`, then `node scripts/validate.m
 1. Edit `reviews/<year>.json` (newest first); add the year to `reviews.years` when you add a file.
 2. Place avatars under `images/reviewers/`.
 3. Run `node scripts/validate.mjs <data-dir>`.
-4. Commit and push; Pages redeploys in about a minute (`cache: no-cache` on fetches).
+4. Publish the data files (`cache: no-cache` on fetches means the widget picks them up quickly after your host updates).
 
 ---
 
@@ -274,7 +274,7 @@ Carousel: 4 / 3 / 2 / 1 cards by width breakpoints.
 
 ## New data repo
 
-1. Create a public repo; enable Pages (`main`, root); keep `.nojekyll` and a validate workflow (above).
+1. Create a repo (or folder) for the data; publish it on any static host. If you use GitHub Pages: branch `main`, site root, and keep `.nojekyll`. Optionally add a validate workflow (above).
 2. Add `config.json`, `icons/`, `theme/`, empty `reviews/` + `images/reviewers/`, `"reviews": { "years": [] }`.
 3. Add records and avatars; validate; push.
 4. Embed with `data-source` pointing at that Pages URL.
@@ -287,7 +287,7 @@ Carousel: 4 / 3 / 2 / 1 cards by width breakpoints.
 - Without `data-source` / `?source=`, shows the unavailable message.
 - Fixed-height mode: host height 100% or viewport remainder; card text scrolls without blocking horizontal swipe.
 - Icons: data-repo SVG, then Simple Icons CDN fallback.
-- Local preview: serve this repo (and your data) with CORS (`Access-Control-Allow-Origin: *`) and open `index.html` or point `data-source` at a local URL.
+- Local preview: serve this repo (and your data) from any static origin with CORS (`Access-Control-Allow-Origin: *`) and open `index.html` or point `data-source` at a local URL.
 
 ---
 
