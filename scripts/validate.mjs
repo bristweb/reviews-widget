@@ -57,6 +57,15 @@ for (const l of (config && config.links) || []) relIcon(`links.${l.platform}`, l
   if (!a || typeof a !== 'object') return;
   if (a.icon) relIcon(`accolades[${i}]`, a.icon);
 });
+(Array.isArray(config?.testimonials) ? config.testimonials : []).forEach((t, i) => {
+  if (!t || typeof t !== 'object') return;
+  if (t.source && typeof t.source === 'object' && t.source.logo) relIcon(`testimonials[${i}].source`, t.source.logo);
+  if (t.reviewer_image) {
+    const img = String(t.reviewer_image);
+    if (!/^(https?:|data:|\/)/i.test(img) && !existsSync(path.join(root, img)))
+      err(`config.json testimonials[${i}]: reviewer_image ${img} not found`);
+  }
+});
 if (!existsSync(path.join(root, 'theme', 'theme.css'))) warn('theme/theme.css not found (the widget loads it)');
 
 // Language files listed in config.languages: [{ lang, url }, …]. defaultLanguage is a fallback ISO tag.
@@ -133,10 +142,19 @@ for (const y of years) {
     total++;
   });
 }
+(Array.isArray(config?.testimonials) ? config.testimonials : []).forEach(t => {
+  if (!t?.reviewer_image) return;
+  const img = String(t.reviewer_image);
+  if (!/^(https?:|data:|\/)/i.test(img)) used.add(img);
+});
 const imgDir = path.join(root, 'images', 'reviewers');
-if (existsSync(imgDir)) for (const f of readdirSync(imgDir)) if (!used.has(`images/reviewers/${f}`)) warn(`images/reviewers/${f}: not referenced by any review (ok if unused)`);
+if (existsSync(imgDir)) for (const f of readdirSync(imgDir)) if (!used.has(`images/reviewers/${f}`)) warn(`images/reviewers/${f}: not referenced by any review or testimonial (ok if unused)`);
 
 for (const w of warnings) console.warn('warning:', w);
 if (errors.length) { console.error(errors.join('\n')); console.error(`\n${errors.length} problem(s)`); process.exit(1); }
+const nAcc = Array.isArray(config?.accolades) ? config.accolades.length : 0;
+const nTes = Array.isArray(config?.testimonials) ? config.testimonials.length : 0;
 console.log(`ok: ${total} reviews (${Object.entries(counts).map(([k, n]) => `${k} ${n}`).join(', ') || 'none'}) in ${years.length} year file(s)` +
+  (nAcc ? `; ${nAcc} accolade(s)` : '') +
+  (nTes ? `; ${nTes} testimonial(s)` : '') +
   (config?.summary ? `; summary generated ${config.summary.generated_at}` : ''));

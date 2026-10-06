@@ -1,7 +1,7 @@
 /* Reviews widget — static, no dependencies, no site-specific code. https://github.com/bristweb/reviews-widget
  * The code lives in this repo; everything about a site lives in a separate data repo, named by data-source:
  *   <source>config.json          business, platforms, display defaults, languages/defaultLanguage/strings, schema,
- *                                summary card, and reviews.years (which yearly review files exist)
+ *                                summary card, optional accolades/testimonials, and reviews.years
  *   <source>lang/<code>.json     optional UI wording files listed in config.languages[{lang,url}]. Partial OK.
  *   <source>reviews/<year>.json  the reviews (plain records, newest first) — the only copy of the review data
  *   <source>theme/theme.css      fonts + CSS custom properties (colors, radius)
@@ -13,7 +13,7 @@
  * Usage (JS embed) — one script tag renders the widget right where the tag is (defer/async are fine):
  *   <script src="…/reviews-widget/assets/js/reviews-widget.js"
  *           data-source="…/<your-data-repo>/" defer></script>
- * Public options: data-source (required), data-layout, data-platform (one platforms key, accolades, or omit for all),
+ * Public options: data-source (required), data-layout, data-platform (one platforms key, accolades, testimonials, or omit for all),
  *   data-limit, data-summary="off", data-theme="light|dark|auto", data-schema="off", data-constrained="true",
  *   data-lang (ISO language code).
  * Bare pages index.html / embed.html default data via ?source= when the script has no data-source.
@@ -32,17 +32,24 @@
   const SHARED = (window.__reviewsWidget ??= { css: {}, loads: {} });
   const STRINGS = {
     loading: 'Loading reviews…', unavailable: 'Reviews are unavailable right now.',
-    tabs_aria: 'Filter reviews by platform or awards', tab_all: 'All', tab_all_suffix: ' reviews',
+    tabs_aria: 'Filter reviews by platform, awards, or testimonials', tab_all: 'All', tab_all_suffix: ' reviews',
     tab_title: '{name}: {count} reviews', tab_aria: '{name}, {count} reviews',
     tab_accolades: 'Awards', tab_accolades_title: '{name}: {count} awards', tab_accolades_aria: '{name}, {count} awards',
+    tab_testimonials: 'Testimonials', tab_testimonials_title: '{name}: {count} testimonials', tab_testimonials_aria: '{name}, {count} testimonials',
     write_review: 'Write a review', write_review_short: 'Review',
     based_on: 'Based on ', review_one: 'review', review_many: 'reviews', on_platform: ' on {platform}',
     accolade_one: 'award', accolade_many: 'awards',
+    testimonial_one: 'testimonial', testimonial_many: 'testimonials',
     stars_aria: '{rating} out of 5 stars', recommends: 'Recommends', view_on: 'View on {platform}', view_accolade: 'View award',
+    view_testimonial: 'View testimonial',
     card_aria: "Read {name}'s review on {platform} (opens in a new tab)", anonymous: 'Anonymous',
     previous: 'Previous reviews', next: 'Next reviews', ai_summary: 'Summary',
     ai_summary_aria: 'Summary of {count} reviews', accolades_aria: 'Awards and accolades',
     accolade_card_aria: '{label} ({year}) — opens in a new tab',
+    testimonial_from: '{name} from {source}',
+    testimonial_card_aria: "Read {name}'s testimonial{source_clause} (opens in a new tab)",
+    testimonial_card_aria_nolink: "{name}'s testimonial{source_clause}",
+    testimonial_source_clause: ' ({source})',
   };
   const DISPLAY = {
     layout: 'carousel', snippet_chars: 160, abbreviate_last_names: true, max_same_platform_run: 2,
@@ -506,49 +513,92 @@
       const d = String(r.date || '').slice(0, 10);
       return /^\d{4}-\d{2}-\d{2}$/.test(d) ? d : '0000-00-00';
     };
+    // Testimonials (config-level): review-like cards with optional corporate source (logo prominent).
+    const testimonialSource = t => {
+      const s = t && t.source;
+      if (!s || typeof s !== 'object') return null;
+      const name = s.name != null ? String(s.name).trim() : '';
+      if (!name) return null;
+      const logo = s.logo != null && String(s.logo).trim() ? String(s.logo).trim() : '';
+      return { name, logo };
+    };
+    const testimonialsList = Array.isArray(config.testimonials)
+      ? config.testimonials
+          .filter(t => t && !isBlank(t.text) && t.date && t.reviewer_name != null && String(t.reviewer_name).trim())
+          .map(t => ({
+            ...t,
+            _source: testimonialSource(t),
+            display_name: displayName(t.reviewer_name),
+            snippet_text: snippet(t.text, t.reviewer_name),
+          }))
+          .sort((a, b) => String(b.date).localeCompare(String(a.date)))
+      : [];
+    const initialsAvatar = name => {
+      const words = String(name || '').trim().split(/\s+/).filter(Boolean);
+      const letters = ((words[0] && words[0][0] || '') + (words.length > 1 ? words[words.length - 1][0] : '')).toUpperCase() || '?';
+      const palette = (config.avatars && Array.isArray(config.avatars.initials_palette) && config.avatars.initials_palette.length)
+        ? config.avatars.initials_palette : ['#555'];
+      const textColor = (config.avatars && config.avatars.initials_text_color) || '#fff';
+      let h = 0;
+      for (let i = 0; i < String(name || '').length; i++) h = (h * 31 + String(name).charCodeAt(i)) >>> 0;
+      const bg = palette[h % palette.length];
+      return `<span class="rw-avatar rw-initials" style="background:${esc(bg)};color:${esc(textColor)}" aria-hidden="true">${esc(letters)}</span>`;
+    };
     let active = cfg.platform;
     if (active === 'accolades' && !accoladesList.length) active = 'all';
+    if (active === 'testimonials' && !testimonialsList.length) active = 'all';
 
     function render() {
       const onAccolades = active === 'accolades';
-      // Header rating: platform filter uses that pool; Awards keeps the overall business score.
-      const pool = onAccolades || active === 'all' ? all : all.filter(r => r.platform === active);
+      const onTestimonials = active === 'testimonials';
+      const onSpecial = onAccolades || onTestimonials;
+      // Header rating: platform filter uses that pool; Awards/Testimonials keep the overall business score.
+      const pool = onSpecial || active === 'all' ? all : all.filter(r => r.platform === active);
       const rated = pool.filter(r => typeof r.rating === 'number');
       const avg = rated.length ? rated.reduce((s, r) => s + r.rating, 0) / rated.length : 5;
       // cards show the clipped snippet only. "All": newest first + gentle diversity; one platform: newest first.
-      // Awards tab: no review cards (accolades only).
-      let shown = onAccolades ? [] : active === 'all' ? allOrder : newest.filter(r => r.platform === active);
-      if (cfg.limit && !onAccolades) shown = shown.slice(0, cfg.limit);
-      const writeKey = (onAccolades || active === 'all') ? writeDefault : active;
+      // Awards / Testimonials tabs: no review cards (those kinds only).
+      let shown = onSpecial ? [] : active === 'all' ? allOrder : newest.filter(r => r.platform === active);
+      if (cfg.limit && !onSpecial) shown = shown.slice(0, cfg.limit);
+      const writeKey = (onSpecial || active === 'all') ? writeDefault : active;
       const write = (PLATFORMS[writeKey] || {}).write_url || '#';
 
-      const tabKeys = ['all', ...present, ...(accoladesList.length ? ['accolades'] : [])];
-      const showTabs = present.length > 1 || accoladesList.length > 0;
+      const tabKeys = [
+        'all', ...present,
+        ...(accoladesList.length ? ['accolades'] : []),
+        ...(testimonialsList.length ? ['testimonials'] : []),
+      ];
+      const showTabs = present.length > 1 || accoladesList.length > 0 || testimonialsList.length > 0;
       const tabs = showTabs ? `<div class="rw-tabs" role="tablist" aria-label="${esc(S.tabs_aria)}">
         ${tabKeys.map(p => {
           const isAcc = p === 'accolades';
-          const n = p === 'all' ? all.length : isAcc ? accoladesList.length : all.filter(r => r.platform === p).length;
+          const isTes = p === 'testimonials';
+          const n = p === 'all' ? all.length : isAcc ? accoladesList.length : isTes ? testimonialsList.length : all.filter(r => r.platform === p).length;
           const allSuffix = (S.tab_all_suffix || '').trim();
           const allSuffixSp = allSuffix ? ' ' + allSuffix : '';
-          const name = p === 'all' ? S.tab_all + allSuffixSp : isAcc ? S.tab_accolades : pname(p);
-          const titleTpl = isAcc ? S.tab_accolades_title : S.tab_title;
-          const ariaTpl = isAcc ? S.tab_accolades_aria : S.tab_aria;
+          const name = p === 'all' ? S.tab_all + allSuffixSp : isAcc ? S.tab_accolades : isTes ? S.tab_testimonials : pname(p);
+          const titleTpl = isAcc ? S.tab_accolades_title : isTes ? S.tab_testimonials_title : S.tab_title;
+          const ariaTpl = isAcc ? S.tab_accolades_aria : isTes ? S.tab_testimonials_aria : S.tab_aria;
           const labelHtml = p === 'all'
             ? `<span class="rw-tab-name">${esc(S.tab_all)}<span class="rw-tab-long">${esc(allSuffixSp)}</span></span>`
             : isAcc
               ? `<span class="rw-tab-name">${esc(S.tab_accolades)}</span>`
-              : `${icon(p)}<span class="rw-tab-name">${esc(name)}</span>`;
+              : isTes
+                ? `<span class="rw-tab-name">${esc(S.tab_testimonials)}</span>`
+                : `${icon(p)}<span class="rw-tab-name">${esc(name)}</span>`;
           return `<button role="tab" class="rw-tab ${p === active ? 'is-active' : ''}" data-p="${p}" aria-selected="${p === active}"
             title="${esc(fill(titleTpl, { name, count: n }))}" aria-label="${esc(fill(ariaTpl, { name, count: n }))}">
             ${labelHtml}
             <em>${n}</em></button>`;
         }).join('')}</div>` : '';
 
-      const basedCount = onAccolades ? accoladesList.length : pool.length;
+      const basedCount = onAccolades ? accoladesList.length : onTestimonials ? testimonialsList.length : pool.length;
       const basedUnit = onAccolades
         ? (basedCount === 1 ? S.accolade_one : S.accolade_many)
-        : (basedCount === 1 ? S.review_one : S.review_many);
-      const basedPlatform = (!onAccolades && active !== 'all')
+        : onTestimonials
+          ? (basedCount === 1 ? S.testimonial_one : S.testimonial_many)
+          : (basedCount === 1 ? S.review_one : S.review_many);
+      const basedPlatform = (!onSpecial && active !== 'all')
         ? esc(fill(S.on_platform, { platform: pname(active) }))
         : '';
       const header = `<header class="rw-header">
@@ -564,20 +614,28 @@
         ${tabs}
       </header>`;
 
-      // Accolades: merge badge cards into the track by date after the platform filter/limit on
-      // reviews (Awards tab: accolades only). Each sorts as YYYY-12-31 so it leads that year.
-      // Always keep at least one accolade before the first review when merging with reviews.
+      // Accolades + testimonials: merge into the track by date after the platform filter/limit on
+      // reviews (Awards / Testimonials tabs: that kind only). Accolades sort as YYYY-12-31 so they
+      // lead that year; testimonials use their real date like reviews. Testimonials appear on All
+      // (and their own tab), not on platform filters. Always keep at least one accolade before the
+      // first review when merging accolades with reviews.
       let trackItems;
       if (onAccolades) {
         trackItems = accoladesList.map(a => ({ kind: 'accolade', accolade: a, sortDate: accoladeSortDate(a) }));
+      } else if (onTestimonials) {
+        trackItems = testimonialsList.map(t => ({ kind: 'testimonial', testimonial: t, sortDate: reviewSortDate(t) }));
       } else {
+        const includeTestimonials = active === 'all';
         trackItems = [
           ...accoladesList.map(a => ({ kind: 'accolade', accolade: a, sortDate: accoladeSortDate(a) })),
+          ...(includeTestimonials
+            ? testimonialsList.map(t => ({ kind: 'testimonial', testimonial: t, sortDate: reviewSortDate(t) }))
+            : []),
           ...shown.map(r => ({ kind: 'review', review: r, sortDate: reviewSortDate(r) })),
         ].sort((a, b) => {
           if (a.sortDate !== b.sortDate) return a.sortDate < b.sortDate ? 1 : -1;
-          if (a.kind !== b.kind) return a.kind === 'accolade' ? -1 : 1;
-          return 0;
+          const rank = { accolade: 0, testimonial: 1, review: 2 };
+          return (rank[a.kind] ?? 9) - (rank[b.kind] ?? 9);
         });
         if (accoladesList.length && trackItems.length) {
           const firstReviewIdx = trackItems.findIndex(i => i.kind === 'review');
@@ -607,6 +665,52 @@
           ${img}
           <span class="rw-link" aria-hidden="true">${esc(S.view_accolade)} <span class="rw-arrow">→</span></span>
         </a>`;
+      };
+      const testimonialCard = t => {
+        // Review-like chrome. Source logo (when set) takes the avatar slot; reviewer image is secondary.
+        // No required platform — no platform icon unless a source logo fills that visual role.
+        const source = t._source;
+        const nameLine = source
+          ? fill(S.testimonial_from, { name: t.display_name, source: source.name })
+          : t.display_name;
+        const sourceClause = source
+          ? fill(S.testimonial_source_clause, { source: source.name })
+          : '';
+        const hasUrl = t.url && String(t.url).trim();
+        const ariaTpl = hasUrl ? S.testimonial_card_aria : S.testimonial_card_aria_nolink;
+        const aria = fill(ariaTpl, { name: t.display_name, source_clause: sourceClause });
+        const reviewerImg = t.reviewer_image && String(t.reviewer_image).trim();
+        let primary, secondary = '';
+        if (source && source.logo) {
+          primary = `<img class="rw-avatar rw-source-logo" src="${esc(url(source.logo))}" alt="" loading="lazy" width="44" height="44">`;
+          if (reviewerImg) {
+            secondary = `<img class="rw-avatar-secondary" src="${esc(url(reviewerImg))}" alt="" loading="lazy" width="22" height="22">`;
+          }
+        } else if (reviewerImg) {
+          primary = `<img class="rw-avatar" src="${esc(url(reviewerImg))}" alt="" loading="lazy" width="44" height="44">`;
+        } else {
+          primary = initialsAvatar(t.reviewer_name);
+        }
+        const rating = typeof t.rating === 'number' ? stars(t.rating) : '';
+        const text = !isBlank(t.snippet_text) ? `<p class="rw-text">${esc(t.snippet_text)}</p>` : '';
+        const linkCue = hasUrl
+          ? `<span class="rw-link" aria-hidden="true">${esc(S.view_testimonial)} <span class="rw-arrow">→</span></span>`
+          : '';
+        const inner = `<div class="rw-card-top">
+            ${primary}
+            <div class="rw-who">
+              <div class="rw-name">${esc(nameLine)}</div>
+              <time datetime="${esc(t.date)}">${fmtDate(t.date)}</time>
+            </div>
+            ${secondary}
+          </div>
+          ${rating}
+          ${text}
+          ${linkCue}`;
+        if (hasUrl) {
+          return `<a class="rw-card rw-testimonial-card" href="${esc(t.url)}" target="_blank" rel="${esc(linkRel(t))}" title="${esc(aria)}" aria-label="${esc(aria)}">${inner}</a>`;
+        }
+        return `<div class="rw-card rw-testimonial-card" role="article" aria-label="${esc(aria)}">${inner}</div>`;
       };
       const reviewCard = r => {
         const name = pname(r.platform);
@@ -638,7 +742,11 @@
           <div class="rw-ai-top"><span class="rw-ai-icon">${SPARKLE}</span><span class="rw-ai-label">${esc(summaryTitle)}</span></div>
           <p class="rw-ai-text">${esc(summary.text)}</p>
         </div>` : '';
-      const cards = ai + trackItems.map(item => item.kind === 'accolade' ? accoladeCard(item.accolade) : reviewCard(item.review)).join('');
+      const cards = ai + trackItems.map(item => {
+        if (item.kind === 'accolade') return accoladeCard(item.accolade);
+        if (item.kind === 'testimonial') return testimonialCard(item.testimonial);
+        return reviewCard(item.review);
+      }).join('');
 
       el.innerHTML = `${header}
         <div class="rw-viewport">

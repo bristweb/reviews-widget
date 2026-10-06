@@ -120,7 +120,7 @@
           "type": "number",
           "minimum": 24,
           "maximum": 240,
-          "description": "Max edge (px) for every accolade logo in badge cards. Default 120 (promotional award size). One global setting — no per-item size/width/height."
+          "description": "Max edge (px) for every accolade logo in badge cards. Default 120 (promotional award size). One global setting \u2014 no per-item size/width/height."
         }
       }
     },
@@ -163,7 +163,7 @@
     },
     "languages": {
       "type": "array",
-      "description": "Translation catalogs as { lang, url }. lang is an ISO language tag (en, en-us, es, …); url is absolute or relative to the data root. Partial catalogs are fine; missing keys fall through to the widget's lang/en.json.",
+      "description": "Translation catalogs as { lang, url }. lang is an ISO language tag (en, en-us, es, \u2026); url is absolute or relative to the data root. Partial catalogs are fine; missing keys fall through to the widget's lang/en.json.",
       "items": {
         "type": "object",
         "required": [
@@ -310,6 +310,85 @@
           "url": {
             "type": "string",
             "minLength": 1
+          },
+          "nofollow": {
+            "type": "boolean"
+          },
+          "noreferrer": {
+            "type": "boolean"
+          },
+          "rel": {
+            "type": "string",
+            "description": "Optional space-separated rel tokens; same rules as platforms.*.rel."
+          }
+        }
+      }
+    },
+    "testimonials": {
+      "type": "array",
+      "description": "Optional testimonial cards merged into the review track by date (newest first) on the All tab, like accolades. Not tied to a review platform. When present, a Testimonials filter tab lists only these cards. Platform filters omit them. Each item needs reviewer_name, text, and date. Optional url (card link), rating (1\u20135), reviewer_image. Optional source: if set, name is required; source.logo (when set) replaces the usual platform icon and is shown in the avatar position (reviewer image moves secondary). Same optional nofollow/noreferrer/rel as platforms.",
+      "items": {
+        "type": "object",
+        "required": [
+          "reviewer_name",
+          "text",
+          "date"
+        ],
+        "additionalProperties": true,
+        "properties": {
+          "reviewer_name": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Person giving the testimonial."
+          },
+          "reviewer_image": {
+            "type": "string",
+            "description": "Optional avatar URL or path relative to the data root. Secondary when source.logo is set."
+          },
+          "text": {
+            "type": "string",
+            "minLength": 1
+          },
+          "date": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}(:\\d{2}(\\.\\d+)?)?(Z|[+-]\\d{2}:\\d{2})$"
+          },
+          "url": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Optional outbound link for the card. When omitted, the card is not a link."
+          },
+          "rating": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 5
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "source": {
+            "type": "object",
+            "required": [
+              "name"
+            ],
+            "additionalProperties": true,
+            "description": "Optional organization for corporate credibility (e.g. Bob from Microsoft). name required when source is present; logo shown prominently in the avatar slot.",
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 1
+              },
+              "logo": {
+                "type": "string",
+                "description": "URL or path relative to the data root. Shown in the avatar position when set; reviewer_image becomes secondary."
+              }
+            }
           },
           "nofollow": {
             "type": "boolean"

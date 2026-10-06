@@ -1,7 +1,7 @@
 {
   "loading": "Cargando reseñas…",
   "unavailable": "Las reseñas no están disponibles en este momento.",
-  "tabs_aria": "Filtrar reseñas por plataforma o premios",
+  "tabs_aria": "Filtrar reseñas por plataforma, premios o testimonios",
   "tab_all": "Todas",
   "tab_all_suffix": " las reseñas",
   "write_review": "Escribir una reseña",
@@ -46,5 +46,15 @@
   "accolade_one": "premio",
   "accolade_many": "premios",
   "accolades_aria": "Premios y reconocimientos",
-  "accolade_card_aria": "{label} ({year}) — se abre en una pestaña nueva"
+  "accolade_card_aria": "{label} ({year}) — se abre en una pestaña nueva",
+  "tab_testimonials": "Testimonios",
+  "tab_testimonials_title": "{name}: {count} testimonios",
+  "tab_testimonials_aria": "{name}, {count} testimonios",
+  "testimonial_one": "testimonio",
+  "testimonial_many": "testimonios",
+  "view_testimonial": "Ver testimonio",
+  "testimonial_from": "{name} de {source}",
+  "testimonial_card_aria": "Leer el testimonio de {name}{source_clause} (se abre en una pestaña nueva)",
+  "testimonial_card_aria_nolink": "Testimonio de {name}{source_clause}",
+  "testimonial_source_clause": " ({source})"
 }

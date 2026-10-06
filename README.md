@@ -97,7 +97,7 @@ Each option below is set as `data-<name>` on the script (or target element) and/
 |---|---|---|
 | `source` | Data repo root URL (trailing `/` added if missing). **Required** on real embeds | — |
 | `layout` | `carousel` \| `grid` | `display.layout` or `carousel` |
-| `platform` | One key from `config.platforms`, or `accolades` (filters to that tab). Omit for every platform. Clicking the active filter tab again clears it back to All | all platforms |
+| `platform` | One key from `config.platforms`, or `accolades` / `testimonials` (filters to that tab). Omit for every platform. Clicking the active filter tab again clears it back to All | all platforms |
 | `limit` | Max review cards (`0` = no limit) | `0` |
 | `summary` | `off` hides the summary card | shown |
 | `theme` | `light` \| `dark` \| `auto` (follow host page theme) | `display.theme` or `auto` |
@@ -114,7 +114,7 @@ Each option below is set as `data-<name>` on the script (or target element) and/
 Plain files at the data root, served over HTTPS with CORS open enough for your pages to fetch them (GitHub Pages does this by default with branch `main`, site root, and `.nojekyll`; any static host works). The widget reads only these paths; other folders (e.g. your own `scripts/`) are never loaded.
 
 ```
-config.json              business, platforms, display, languages, defaultLanguage, strings, schema, summary, reviews.years, …
+config.json              business, platforms, display, languages, defaultLanguage, strings, schema, summary, accolades, testimonials, reviews.years, …
 lang/<code>.json         optional UI wording (listed in config.languages; partial OK)
 reviews/<year>.json      reviews dated that year (array, newest first)
 images/reviewers/        optional local avatars (any path/URL works in records)
@@ -138,6 +138,7 @@ theme/fonts/             optional self-hosted fonts
 | `rating_labels` | score words (`[{ min, label }, …]`); overrides language-file labels when set |
 | `summary` | `{ "text", "generated_at" }` for the summary card; optional `title` is the card headline (else language/strings `ai_summary`, e.g. Highlights) |
 | `accolades` | optional award badges merged into the review track by date (each sorts as `YYYY-12-31` so it leads that year; newest first after the platform filter). Always at least one accolade before the first review when any exist (newest award promoted if needed). When present, an **Awards** filter tab lists only accolade cards. Each item needs `url` + `year` plus `icon` and/or freeform `label` (`name` alias). Cards match review chrome: title + year up top, badge in the middle, “View award” link cue at the bottom. Logo size is global: `display.accolade_size` (px, default 120). Same optional `nofollow` / `noreferrer` / `rel` as platforms |
+| `testimonials` | optional testimonial cards (review-like) merged into the **All** track by date, newest first. No required platform/source. When present, a **Testimonials** filter tab lists only these cards; platform filters omit them. Each item needs `reviewer_name`, `text`, `date`. Optional `url`, `rating`, `reviewer_image`. Optional `source` (`name` required when set; `logo` shown prominently in the avatar slot, reviewer image secondary). Cards read like “Bob from Microsoft…”. Same optional `nofollow` / `noreferrer` / `rel` |
 | `reviews.years` | year files to fetch, newest first, e.g. `[2026, 2025]` |
 
 Formal shape: `schemas/config.schema.json` in this repo.

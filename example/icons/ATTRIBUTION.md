@@ -6,3 +6,4 @@ All marks belong to their owners and are used only to identify where each review
 
 Placeholder award badges (`award-choice.svg`, `award-bestof.svg`) are original graphics for this example (not real award marks). Any award names in `config.json` are fictional; each entry shows its label and year on the accolade card.
 
+Placeholder company marks (`contoso-logistics.svg`, `summit-athletics.svg`) are original graphics for this example (not real brands).
