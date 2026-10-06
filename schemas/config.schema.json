@@ -144,10 +144,20 @@
       }
     },
     "strings": {
-      "type": "object",
-      "additionalProperties": {
-        "type": "string"
-      }
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "Inline UI copy overrides (merged on top of lang file / built-ins)."
+        },
+        {
+          "type": "string",
+          "minLength": 1,
+          "description": "Path (relative to data root) or URL of a translation JSON file. Takes precedence over lang for which file to load."
+        }
+      ]
     },
     "avatars": {
       "type": "object",
@@ -202,6 +212,16 @@
     "sources": {
       "type": "object",
       "additionalProperties": true
+    },
+    "lang": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Language code \u2192 load lang/<code>.json for UI wording (and optional rating_labels). Overridden by inline config.strings object keys."
+    },
+    "language": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Alias of lang."
     }
   }
 }

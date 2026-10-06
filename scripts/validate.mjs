@@ -55,6 +55,25 @@ for (const [k, p] of Object.entries(platforms)) relIcon(`platforms.${k}`, p.icon
 for (const l of (config && config.links) || []) relIcon(`links.${l.platform}`, l.icon);
 if (!existsSync(path.join(root, 'theme', 'theme.css'))) warn('theme/theme.css not found (the widget loads it)');
 
+// Language / strings file: config.strings as a path, or config.lang / config.language → lang/<code>.json
+if (config) {
+  let langRel = null;
+  if (typeof config.strings === 'string' && config.strings.trim()) langRel = config.strings.trim();
+  else if (config.lang) langRel = `lang/${String(config.lang).trim()}.json`;
+  else if (config.language) langRel = `lang/${String(config.language).trim()}.json`;
+  if (langRel && !/^(https?:)?\/\//i.test(langRel) && !langRel.startsWith('/')) {
+    if (!existsSync(path.join(root, langRel))) err(`config.json: language/strings file ${langRel} not found`);
+    else {
+      const pack = readJson(langRel);
+      if (pack && typeof pack === 'object') {
+        // Flat catalog or { strings, rating_labels } — both fine; warn if empty
+        const keys = pack.strings && typeof pack.strings === 'object' ? Object.keys(pack.strings) : Object.keys(pack).filter(k => k !== 'rating_labels' && typeof pack[k] === 'string');
+        if (!keys.length) warn(`${langRel}: no string entries`);
+      }
+    }
+  }
+}
+
 const years = (config && config.reviews && config.reviews.years) || [];
 if (Array.isArray(years) && years.some((y, i) => i && y >= years[i - 1])) err('config.json: reviews.years must be unique and sorted newest first');
 const files = existsSync(path.join(root, 'reviews')) ? readdirSync(path.join(root, 'reviews')).filter(f => f.endsWith('.json')) : [];

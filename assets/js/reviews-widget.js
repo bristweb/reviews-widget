@@ -1,7 +1,8 @@
 /* Reviews widget — static, no dependencies, no site-specific code. https://github.com/bristweb/reviews-widget
  * The code lives in this repo; everything about a site lives in a separate data repo, named by data-source:
- *   <source>config.json          business, platforms, display defaults, strings, schema settings, summary card,
+ *   <source>config.json          business, platforms, display defaults, lang/strings, schema settings, summary card,
  *                                and reviews.years (which yearly review files exist)
+ *   <source>lang/<code>.json     UI wording (optional; config.lang or config.strings path). Inline config.strings override.
  *   <source>reviews/<year>.json  the reviews (plain records, newest first) — the only copy of the review data
  *   <source>theme/theme.css      fonts + CSS custom properties (colors, radius)
  *   <source>icons/, images/      platform icons, reviewer avatars
@@ -79,13 +80,38 @@
   const loads = SHARED.loads;
   // One fetch of config + reviews + CSS per data source, shared by every widget on the page. The stylesheets and
   // config start at once; every yearly review file listed in config.reviews.years is then fetched in parallel.
+  // Resolve a language / strings file URL from config: strings as a path string, or lang / language → lang/<code>.json.
+  function langUrl(src, c) {
+    let rel = null;
+    if (typeof c.strings === 'string' && c.strings.trim()) rel = c.strings.trim();
+    else if (c.lang) rel = 'lang/' + String(c.lang).trim() + '.json';
+    else if (c.language) rel = 'lang/' + String(c.language).trim() + '.json';
+    if (!rel) return null;
+    if (/^(https?:)?\/\//i.test(rel) || rel.startsWith('/')) return rel;
+    return src + rel.replace(/^\.\//, '');
+  }
+  // Split a lang file into string catalog + optional rating_labels. Accepts a flat catalog or { strings, rating_labels }.
+  function pickLang(pack) {
+    if (!pack || typeof pack !== 'object') return { strings: {}, rating_labels: null };
+    if (pack.strings && typeof pack.strings === 'object' && !Array.isArray(pack.strings)) {
+      return { strings: pack.strings, rating_labels: Array.isArray(pack.rating_labels) ? pack.rating_labels : null };
+    }
+    const strings = {}, labels = Array.isArray(pack.rating_labels) ? pack.rating_labels : null;
+    for (const [k, v] of Object.entries(pack)) if (k !== 'rating_labels' && typeof v === 'string') strings[k] = v;
+    return { strings, rating_labels: labels };
+  }
   function load(code, src) {
     return (loads[src] ??= (() => {
       const css = Promise.all([ensureCss(code + 'assets/css/reviews-widget.css'), ensureCss(src + 'theme/theme.css')]);
       const config = fetchJson(src + 'config.json');
       const reviews = config.then(c => Promise.all(((c.reviews && c.reviews.years) || []).map(y => fetchJson(`${src}reviews/${y}.json`))))
         .then(years => [].concat(...years));
-      return Promise.all([config, reviews, css]);
+      const lang = config.then(c => {
+        const url = langUrl(src, c);
+        if (!url) return null;
+        return fetchJson(url).catch(e => { console.warn('[reviews-widget] lang/strings file', e); return null; });
+      });
+      return Promise.all([config, reviews, css, lang]);
     })());
   }
   // schema.org JSON-LD, built from the reviews on load -> one <script type="application/ld+json"> in <head> per page.
@@ -186,20 +212,23 @@
       el.style.removeProperty('opacity');
       if (!fixedHeight) notifyHeight();
     }));
-    let config, reviews;
+    let config, reviews, langPack;
     try {
       if (!base) throw new Error('[reviews-widget] data-source is required (URL of a data repo root, ending in /)');
-      [config, reviews] = await load(code, base);
+      [config, reviews, , langPack] = await load(code, base);
     } catch (e) {
       console.warn(e);
       el.innerHTML = `<div class="rw-loading">${esc(STRINGS.unavailable)}</div>`;
       reveal();
       return;
     }
-    const S = { ...STRINGS, ...(config.strings || {}) };
+    // UI copy: built-in English ← lang/<code>.json (or strings path) ← inline config.strings object overrides.
+    const fromLang = pickLang(langPack);
+    const inline = (config.strings && typeof config.strings === 'object' && !Array.isArray(config.strings)) ? config.strings : {};
+    const S = { ...STRINGS, ...fromLang.strings, ...inline };
     const D = { ...DISPLAY, ...(config.display || {}) };
     const PLATFORMS = config.platforms || {};
-    const RL = (config.rating_labels || RATING_LABELS).slice().sort((a, b) => b.min - a.min);
+    const RL = (config.rating_labels || fromLang.rating_labels || RATING_LABELS).slice().sort((a, b) => b.min - a.min);
     // URL param > data-* > config.json display > built-in default.
     const opt = (param, key, dkey) => (q.get(param) !== null ? q.get(param) : opts[key] != null ? opts[key] : D[dkey]);
     const constrained = toBool(opt('constrained', 'constrained', 'constrained'));
@@ -385,10 +414,12 @@
       const tabs = present.length > 1 ? `<div class="rw-tabs" role="tablist" aria-label="${esc(S.tabs_aria)}">
         ${['all', ...present].map(p => {
           const n = p === 'all' ? all.length : all.filter(r => r.platform === p).length;
-          const name = p === 'all' ? S.tab_all + S.tab_all_suffix : pname(p);
+          const allSuffix = (S.tab_all_suffix || '').trim();
+          const allSuffixSp = allSuffix ? ' ' + allSuffix : '';
+          const name = p === 'all' ? S.tab_all + allSuffixSp : pname(p);
           return `<button role="tab" class="rw-tab ${p === active ? 'is-active' : ''}" data-p="${p}" aria-selected="${p === active}"
             title="${esc(fill(S.tab_title, { name, count: n }))}" aria-label="${esc(fill(S.tab_aria, { name, count: n }))}">
-            ${p === 'all' ? `<span class="rw-tab-name">${esc(S.tab_all)}<span class="rw-tab-long">${esc(S.tab_all_suffix)}</span></span>` : `${icon(p)}<span class="rw-tab-name">${esc(name)}</span>`}
+            ${p === 'all' ? `<span class="rw-tab-name">${esc(S.tab_all)}<span class="rw-tab-long">${esc(allSuffixSp)}</span></span>` : `${icon(p)}<span class="rw-tab-name">${esc(name)}</span>`}
             <em>${n}</em></button>`;
         }).join('')}</div>` : '';
 

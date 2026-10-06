@@ -115,7 +115,8 @@ Each option below is set as `data-<name>` on the script (or target element) and/
 Plain files at the data root, served over HTTPS with CORS open enough for your pages to fetch them (GitHub Pages does this by default with branch `main`, site root, and `.nojekyll`; any static host works). The widget reads only these paths; other folders (e.g. your own `scripts/`) are never loaded.
 
 ```
-config.json              business, platforms, display, strings, schema, summary, reviews.years, …
+config.json              business, platforms, display, lang/strings, schema, summary, reviews.years, …
+lang/<code>.json         UI wording (optional; see lang / strings below)
 reviews/<year>.json      reviews dated that year (array, newest first)
 images/reviewers/        optional local avatars (any path/URL works in records)
 icons/                   platform logos
@@ -132,11 +133,23 @@ theme/fonts/             optional self-hosted fonts
 | `default_write_platform` | `write_url` used on the “All” tab |
 | `display.*` | layout, snippets, diversity, dates, `theme`, `constrained`, … |
 | `schema.*` | JSON-LD on/off, `@type`, `max_reviews`, `extra` |
-| `rating_labels`, `strings` | score words and UI copy |
+| `lang` / `language` | language code → load `lang/<code>.json` for UI wording (and optional `rating_labels`) |
+| `strings` | object = inline UI copy overrides; **or** a path/URL string pointing at a translation JSON file (wins over `lang` for which file to load) |
+| `rating_labels` | score words (`[{ min, label }, …]`); overrides labels from the lang file when set |
 | `summary` | `{ "text", "generated_at" }` for the summary card |
 | `reviews.years` | year files to fetch, newest first, e.g. `[2026, 2025]` |
 
 Formal shape: `schemas/config.schema.json` in this repo.
+
+### Language / UI wording
+
+Built-in English copy lives in the widget script. A data repo can supply translations (or alternate wording) without forking the JS:
+
+1. **`lang/<code>.json`** — flat string catalog (same keys as `config.strings`), optionally including a `rating_labels` array. Set `"lang": "en"` (or `"es"`, …) in `config.json`.
+2. **`strings` as a path** — e.g. `"strings": "lang/fr.json"` (or any URL) loads that file instead of `lang/<code>.json`.
+3. **`strings` as an object** — merged on top of the loaded file (and built-ins) for one-off overrides.
+
+Merge order: built-in defaults ← language file ← inline `strings` object. `tab_all_suffix` should start with a space when you want “All reviews” (the widget also inserts a leading space if the suffix is non-empty after trim).
 
 ### `reviews/<year>.json`
 

@@ -16,10 +16,25 @@
       "name": "Directory",
       "icon": "icons/directory.svg",
       "write_url": "https://example.com/directory/write-review",
-      "page_url": "https://example.com/directory/biz/northwind-cycles",
+      "page_url": "https://example.com/directory/northwind-cycles",
       "card_link": "page"
+    },
+    "forum": {
+      "name": "Forum",
+      "icon": "icons/forum.svg",
+      "write_url": "https://example.com/forum/write-review",
+      "page_url": "https://example.com/forum/northwind-cycles",
+      "card_link": "review"
+    },
+    "marketplace": {
+      "name": "Marketplace",
+      "icon": "icons/marketplace.svg",
+      "write_url": "https://example.com/marketplace/write-review",
+      "page_url": "https://example.com/marketplace/northwind-cycles",
+      "card_link": "review"
     }
   },
+  "lang": "en",
   "display": {
     "layout": "carousel",
     "snippet_chars": 160,
@@ -41,52 +56,6 @@
     "type": "LocalBusiness",
     "max_reviews": 0
   },
-  "rating_labels": [
-    {
-      "min": 4.75,
-      "label": "Excellent"
-    },
-    {
-      "min": 4.25,
-      "label": "Great"
-    },
-    {
-      "min": 3.5,
-      "label": "Good"
-    },
-    {
-      "min": 2.5,
-      "label": "Average"
-    },
-    {
-      "min": 0,
-      "label": "Poor"
-    }
-  ],
-  "strings": {
-    "loading": "Loading reviews…",
-    "unavailable": "Reviews are unavailable right now.",
-    "tabs_aria": "Filter reviews by platform",
-    "tab_all": "All",
-    "tab_all_suffix": "reviews",
-    "tab_title": "{name}",
-    "tab_aria": "{name}, {count} reviews",
-    "write_review": "Write a review",
-    "write_review_short": "Review",
-    "based_on": "Based on ",
-    "review_one": "review",
-    "review_many": "reviews",
-    "on_platform": "on {platform}",
-    "stars_aria": "{n} out of 5 stars",
-    "recommends": "Recommends",
-    "view_on": "View on {platform}",
-    "card_aria": "Read {name}'s review on {platform} (opens in a new tab)",
-    "anonymous": "Anonymous",
-    "previous": "Previous reviews",
-    "next": "Next reviews",
-    "ai_summary": "Summary",
-    "ai_summary_aria": "Summary of {count} reviews"
-  },
   "avatars": {
     "initials_palette": [
       "#2f5d50",
@@ -96,13 +65,15 @@
     "initials_text_color": "#fff"
   },
   "summary": {
-    "text": "Riders praise quick same-day repairs, careful bike fits, and a calm shop floor with no hard sell. Several mention coming back for seasonal gear after a first tune-up.",
-    "generated_at": "2026-10-01T12:00:00Z"
+    "text": "Riders praise quick repairs, careful bike fits, and a calm shop floor with no hard sell. Regulars mention returning for seasonal gear, tubeless setups, and kid-bike fittings after a first tune-up.",
+    "generated_at": "2026-10-06T18:00:00Z"
   },
   "reviews": {
     "years": [
       2026,
-      2025
+      2025,
+      2024,
+      2023
     ]
   }
 }

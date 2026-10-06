@@ -17,8 +17,11 @@ Google Sites / fixed-height box: add `data-constrained="true"`.
 
 ## Layout
 
-- `config.json` — business, platforms, display, strings, summary, `reviews.years`
+- `config.json` — business, platforms, `lang`, display, summary, `reviews.years`
+- `lang/<code>.json` — UI wording (this starter uses `lang/en.json`; set `"lang": "es"` and add `lang/es.json` to translate)
 - `reviews/<year>.json` — review records
 - `theme/theme.css` — `--rw-*` colors (light + dark)
 - `icons/`, `images/` — optional local assets
 - `.github/workflows/validate.yml` — validates against reviews-widget on push
+
+Inline `config.strings` object keys override the lang file. Or set `"strings": "lang/fr.json"` to point at a translation file directly.

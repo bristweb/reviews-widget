@@ -1,0 +1,194 @@
+[
+  {
+    "platform": "marketplace",
+    "platform_review_id": "ex-marketplace-010",
+    "reviewer_name": "Jordan Walsh",
+    "reviewer_profile_url": null,
+    "rating": 5,
+    "text": "Helmet fit for a nervous new rider. Left more confident about city lanes.",
+    "date": "2024-12-10T00:47:59Z",
+    "review_url": "https://example.com/marketplace/reviews/ex-marketplace-010",
+    "owner_reply": {
+      "text": "Glad we could help \u2014 see you on the next tune-up!",
+      "date": "2024-12-11T06:47:59Z"
+    },
+    "collected_at": "2026-10-06T18:00:00Z",
+    "reviewer_image": "images/reviewers/marketplace-ex-marketplace-010.svg",
+    "reviewer_image_source_url": null
+  },
+  {
+    "platform": "forum",
+    "platform_review_id": "ex-forum-011",
+    "reviewer_name": "Sage Kowalski",
+    "reviewer_profile_url": null,
+    "rating": 5,
+    "text": "Paint touch-up after a rack scrape. Nearly invisible. Detail-oriented.",
+    "date": "2024-12-05T21:32:31Z",
+    "review_url": "https://example.com/forum/reviews/ex-forum-011",
+    "owner_reply": {
+      "text": "Glad we could help \u2014 see you on the next tune-up!",
+      "date": "2024-12-07T18:32:31Z"
+    },
+    "collected_at": "2026-10-06T18:00:00Z",
+    "reviewer_image": "images/reviewers/forum-ex-forum-011.svg",
+    "reviewer_image_source_url": null
+  },
+  {
+    "platform": "maps",
+    "platform_review_id": "ex-maps-010",
+    "reviewer_name": "Harper Kowalski",
+    "reviewer_profile_url": null,
+    "rating": 4,
+    "text": "Bought lights and a rack here. They installed both while I grabbed coffee next door. Solid neighborhood shop.",
+    "date": "2024-10-15T02:48:10Z",
+    "review_url": "https://example.com/maps/reviews/ex-maps-010",
+    "owner_reply": null,
+    "collected_at": "2026-10-06T18:00:00Z",
+    "reviewer_image": "images/reviewers/maps-ex-maps-010.svg",
+    "reviewer_image_source_url": null
+  },
+  {
+    "platform": "directory",
+    "platform_review_id": "ex-directory-014",
+    "reviewer_name": "Drew Walsh",
+    "reviewer_profile_url": null,
+    "rating": 5,
+    "text": "Trade-in on an old hybrid toward a cargo bike. Transparent pricing, no pressure.",
+    "date": "2024-10-09T13:23:29Z",
+    "review_url": "https://example.com/directory/reviews/ex-directory-014",
+    "owner_reply": {
+      "text": "Appreciate the kind words. Stop by anytime.",
+      "date": "2024-10-10T06:23:29Z"
+    },
+    "collected_at": "2026-10-06T18:00:00Z",
+    "reviewer_image": "images/reviewers/directory-ex-directory-014.svg",
+    "reviewer_image_source_url": null
+  },
+  {
+    "platform": "marketplace",
+    "platform_review_id": "ex-marketplace-014",
+    "reviewer_name": "Cameron Fischer",
+    "reviewer_profile_url": null,
+    "rating": 5,
+    "text": "Cleat install and brief fit tips. Pedaling feels more efficient already.",
+    "date": "2024-09-12T02:30:12Z",
+    "review_url": "https://example.com/marketplace/reviews/ex-marketplace-014",
+    "owner_reply": {
+      "text": "Appreciate the kind words. Stop by anytime.",
+      "date": "2024-09-13T09:30:12Z"
+    },
+    "collected_at": "2026-10-06T18:00:00Z",
+    "reviewer_image": "images/reviewers/marketplace-ex-marketplace-014.svg",
+    "reviewer_image_source_url": null
+  },
+  {
+    "platform": "directory",
+    "platform_review_id": "ex-directory-004",
+    "reviewer_name": "Emery Fischer",
+    "reviewer_profile_url": null,
+    "rating": 3,
+    "text": "Group ride start point and they opened early for last-minute pump and snack refill. Kind crew.",
+    "date": "2024-09-11T01:48:49Z",
+    "review_url": "https://example.com/directory/reviews/ex-directory-004",
+    "owner_reply": null,
+    "collected_at": "2026-10-06T18:00:00Z",
+    "reviewer_image": "images/reviewers/directory-ex-directory-004.svg",
+    "reviewer_image_source_url": null
+  },
+  {
+    "platform": "forum",
+    "platform_review_id": "ex-forum-008",
+    "reviewer_name": "Reese Chen",
+    "reviewer_profile_url": null,
+    "rating": 5,
+    "text": "Spoke replacement after a pothole. Wheel is true and tension feels even. Will be back.",
+    "date": "2024-09-06T12:18:21Z",
+    "review_url": "https://example.com/forum/reviews/ex-forum-008",
+    "owner_reply": {
+      "text": "Glad we could help \u2014 see you on the next tune-up!",
+      "date": "2024-09-07T04:18:21Z"
+    },
+    "collected_at": "2026-10-06T18:00:00Z",
+    "reviewer_image": "images/reviewers/forum-ex-forum-008.svg",
+    "reviewer_image_source_url": null
+  },
+  {
+    "platform": "forum",
+    "platform_review_id": "ex-forum-003",
+    "reviewer_name": "Hayden Walsh",
+    "reviewer_profile_url": null,
+    "rating": 4,
+    "text": "Trade-in on an old hybrid toward a cargo bike. Transparent pricing, no pressure.",
+    "date": "2024-06-19T19:17:33Z",
+    "review_url": "https://example.com/forum/reviews/ex-forum-003",
+    "owner_reply": null,
+    "collected_at": "2026-10-06T18:00:00Z",
+    "reviewer_image": "images/reviewers/forum-ex-forum-003.svg",
+    "reviewer_image_source_url": null
+  },
+  {
+    "platform": "directory",
+    "platform_review_id": "ex-directory-009",
+    "reviewer_name": "Drew Chen",
+    "reviewer_profile_url": null,
+    "rating": 4,
+    "text": "Group ride start point and they opened early for last-minute pump and snack refill. Kind crew.",
+    "date": "2024-04-03T18:49:29Z",
+    "review_url": "https://example.com/directory/reviews/ex-directory-009",
+    "owner_reply": null,
+    "collected_at": "2026-10-06T18:00:00Z",
+    "reviewer_image": "images/reviewers/directory-ex-directory-009.svg",
+    "reviewer_image_source_url": null
+  },
+  {
+    "platform": "maps",
+    "platform_review_id": "ex-maps-004",
+    "reviewer_name": "Remy Garcia",
+    "reviewer_profile_url": null,
+    "rating": 5,
+    "text": "Tubeless conversion done right \u2014 sealant, tape, seated beads. No burping after a month.",
+    "date": "2024-02-15T17:49:14Z",
+    "review_url": "https://example.com/maps/reviews/ex-maps-004",
+    "owner_reply": {
+      "text": "Appreciate the kind words. Stop by anytime.",
+      "date": "2024-02-17T11:49:14Z"
+    },
+    "collected_at": "2026-10-06T18:00:00Z",
+    "reviewer_image": "images/reviewers/maps-ex-maps-004.svg",
+    "reviewer_image_source_url": null
+  },
+  {
+    "platform": "maps",
+    "platform_review_id": "ex-maps-003",
+    "reviewer_name": "Cameron Hughes",
+    "reviewer_profile_url": null,
+    "rating": 3,
+    "text": "Assembly of a boxed kids' bike for a birthday. Smooth gears out of the gate.",
+    "date": "2024-01-09T21:00:39Z",
+    "review_url": "https://example.com/maps/reviews/ex-maps-003",
+    "owner_reply": {
+      "text": "Glad we could help \u2014 see you on the next tune-up!",
+      "date": "2024-01-11T18:00:39Z"
+    },
+    "collected_at": "2026-10-06T18:00:00Z",
+    "reviewer_image": "images/reviewers/maps-ex-maps-003.svg",
+    "reviewer_image_source_url": null
+  },
+  {
+    "platform": "marketplace",
+    "platform_review_id": "ex-marketplace-006",
+    "reviewer_name": "Harper Kowalski",
+    "reviewer_profile_url": null,
+    "rating": 5,
+    "text": "Helmet fit for a nervous new rider. Left more confident about city lanes.",
+    "date": "2024-01-06T16:14:54Z",
+    "review_url": "https://example.com/marketplace/reviews/ex-marketplace-006",
+    "owner_reply": {
+      "text": "Appreciate the kind words. Stop by anytime.",
+      "date": "2024-01-08T02:14:54Z"
+    },
+    "collected_at": "2026-10-06T18:00:00Z",
+    "reviewer_image": "images/reviewers/marketplace-ex-marketplace-006.svg",
+    "reviewer_image_source_url": null
+  }
+]
