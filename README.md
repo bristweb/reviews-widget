@@ -8,6 +8,8 @@
   <img src="docs/example-widget-light-v2.png" alt="Live example: Northwind Cycles (fictional bike shop)" />
 </picture>
 
+**Not locked to a vendor** — any review source you can gather (automation or by hand). **You own your data** — plain files you host; the widget just displays them.
+
 <a href="https://bristweb.github.io/reviews-widget/embed.html?source=https://bristweb.github.io/reviews-widget/example/" target="_blank" rel="noopener">iframe version</a> · <a href="https://bristweb.github.io/reviews-widget/embed.html?source=https://bristweb.github.io/reviews-widget/example/&constrained=true" target="_blank" rel="noopener">constrained / fixed-height box</a>
 
 ```html
