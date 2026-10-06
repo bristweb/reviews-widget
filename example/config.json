@@ -3,34 +3,34 @@
     "name": "Northwind Cycles",
     "website": "https://example.com/northwind-cycles/"
   },
-  "default_write_platform": "maps",
+  "default_write_platform": "google",
   "platforms": {
-    "maps": {
-      "name": "Maps",
-      "icon": "icons/maps.svg",
-      "write_url": "https://example.com/maps/write-review",
-      "page_url": "https://example.com/maps/northwind-cycles",
+    "google": {
+      "name": "Google",
+      "icon": "icons/google.svg",
+      "write_url": "https://example.com/google/write-review",
+      "page_url": "https://example.com/google/northwind-cycles",
       "card_link": "review"
     },
-    "directory": {
-      "name": "Directory",
-      "icon": "icons/directory.svg",
-      "write_url": "https://example.com/directory/write-review",
-      "page_url": "https://example.com/directory/northwind-cycles",
+    "yelp": {
+      "name": "Yelp",
+      "icon": "icons/yelp.svg",
+      "write_url": "https://example.com/yelp/write-review",
+      "page_url": "https://example.com/yelp/northwind-cycles",
+      "card_link": "review"
+    },
+    "facebook": {
+      "name": "Facebook",
+      "icon": "icons/facebook.svg",
+      "write_url": "https://example.com/facebook/write-review",
+      "page_url": "https://example.com/facebook/northwind-cycles",
       "card_link": "page"
     },
-    "forum": {
-      "name": "Forum",
-      "icon": "icons/forum.svg",
-      "write_url": "https://example.com/forum/write-review",
-      "page_url": "https://example.com/forum/northwind-cycles",
-      "card_link": "review"
-    },
-    "marketplace": {
-      "name": "Marketplace",
-      "icon": "icons/marketplace.svg",
-      "write_url": "https://example.com/marketplace/write-review",
-      "page_url": "https://example.com/marketplace/northwind-cycles",
+    "trustpilot": {
+      "name": "Trustpilot",
+      "icon": "icons/trustpilot.svg",
+      "write_url": "https://example.com/trustpilot/write-review",
+      "page_url": "https://example.com/trustpilot/northwind-cycles",
       "card_link": "review"
     }
   },

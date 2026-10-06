@@ -157,16 +157,16 @@ Array of records for that calendar year, newest first. Store full names, full te
 
 ```jsonc
 {
-  "platform": "maps",
-  "platform_review_id": "ex-maps-001",
+  "platform": "google",
+  "platform_review_id": "ex-google-001",
   "reviewer_name": "Avery Quinn",
   "reviewer_profile_url": null,
-  "reviewer_image": "images/reviewers/maps-ex-maps-001.svg",
+  "reviewer_image": "images/reviewers/google-ex-google-001.svg",
   "reviewer_image_source_url": null,
   "rating": 5,
   "text": "full review text",
   "date": "2026-09-14T18:22:00Z",
-  "review_url": "https://example.com/maps/reviews/ex-maps-001",
+  "review_url": "https://example.com/google/reviews/ex-google-001",
   "owner_reply": { "text": "…", "date": "2026-09-14T21:00:00Z" },
   "collected_at": "2026-10-01T12:00:00Z"
 }

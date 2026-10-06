@@ -2,6 +2,8 @@
 
 Sample data for [bristweb/reviews-widget](https://github.com/bristweb/reviews-widget). **Northwind Cycles** is an invented bike shop — not a real business. Do not present these as real testimonials.
 
+Demo platforms: **Google**, **Yelp**, **Facebook**, and **Trustpilot** (common review sources). The business and review text are fictional; the platform names identify where each sample would appear.
+
 Copy this whole folder to start a new data repo (includes `.github/workflows/validate.yml`, `.nojekyll`, and `.gitignore`).
 
 ## Publish (GitHub Pages)
@@ -23,3 +25,7 @@ Google Sites / fixed-height box: add `data-constrained="true"`.
 - `theme/theme.css` — `--rw-*` colors (light + dark)
 - `icons/`, `images/` — optional local assets
 - `.github/workflows/validate.yml` — validates against reviews-widget on push
+
+## Credits
+
+Platform logos (**Google**, **Yelp**, **Facebook**, **Trustpilot**) are from [Simple Icons](https://simpleicons.org/) ([CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/)); see [`icons/ATTRIBUTION.md`](icons/ATTRIBUTION.md). All marks belong to their owners and are used only to identify where each review was posted. This example is not affiliated with those platforms.
