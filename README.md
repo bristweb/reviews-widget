@@ -27,11 +27,13 @@ A low-priority side-by-side with named commercial widgets and reputation platfor
 
 ## Embed
 
+Snippets below use this repo’s published URL and the bundled fictional [example/](example/) data so you can paste and see something working. For a real site, keep the script `src` and change only `data-source` (or the iframe `?source=`) to your own data store URL.
+
 ### JavaScript (preferred)
 
 ```html
-<script src="https://<host>/reviews-widget/assets/js/reviews-widget.js"
-        data-source="https://<host>/<your-data-repo>/" defer></script>
+<script src="https://bristweb.github.io/reviews-widget/assets/js/reviews-widget.js"
+        data-source="https://bristweb.github.io/reviews-widget/example/" defer></script>
 ```
 
 The widget renders where the tag is. It loads CSS from this repo and `theme/theme.css`, `config.json`, and every `reviews/<year>.json` from `data-source`, in parallel. Options go on the same tag ([list](#options)).
@@ -45,12 +47,12 @@ The widget renders where the tag is. It loads CSS from this repo and `theme/them
 **Other mount points:**
 
 ```html
-<script src="https://<host>/reviews-widget/assets/js/reviews-widget.js" defer
-        data-source="https://<host>/<your-data-repo>/" data-target="#reviews"></script>
+<script src="https://bristweb.github.io/reviews-widget/assets/js/reviews-widget.js" defer
+        data-source="https://bristweb.github.io/reviews-widget/example/" data-target="#reviews"></script>
 <div id="reviews"></div>
 
-<script src="https://<host>/reviews-widget/assets/js/reviews-widget.js" defer
-        data-source="https://<host>/<your-data-repo>/"></script>
+<script src="https://bristweb.github.io/reviews-widget/assets/js/reviews-widget.js" defer
+        data-source="https://bristweb.github.io/reviews-widget/example/"></script>
 <div data-reviews-widget data-layout="grid" data-platform="maps"></div>
 ```
 
@@ -58,26 +60,26 @@ The widget renders where the tag is. It loads CSS from this repo and `theme/them
 2. Else unfilled `[data-reviews-widget]` elements.
 3. Else in place (a `<head>` script with no target goes to the end of `<body>`).
 
-If the host hides the script URL, set `data-base` to this repo’s root URL (ending in `/`).
+If the page builder hides the script URL, set `data-base="https://bristweb.github.io/reviews-widget/"`.
 
 ### Google Sites and fixed-height boxes
 
 Builders that put code in a box whose height you set (Google Sites: *Insert → Embed → Embed code*) need fitting options:
 
 ```html
-<script src="https://<host>/reviews-widget/assets/js/reviews-widget.js"
-        data-source="https://<host>/<your-data-repo>/"
+<script src="https://bristweb.github.io/reviews-widget/assets/js/reviews-widget.js"
+        data-source="https://bristweb.github.io/reviews-widget/example/"
         data-fixed-height="true" data-arrows="inside" data-overflow="hidden"
         data-hover-lift="false" data-focus-ring="inside"></script>
 ```
 
-Stretch the box full width and about **420px** tall. See [Options](#options) and [Header behavior](#header-behavior) for short heights (tested down to 140px).
+Stretch the box full width and about **420px** tall. Swap `data-source` for your data when you go live. See [Options](#options) and [Header behavior](#header-behavior) for short heights (tested down to 140px).
 
 ### Iframe
 
 ```html
 <iframe id="reviews-widget"
-        src="https://<host>/reviews-widget/embed.html?source=https://<host>/<your-data-repo>/"
+        src="https://bristweb.github.io/reviews-widget/embed.html?source=https://bristweb.github.io/reviews-widget/example/"
         title="Reviews" loading="lazy" scrolling="no"
         style="width:100%;border:0;height:420px"></iframe>
 <script>
@@ -88,7 +90,7 @@ Stretch the box full width and about **420px** tall. See [Options](#options) and
 </script>
 ```
 
-`index.html` and `embed.html` are bare, transparent, `noindex` pages. With no `?source=` they load the bundled [example/](example/).
+`index.html` and `embed.html` are bare, transparent, `noindex` pages. With no `?source=` they load [example/](example/) the same way.
 
 ---
 
