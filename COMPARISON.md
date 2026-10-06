@@ -27,7 +27,7 @@ Columns: this widget → representative **embeddable review widgets** → **plat
 | **Sync / collection you control** | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | **Multi-source aggregate widget** | ✅ | ✅⁸ | ✅⁹ | ✅ | ✅ | 🟡¹⁰ | 🟡 | 🟡¹¹ | ❌ | ❌ | ✅ | ✅ | ✅ |
 | **Review request / outreach** | ❌ | ❌ | 🟡 | ❌ | ❌ | ❌ | ✅ | ✅ | 🟡 | 🟡 | ✅ | ✅ | ✅ |
-| **Inbox / respond across platforms** | ❌ | ❌ | 🟡 | ❌ | ❌ | ❌ | 🟡 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Inbox / respond across platforms** | 🟡¹⁴ | ❌ | 🟡 | ❌ | ❌ | ❌ | 🟡 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | **Vendor lock-in for the on-site widget** | ❌¹² | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | —¹³ | —¹³ | ✅ | ✅ | ✅ |
 
 **Notes**
@@ -45,10 +45,11 @@ Columns: this widget → representative **embeddable review widgets** → **plat
 11. Trustpilot-first; third-party re-embeds are restricted.
 12. Plain JSON + JS you can fork; no account required.
 13. Not applicable — Google / Yelp are the review surfaces themselves, not a third-party embed you swap out.
+14. No built-in inbox or reply UI — but you keep the full review records (including stored owner replies), so you can build your own response / follow-up workflows on top of that data.
 
 ### Reading the columns
 
-- **reviews-widget** is only the on-site display layer plus a data format. Collection (scrapers, hand entry, …) lives in each data store’s own tooling if you want it.
+- **reviews-widget** is only the on-site display layer plus a data format. Collection (scrapers, hand entry, …) and any owner-reply / response automation live in each data store’s own tooling if you want them — there is no native inbox, but the data you own makes those workflows possible.
 - **Elfsight**, **EmbedSocial**, **SociableKIT**, **Tagembed** — hosted multi-source review embeds.
 - **Juicer** — common “feed on your site” embed; primarily social/UGC.
 - **ProvenExpert**, **Trustpilot**, **Google Business Profile**, **Yelp** — review platforms with their own badges/widgets; not drop-in self-hosted multi-source carousels.
