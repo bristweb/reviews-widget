@@ -84,8 +84,8 @@
     "anonymous": "Anonymous",
     "previous": "Previous reviews",
     "next": "Next reviews",
-    "ai_summary": "AI summary",
-    "ai_summary_aria": "AI-generated summary of {n} reviews"
+    "ai_summary": "Summary",
+    "ai_summary_aria": "Summary of {count} reviews"
   },
   "avatars": {
     "initials_palette": [

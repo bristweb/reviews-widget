@@ -1,6 +1,6 @@
 /* Reviews widget — static, no dependencies, no site-specific code. https://github.com/bristweb/reviews-widget
  * The code lives in this repo; everything about a site lives in a separate data repo, named by data-source:
- *   <source>config.json          business, platforms, display defaults, strings, schema settings, AI summary,
+ *   <source>config.json          business, platforms, display defaults, strings, schema settings, summary card,
  *                                and reviews.years (which yearly review files exist)
  *   <source>reviews/<year>.json  the reviews (plain records, newest first) — the only copy of the review data
  *   <source>theme/theme.css      fonts + CSS custom properties (colors, radius)
@@ -22,7 +22,7 @@
  * Each script tag renders its own widget; config, reviews and CSS are fetched once per page and source.
  * The script finds its own repo root from its URL (override with data-base="https://.../"), loads the CSS
  * (assets/css/reviews-widget.css + <source>theme/theme.css) if the page doesn't already have it, then renders.
- * Also: data-summary="off" hides the AI summary card; data-schema="off" skips the JSON-LD injection.
+ * Also: data-summary="off" hides the summary card; data-schema="off" skips the JSON-LD injection.
  * Constrained embeds (Google Sites and other fixed-height boxes): one toggle packs the widget into the box —
  *   data-constrained="true"  (= fixed-height + arrows inside + overflow hidden + no hover-lift + focus-ring inside).
  *   Named "constrained" (not "fixed-proportions") because it adapts to the box you give it rather than locking an aspect ratio.
@@ -44,8 +44,8 @@
     based_on: 'Based on ', review_one: 'review', review_many: 'reviews', on_platform: ' on {platform}',
     stars_aria: '{rating} out of 5 stars', recommends: 'Recommends', view_on: 'View on {platform}',
     card_aria: "Read {name}'s review on {platform} (opens in a new tab)", anonymous: 'Anonymous',
-    previous: 'Previous reviews', next: 'Next reviews', ai_summary: 'AI summary',
-    ai_summary_aria: 'AI-generated summary of {count} reviews',
+    previous: 'Previous reviews', next: 'Next reviews', ai_summary: 'Summary',
+    ai_summary_aria: 'Summary of {count} reviews',
   };
   const DISPLAY = {
     layout: 'carousel', snippet_chars: 160, abbreviate_last_names: true, max_same_platform_run: 2,
@@ -314,7 +314,7 @@
     // 1-5 star reviews and every review as a Review item (schema.max_reviews 0 = all): text reviews in the "All
     // reviews" card order, then rating-only reviews newest first. Names and text are the abbreviated ones visitors
     // see. A review without a 1-5 rating (Facebook "recommends") has no reviewRating and isn't in the aggregate;
-    // a review without text has no reviewBody. The AI summary is never included.
+    // a review without text has no reviewBody. The summary card is never included.
     function buildSchema() {
       const SC = { enabled: true, type: 'LocalBusiness', max_reviews: 0, ...(config.schema || {}) };
       const starred = all.filter(r => typeof r.rating === 'number');
@@ -379,7 +379,7 @@
         ${tabs}
       </header>`;
 
-      // AI summary: first card in "All reviews" only; not a link, not counted, not in the JSON-LD.
+      // Summary card: first card in "All reviews" only; not a link, not counted, not in the JSON-LD.
       const ai = cfg.summary && active === 'all' && summary && !isBlank(summary.text)
         ? `<div class="rw-card rw-ai" role="note" aria-label="${esc(fill(S.ai_summary_aria, { count: all.length }))}">
           <div class="rw-ai-top"><span class="rw-ai-icon">${SPARKLE}</span><span class="rw-ai-label">${esc(S.ai_summary)}</span></div>

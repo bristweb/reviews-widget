@@ -27,7 +27,7 @@ Product comparison: [COMPARISON.md](COMPARISON.md).
 4. [Fictional demo data](#fictional-demo-data)
 5. [JSON Schema and validation](#json-schema-and-validation)
 6. [Updating data](#updating-data)
-7. [AI summary](#ai-summary)
+7. [Summary card](#summary-card)
 8. [Card order](#card-order)
 9. [Structured data (JSON-LD)](#structured-data-json-ld)
 10. [Header behavior](#header-behavior)
@@ -114,7 +114,7 @@ When the host gives you a box whose height you set and the code can’t change (
 | `data-layout` | `layout` | `carousel` \| `grid` | `display.layout` |
 | `data-platform` | `platform` | `all` or a `platforms` key | `all` |
 | `data-limit` | `limit` | max review cards (`0` = no limit) | `0` |
-| `data-summary` | `summary` | `off` hides the AI summary card | shown |
+| `data-summary` | `summary` | `off` hides the summary card | shown |
 | `data-schema` | n/a | `off` skips JSON-LD | injected |
 | `data-base` | n/a | this code repo’s root | from the script URL |
 | `data-constrained` | `constrained` | `true` = tight-box preset (fixed height, arrows inside, overflow hidden, no hover lift, focus rings inside). Prefer this over setting the fine-grained attrs below | `false` |
@@ -154,7 +154,7 @@ theme/fonts/             optional self-hosted fonts
 | `display.*` | layout, snippets, diversity, dates, fitting defaults, … |
 | `schema.*` | JSON-LD on/off, `@type`, `max_reviews`, `extra` |
 | `rating_labels`, `strings` | score words and UI copy |
-| `summary` | `{ "text", "generated_at" }` for the AI summary card |
+| `summary` | `{ "text", "generated_at" }` for the summary card |
 | `reviews.years` | year files to fetch, newest first, e.g. `[2026, 2025]` |
 
 Formal shape: `schemas/config.schema.json` in this repo.
@@ -242,7 +242,7 @@ That workflow checks out this repo, runs `npm ci`, then `node scripts/validate.m
 
 ---
 
-## AI summary
+## Summary card
 
 Optional first card on “All reviews”: `config.summary` `{ text, generated_at }`. Not linked, not rated, not in JSON-LD, not counted by `data-limit`. Hide with `display.show_summary: false`, `data-summary="off"`, or omit `summary`.
 

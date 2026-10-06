@@ -22,7 +22,7 @@ Columns: this widget → representative **embeddable review widgets** → **plat
 | **Full copy of the review data you display** | ✅⁴ | 🟡 | 🟡 | 🟡 | 🟡 | 🟡⁵ | 🟡 | 🟡 | 🟡 | 🟡 | 🟡 | 🟡 | 🟡 |
 | **No vendor account** to show reviews on your site | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | **schema.org JSON-LD** on the host page | ✅ | ✅ | ✅ | 🟡 | 🟡 | ❌ | ✅ | ✅ | ✅ | 🟡 | ✅ | 🟡 | ✅ |
-| **AI summary** of reviews on the site | ✅⁶ | 🟡 | ✅⁷ | ❌ | 🟡 | ❌ | 🟡 | 🟡 | ❌ | ❌ | ✅ | 🟡 | ✅ |
+| **Summary card** on the site | ✅⁶ | 🟡 | ✅⁷ | ❌ | 🟡 | ❌ | 🟡 | 🟡 | ❌ | ❌ | ✅ | 🟡 | ✅ |
 | **Custom theme** (your fonts / colors / CSS) | ✅ | 🟡 | 🟡 | 🟡 | 🟡 | 🟡 | 🟡 | 🟡 | 🟡 | 🟡 | 🟡 | 🟡 | 🟡 |
 | **Sync / collection you control** | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | **Multi-source aggregate widget** | ✅ | ✅⁸ | ✅⁹ | ✅ | ✅ | 🟡¹⁰ | 🟡 | 🟡¹¹ | ❌ | ❌ | ✅ | ✅ | ✅ |
@@ -37,7 +37,7 @@ Columns: this widget → representative **embeddable review widgets** → **plat
 3. Free tiers usually mean view caps and/or vendor branding.
 4. Your data repo (or folder) is the copy the widget reads.
 5. Juicer is mainly social / UGC posts, not a review desk.
-6. Summary text you store in `config.json`.
+6. Summary text you store in `config.json` (labeled “Summary” in the widget).
 7. AI summaries / tagging on higher plans.
 8. 30+ review sources.
 9. Google, Facebook, Trustpilot, Yelp, and more.
