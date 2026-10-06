@@ -4,7 +4,12 @@
 
 **<a href="https://bristweb.github.io/reviews-widget/?source=https://bristweb.github.io/reviews-widget/example/" target="_blank" rel="noopener">Open the demo</a>** · **<a href="https://bristweb.github.io/reviews-widget/embed.html?source=https://bristweb.github.io/reviews-widget/example/" target="_blank" rel="noopener">iframe version</a>** · **<a href="https://bristweb.github.io/reviews-widget/embed.html?source=https://bristweb.github.io/reviews-widget/example/&constrained=true" target="_blank" rel="noopener">constrained / fixed-height box</a>**
 
-<a href="https://bristweb.github.io/reviews-widget/?source=https://bristweb.github.io/reviews-widget/example/" target="_blank" rel="noopener"><img src="docs/example-widget.png" alt="Live example: Northwind Cycles (fictional bike shop)" /></a>
+<a href="https://bristweb.github.io/reviews-widget/?source=https://bristweb.github.io/reviews-widget/example/" target="_blank" rel="noopener">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/example-widget-dark.png" />
+  <img src="docs/example-widget.png" alt="Live example: Northwind Cycles (fictional bike shop)" />
+</picture>
+</a>
 
 ```html
 <script src="https://bristweb.github.io/reviews-widget/assets/js/reviews-widget.js"
@@ -319,7 +324,8 @@ index.html, embed.html        demos (default data-source: example/)
 example/                      fictional sample data
 schemas/*.schema.json         config + reviews JSON Schema
 scripts/validate.mjs          Ajv + filesystem checks
-docs/example-widget.png       README screenshot of example/
+docs/example-widget.png       README screenshot (light)
+docs/example-widget-dark.png  README screenshot (dark, via <picture>)
 COMPARISON.md                 named product comparison
 .github/workflows/            check (this repo) + reusable validate
 ```
