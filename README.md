@@ -2,13 +2,15 @@
 
 ## <a href="https://bristweb.github.io/reviews-widget/?source=https://bristweb.github.io/reviews-widget/example/" target="_blank" rel="noopener">▶ Live demo</a>
 
-**<a href="https://bristweb.github.io/reviews-widget/?source=https://bristweb.github.io/reviews-widget/example/" target="_blank" rel="noopener">Open the demo</a>** · **<a href="https://bristweb.github.io/reviews-widget/embed.html?source=https://bristweb.github.io/reviews-widget/example/" target="_blank" rel="noopener">iframe version</a>** · **<a href="https://bristweb.github.io/reviews-widget/embed.html?source=https://bristweb.github.io/reviews-widget/example/&constrained=true" target="_blank" rel="noopener">constrained / fixed-height box</a>**
+**<a href="https://bristweb.github.io/reviews-widget/?source=https://bristweb.github.io/reviews-widget/example/" target="_blank" rel="noopener">Open the demo</a>** · **<a href="https://bristweb.github.io/reviews-widget/?source=https://bristweb.github.io/reviews-widget/example/&theme=light" target="_blank" rel="noopener">Light</a>** · **<a href="https://bristweb.github.io/reviews-widget/?source=https://bristweb.github.io/reviews-widget/example/&theme=dark" target="_blank" rel="noopener">Dark</a>**
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/example-widget-dark-v2.png" />
   <source media="(prefers-color-scheme: light)" srcset="docs/example-widget-light-v2.png" />
   <img src="docs/example-widget-light-v2.png" alt="Live example: Northwind Cycles (fictional bike shop)" />
 </picture>
+
+<a href="https://bristweb.github.io/reviews-widget/embed.html?source=https://bristweb.github.io/reviews-widget/example/" target="_blank" rel="noopener">iframe version</a> · <a href="https://bristweb.github.io/reviews-widget/embed.html?source=https://bristweb.github.io/reviews-widget/example/&constrained=true" target="_blank" rel="noopener">constrained / fixed-height box</a>
 
 ```html
 <script src="https://bristweb.github.io/reviews-widget/assets/js/reviews-widget.js"
