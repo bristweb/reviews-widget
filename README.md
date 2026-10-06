@@ -1,6 +1,18 @@
 # Reviews widget
 
-A static, dependency-free reviews widget in the style of Elfsight, served by GitHub Pages. This repo holds **only the code**: the widget script and stylesheet, two bare pages for iframes, and a validator for the data format the widget reads. It holds no reviews, and it doesn't collect them: each data repo brings its own tooling (or none) and runs it on its own schedule.
+A static, dependency-free reviews widget served by GitHub Pages. This repo holds **only the code**: the widget script and stylesheet, two bare pages for iframes, and a validator for the data format the widget reads. It holds no reviews, and it doesn't collect them: each data repo brings its own tooling (or none) and runs it on its own schedule.
+
+| | This widget | Hosted review-widget SaaS | Reputation / review-management platform |
+|---|---|---|---|
+| Self-hosted | yes (your GitHub Pages) | no (vendor hosts the embed) | no (vendor hosts the product) |
+| Free to run | yes (GitHub Pages) | usually a paid plan | usually a paid plan |
+| Static files, no server or database | yes | no | no |
+| Vendor lock-in | none (plain JSON + JS you can fork) | the widget and often the data stay with the vendor | reviews and workflows stay with the vendor |
+| You own the review data | yes (in your data repo) | depends on export | depends on export |
+| schema.org JSON-LD | yes (computed in the browser) | often | often |
+| AI summary card | yes (text you write into config) | sometimes | sometimes |
+| Embed options | JS tag, iframe, fixed-height / Google Sites fitting | vendor snippet | often a dashboard, not a page embed |
+| Sync / collection owned by you | yes (each site's own scripts and schedule) | vendor crawls or imports | vendor manages outreach and replies |
 
 Each site's reviews and look live in their own **data repo**, which the widget reads at load time:
 
@@ -197,7 +209,7 @@ README.md                the site's embed snippet and notes about its platforms
 |---|---|
 | `business` | `name`, `website` (used in the JSON-LD and as reference), optional extra details (e.g. `product`) |
 | `sources`, `links` | optional reference notes (e.g. which URLs the site links to and what was checked); ignored by the widget |
-| `platforms` | one entry per review platform, **in tab order**. Display: `name`, `icon` (data-repo path; default `icons/<key>.svg`), `simple_icon` (fallback slug), `write_url` ("Write a review" target on that tab), `page_url` (the platform page; also the fallback link for reviews without their own URL), `card_link` (`"review"` = each card links to its review, `"page"` = to `page_url`), optional `invert_icon_when_active`. Any other fields (a site's own collection settings, reported counts, notes, …) are ignored by the widget |
+| `platforms` | one entry per review platform, **in tab order**. Display: `name`, `icon` (data-repo path; default `icons/<key>.svg`), `simple_icon` (fallback slug), `write_url` ("Write a review" target on that tab), `page_url` (the platform page; also the fallback link for reviews without their own URL), `card_link` (`"review"` = each card links to its review, `"page"` = to `page_url`), optional `invert_icon_when_active`. Any other fields (a site's own collection settings — scrape URLs, how reviews are obtained, reported counts, notes, …) are ignored by the widget; how a review was collected is never stored on the review itself |
 | `default_write_platform` | which platform's `write_url` the button uses on the "All" tab |
 | `display.layout` | default layout |
 | `display.snippet_chars` | snippet length in characters (`0` = full text) |
@@ -233,7 +245,6 @@ Each file is a JSON array of the reviews **dated** in that year, newest first. T
   "owner_reply": { "text": "…", "date": "2026-10-05T21:47:17Z" },     // the owner's public reply, or null
   "collected_at": "2026-10-05T22:00:27Z",  // optional: when the record was first stored
   "updated_at": "…",                       // optional: when it was last refreshed
-  "source": "apify",                       // how it was collected (free text, e.g. direct, apify)
   // optional, platform-specific, e.g.:
   "featured_on_website": true,             // the site quotes this review
   "rating_source": "…",                    // when the rating isn't a native star field (Facebook "5 stars" tag)
@@ -309,7 +320,7 @@ Rules for the text: only themes that actually appear in the reviews, no invented
 
 - `config.json` parses, has `business.name` and `platforms`, every platform/link icon exists, `summary` (if present) has text and an ISO `generated_at`;
 - `reviews.years` is a list of integers, newest first, and matches the `reviews/*.json` files exactly (no missing, unlisted or empty files);
-- every record has `platform`, `platform_review_id`, `reviewer_name`, `reviewer_image`, `text`, `date`, `review_url`, `source`; the platform is in `config.json`; `rating` is 1-5 or null; dates are ISO 8601; each record is in the file for its year, newest first; `owner_reply` is null or `{text, date}`;
+- every record has `platform`, `platform_review_id`, `reviewer_name`, `reviewer_image`, `text`, `date`, `review_url`; the platform is in `config.json`; `rating` is 1-5 or null; dates are ISO 8601; each record is in the file for its year, newest first; `owner_reply` is null or `{text, date}`;
 - `platform` + `platform_review_id` is unique across all years;
 - each `reviewer_image` is `images/reviewers/<platform>-<safe id>.<ext>` and exists, and no avatar file is unused.
 

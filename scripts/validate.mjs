@@ -11,7 +11,7 @@ const err = m => errors.push(m), warn = m => warnings.push(m);
 const readJson = f => { try { return JSON.parse(readFileSync(path.join(root, f), 'utf8')); } catch (e) { err(`${f}: ${e.code === 'ENOENT' ? 'missing' : 'invalid JSON (' + e.message + ')'}`); return null; } };
 const isIso = s => typeof s === 'string' && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2}(\.\d+)?)?(Z|[+-]\d{2}:\d{2})$/.test(s) && !Number.isNaN(Date.parse(s));
 const safeId = s => String(s).replace(/[^A-Za-z0-9_-]/g, '_');
-const REQUIRED = ['platform', 'platform_review_id', 'reviewer_name', 'reviewer_image', 'text', 'date', 'review_url', 'source'];
+const REQUIRED = ['platform', 'platform_review_id', 'reviewer_name', 'reviewer_image', 'text', 'date', 'review_url'];
 
 const config = readJson('config.json') || {};
 const platforms = config.platforms || {};
