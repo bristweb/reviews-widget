@@ -76,6 +76,7 @@
     "initials_text_color": "#fff"
   },
   "summary": {
+    "title": "Highlights",
     "text": "Riders praise quick repairs, careful bike fits, and a calm shop floor with no hard sell. Regulars mention returning for seasonal gear, tubeless setups, and kid-bike fittings after a first tune-up.",
     "generated_at": "2026-10-06T18:00:00Z"
   },
@@ -89,6 +90,7 @@
   },
   "accolades": [
     {
+      "label": "Local Shop Editors' Pick",
       "year": 2025,
       "icon": "icons/award-choice.svg",
       "url": "https://example.com/awards/local-shop-editors-pick-2025"

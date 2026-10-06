@@ -13,7 +13,7 @@
  * Usage (JS embed) — one script tag renders the widget right where the tag is (defer/async are fine):
  *   <script src="…/reviews-widget/assets/js/reviews-widget.js"
  *           data-source="…/<your-data-repo>/" defer></script>
- * Public options: data-source (required), data-layout, data-platform (one platforms key, or omit for all),
+ * Public options: data-source (required), data-layout, data-platform (one platforms key, accolades, or omit for all),
  *   data-limit, data-summary="off", data-theme="light|dark|auto", data-schema="off", data-constrained="true",
  *   data-lang (ISO language code).
  * Bare pages index.html / embed.html default data via ?source= when the script has no data-source.
@@ -32,13 +32,17 @@
   const SHARED = (window.__reviewsWidget ??= { css: {}, loads: {} });
   const STRINGS = {
     loading: 'Loading reviews…', unavailable: 'Reviews are unavailable right now.',
-    tabs_aria: 'Filter reviews by platform', tab_all: 'All', tab_all_suffix: ' reviews',
-    tab_title: '{name}: {count} reviews', tab_aria: '{name}, {count} reviews', write_review: 'Write a review', write_review_short: 'Review',
+    tabs_aria: 'Filter reviews by platform or awards', tab_all: 'All', tab_all_suffix: ' reviews',
+    tab_title: '{name}: {count} reviews', tab_aria: '{name}, {count} reviews',
+    tab_accolades: 'Awards', tab_accolades_title: '{name}: {count} awards', tab_accolades_aria: '{name}, {count} awards',
+    write_review: 'Write a review', write_review_short: 'Review',
     based_on: 'Based on ', review_one: 'review', review_many: 'reviews', on_platform: ' on {platform}',
+    accolade_one: 'award', accolade_many: 'awards',
     stars_aria: '{rating} out of 5 stars', recommends: 'Recommends', view_on: 'View on {platform}',
     card_aria: "Read {name}'s review on {platform} (opens in a new tab)", anonymous: 'Anonymous',
     previous: 'Previous reviews', next: 'Next reviews', ai_summary: 'Summary',
     ai_summary_aria: 'Summary of {count} reviews', accolades_aria: 'Awards and accolades',
+    accolade_card_aria: '{label} ({year}) — opens in a new tab',
   };
   const DISPLAY = {
     layout: 'carousel', snippet_chars: 160, abbreviate_last_names: true, max_same_platform_run: 2,
@@ -482,95 +486,119 @@
         })),
       };
     }
+    // Accolades (config-level): reused for the Awards tab and for merging into the review track.
+    const accoladesList = Array.isArray(config.accolades)
+      ? config.accolades
+          .filter(a => a && a.url && a.year != null && String(a.year).trim() && (a.icon || a.label || a.name))
+          .slice()
+          .sort((a, b) => {
+            const ya = Number(a.year), yb = Number(b.year);
+            const na = Number.isFinite(ya) ? ya : 0, nb = Number.isFinite(yb) ? yb : 0;
+            return nb - na;
+          })
+      : [];
+    const accoladeSortDate = a => {
+      const y = Number(a.year);
+      const year = Number.isFinite(y) ? Math.trunc(y) : 0;
+      return `${String(year).padStart(4, '0')}-12-31`;
+    };
+    const reviewSortDate = r => {
+      const d = String(r.date || '').slice(0, 10);
+      return /^\d{4}-\d{2}-\d{2}$/.test(d) ? d : '0000-00-00';
+    };
     let active = cfg.platform;
+    if (active === 'accolades' && !accoladesList.length) active = 'all';
 
     function render() {
-      const pool = active === 'all' ? all : all.filter(r => r.platform === active);
+      const onAccolades = active === 'accolades';
+      // Header rating: platform filter uses that pool; Awards keeps the overall business score.
+      const pool = onAccolades || active === 'all' ? all : all.filter(r => r.platform === active);
       const rated = pool.filter(r => typeof r.rating === 'number');
       const avg = rated.length ? rated.reduce((s, r) => s + r.rating, 0) / rated.length : 5;
       // cards show the clipped snippet only. "All": newest first + gentle diversity; one platform: newest first.
-      let shown = active === 'all' ? allOrder : newest.filter(r => r.platform === active);
-      if (cfg.limit) shown = shown.slice(0, cfg.limit);
-      const write = (PLATFORMS[active === 'all' ? writeDefault : active] || {}).write_url || '#';
+      // Awards tab: no review cards (accolades only).
+      let shown = onAccolades ? [] : active === 'all' ? allOrder : newest.filter(r => r.platform === active);
+      if (cfg.limit && !onAccolades) shown = shown.slice(0, cfg.limit);
+      const writeKey = (onAccolades || active === 'all') ? writeDefault : active;
+      const write = (PLATFORMS[writeKey] || {}).write_url || '#';
 
-      const tabs = present.length > 1 ? `<div class="rw-tabs" role="tablist" aria-label="${esc(S.tabs_aria)}">
-        ${['all', ...present].map(p => {
-          const n = p === 'all' ? all.length : all.filter(r => r.platform === p).length;
+      const tabKeys = ['all', ...present, ...(accoladesList.length ? ['accolades'] : [])];
+      const showTabs = present.length > 1 || accoladesList.length > 0;
+      const tabs = showTabs ? `<div class="rw-tabs" role="tablist" aria-label="${esc(S.tabs_aria)}">
+        ${tabKeys.map(p => {
+          const isAcc = p === 'accolades';
+          const n = p === 'all' ? all.length : isAcc ? accoladesList.length : all.filter(r => r.platform === p).length;
           const allSuffix = (S.tab_all_suffix || '').trim();
           const allSuffixSp = allSuffix ? ' ' + allSuffix : '';
-          const name = p === 'all' ? S.tab_all + allSuffixSp : pname(p);
+          const name = p === 'all' ? S.tab_all + allSuffixSp : isAcc ? S.tab_accolades : pname(p);
+          const titleTpl = isAcc ? S.tab_accolades_title : S.tab_title;
+          const ariaTpl = isAcc ? S.tab_accolades_aria : S.tab_aria;
+          const labelHtml = p === 'all'
+            ? `<span class="rw-tab-name">${esc(S.tab_all)}<span class="rw-tab-long">${esc(allSuffixSp)}</span></span>`
+            : isAcc
+              ? `<span class="rw-tab-name">${esc(S.tab_accolades)}</span>`
+              : `${icon(p)}<span class="rw-tab-name">${esc(name)}</span>`;
           return `<button role="tab" class="rw-tab ${p === active ? 'is-active' : ''}" data-p="${p}" aria-selected="${p === active}"
-            title="${esc(fill(S.tab_title, { name, count: n }))}" aria-label="${esc(fill(S.tab_aria, { name, count: n }))}">
-            ${p === 'all' ? `<span class="rw-tab-name">${esc(S.tab_all)}<span class="rw-tab-long">${esc(allSuffixSp)}</span></span>` : `${icon(p)}<span class="rw-tab-name">${esc(name)}</span>`}
+            title="${esc(fill(titleTpl, { name, count: n }))}" aria-label="${esc(fill(ariaTpl, { name, count: n }))}">
+            ${labelHtml}
             <em>${n}</em></button>`;
         }).join('')}</div>` : '';
 
+      const basedCount = onAccolades ? accoladesList.length : pool.length;
+      const basedUnit = onAccolades
+        ? (basedCount === 1 ? S.accolade_one : S.accolade_many)
+        : (basedCount === 1 ? S.review_one : S.review_many);
+      const basedPlatform = (!onAccolades && active !== 'all')
+        ? esc(fill(S.on_platform, { platform: pname(active) }))
+        : '';
       const header = `<header class="rw-header">
         <div class="rw-summary">
           <div class="rw-score">${avg.toFixed(1)}</div>
           <div>
             <div class="rw-label">${esc(label(avg))}</div>
             ${stars(avg, 'rw-stars-lg')}
-            <div class="rw-based"><span class="rw-based-pre">${esc((S.based_on || '').trimEnd())} </span><strong>${pool.length}</strong> ${esc(pool.length === 1 ? S.review_one : S.review_many)}<span class="rw-based-pre">${active === 'all' ? '' : esc(fill(S.on_platform, { platform: pname(active) }))}</span></div>
+            <div class="rw-based"><span class="rw-based-pre">${esc((S.based_on || '').trimEnd())} </span><strong>${basedCount}</strong> ${esc(basedUnit)}<span class="rw-based-pre">${basedPlatform}</span></div>
           </div>
         </div>
-        <a class="rw-write" href="${esc(write)}" target="_blank" rel="${esc(platformRel(active === 'all' ? writeDefault : active))}" aria-label="${esc(S.write_review)}"><span class="rw-write-long">${esc(S.write_review)}</span><span class="rw-write-short">${esc(S.write_review_short)}</span></a>
+        <a class="rw-write" href="${esc(write)}" target="_blank" rel="${esc(platformRel(writeKey))}" aria-label="${esc(S.write_review)}"><span class="rw-write-long">${esc(S.write_review)}</span><span class="rw-write-short">${esc(S.write_review_short)}</span></a>
         ${tabs}
       </header>`;
 
-      // Accolades: filter reviews only; merge badge cards into the track by date after the
-      // platform filter/limit on reviews. Each accolade sorts as YYYY-12-31 so it leads that
-      // year when scrolling newest→oldest. Always keep at least one accolade before the first
-      // review (promote the newest award when its year is older than the newest review).
-      const accoladesList = Array.isArray(config.accolades)
-        ? config.accolades
-            .filter(a => a && a.url && a.year != null && String(a.year).trim() && (a.icon || a.label || a.name))
-            .slice()
-            .sort((a, b) => {
-              const ya = Number(a.year), yb = Number(b.year);
-              const na = Number.isFinite(ya) ? ya : 0, nb = Number.isFinite(yb) ? yb : 0;
-              return nb - na;
-            })
-        : [];
-      const accoladeSortDate = a => {
-        const y = Number(a.year);
-        const year = Number.isFinite(y) ? Math.trunc(y) : 0;
-        return `${String(year).padStart(4, '0')}-12-31`;
-      };
-      const reviewSortDate = r => {
-        const d = String(r.date || '').slice(0, 10);
-        return /^\d{4}-\d{2}-\d{2}$/.test(d) ? d : '0000-00-00';
-      };
-      const trackItems = [
-        ...accoladesList.map(a => ({ kind: 'accolade', accolade: a, sortDate: accoladeSortDate(a) })),
-        ...shown.map(r => ({ kind: 'review', review: r, sortDate: reviewSortDate(r) })),
-      ].sort((a, b) => {
-        if (a.sortDate !== b.sortDate) return a.sortDate < b.sortDate ? 1 : -1;
-        if (a.kind !== b.kind) return a.kind === 'accolade' ? -1 : 1;
-        return 0;
-      });
-      // Guarantee an award card ahead of the first review when any accolades exist.
-      if (accoladesList.length && trackItems.length) {
-        const firstReviewIdx = trackItems.findIndex(i => i.kind === 'review');
-        const firstAccoladeIdx = trackItems.findIndex(i => i.kind === 'accolade');
-        if (firstAccoladeIdx > 0 && (firstReviewIdx < 0 || firstAccoladeIdx > firstReviewIdx)) {
-          const [item] = trackItems.splice(firstAccoladeIdx, 1);
-          trackItems.unshift(item);
+      // Accolades: merge badge cards into the track by date after the platform filter/limit on
+      // reviews (Awards tab: accolades only). Each sorts as YYYY-12-31 so it leads that year.
+      // Always keep at least one accolade before the first review when merging with reviews.
+      let trackItems;
+      if (onAccolades) {
+        trackItems = accoladesList.map(a => ({ kind: 'accolade', accolade: a, sortDate: accoladeSortDate(a) }));
+      } else {
+        trackItems = [
+          ...accoladesList.map(a => ({ kind: 'accolade', accolade: a, sortDate: accoladeSortDate(a) })),
+          ...shown.map(r => ({ kind: 'review', review: r, sortDate: reviewSortDate(r) })),
+        ].sort((a, b) => {
+          if (a.sortDate !== b.sortDate) return a.sortDate < b.sortDate ? 1 : -1;
+          if (a.kind !== b.kind) return a.kind === 'accolade' ? -1 : 1;
+          return 0;
+        });
+        if (accoladesList.length && trackItems.length) {
+          const firstReviewIdx = trackItems.findIndex(i => i.kind === 'review');
+          const firstAccoladeIdx = trackItems.findIndex(i => i.kind === 'accolade');
+          if (firstAccoladeIdx > 0 && (firstReviewIdx < 0 || firstAccoladeIdx > firstReviewIdx)) {
+            const [item] = trackItems.splice(firstAccoladeIdx, 1);
+            trackItems.unshift(item);
+          }
         }
       }
 
       const accoladeCard = a => {
-        // Optional freeform caption (label preferred over name). Year sorts the timeline; not shown alone.
+        // Label (preferred) / name as description; year always visible (sorts the timeline too).
         const rawCap = [a.label, a.name].find(v => v != null && String(v).trim());
+        const labelText = rawCap ? String(rawCap).trim() : '';
         const yearStr = String(a.year).trim();
-        const caption = rawCap ? `${String(rawCap).trim()} ${yearStr}` : '';
-        const aria = caption || yearStr || 'Award';
+        const aria = fill(S.accolade_card_aria, { label: labelText || S.tab_accolades, year: yearStr || '' });
         const img = a.icon ? `<img src="${esc(url(a.icon))}" alt="" loading="lazy">` : '';
-        const capEl = caption ? `<span class="rw-accolade-caption">${esc(caption)}</span>` : '';
-        // Logo-only: no visible text. Text-only (no icon): caption alone.
-        const body = img || capEl;
-        const extra = img && capEl ? capEl : '';
-        return `<a class="rw-card rw-accolade-card" href="${esc(a.url)}" target="_blank" rel="${esc(linkRel(a))}" title="${esc(aria)}" aria-label="${esc(aria)}">${body}${extra}</a>`;
+        const capEl = labelText ? `<span class="rw-accolade-caption">${esc(labelText)}</span>` : '';
+        const yearEl = yearStr ? `<time class="rw-accolade-year" datetime="${esc(yearStr)}">${esc(yearStr)}</time>` : '';
+        return `<a class="rw-card rw-accolade-card" href="${esc(a.url)}" target="_blank" rel="${esc(linkRel(a))}" title="${esc(aria)}" aria-label="${esc(aria)}">${img}${capEl}${yearEl}</a>`;
       };
       const reviewCard = r => {
         const name = pname(r.platform);
@@ -593,9 +621,13 @@
       };
 
       // Summary card: first card in "All reviews" only; not a link, not counted, not in the JSON-LD.
+      // Headline: summary.title (config) or language/strings ai_summary (e.g. "Highlights").
+      const summaryTitle = (summary && summary.title != null && String(summary.title).trim())
+        ? String(summary.title).trim()
+        : S.ai_summary;
       const ai = cfg.summary && active === 'all' && summary && !isBlank(summary.text)
         ? `<div class="rw-card rw-ai" role="note" aria-label="${esc(fill(S.ai_summary_aria, { count: all.length }))}">
-          <div class="rw-ai-top"><span class="rw-ai-icon">${SPARKLE}</span><span class="rw-ai-label">${esc(S.ai_summary)}</span></div>
+          <div class="rw-ai-top"><span class="rw-ai-icon">${SPARKLE}</span><span class="rw-ai-label">${esc(summaryTitle)}</span></div>
           <p class="rw-ai-text">${esc(summary.text)}</p>
         </div>` : '';
       const cards = ai + trackItems.map(item => item.kind === 'accolade' ? accoladeCard(item.accolade) : reviewCard(item.review)).join('');

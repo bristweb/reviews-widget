@@ -120,7 +120,7 @@
           "type": "number",
           "minimum": 24,
           "maximum": 240,
-          "description": "Max edge (px) for every accolade logo in badge cards. Default 120 (promotional award size). One global setting \u2014 no per-item size/width/height."
+          "description": "Max edge (px) for every accolade logo in badge cards. Default 120 (promotional award size). One global setting — no per-item size/width/height."
         }
       }
     },
@@ -163,7 +163,7 @@
     },
     "languages": {
       "type": "array",
-      "description": "Translation catalogs as { lang, url }. lang is an ISO language tag (en, en-us, es, \u2026); url is absolute or relative to the data root. Partial catalogs are fine; missing keys fall through to the widget's lang/en.json.",
+      "description": "Translation catalogs as { lang, url }. lang is an ISO language tag (en, en-us, es, …); url is absolute or relative to the data root. Partial catalogs are fine; missing keys fall through to the widget's lang/en.json.",
       "items": {
         "type": "object",
         "required": [
@@ -227,8 +227,14 @@
         "generated_at": {
           "type": "string",
           "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}(:\\d{2}(\\.\\d+)?)?(Z|[+-]\\d{2}:\\d{2})$"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Optional card headline for the summary card. Falls back to language/strings ai_summary (e.g. Highlights / Summary)."
         }
-      }
+      },
+      "description": "Summary card shown first on the All tab. text + generated_at required; optional title overrides the language headline."
     },
     "reviews": {
       "type": "object",
@@ -253,7 +259,7 @@
     },
     "accolades": {
       "type": "array",
-      "description": "Optional award badge cards merged into the review track by date after the platform filter. Each item sorts as YYYY-12-31 so it leads that year (newest first). When any accolades exist, at least one appears before the first review (newest award promoted if its year is older than the newest review). Each item needs url + year plus icon and/or optional freeform label (name is an alias). Logo-only is fine when label is omitted. Size is global via display.accolade_size. Same optional nofollow/noreferrer/rel as platforms.",
+      "description": "Optional award badge cards merged into the review track by date after the platform filter (and listed alone on the Awards tab when present). Each item sorts as YYYY-12-31 so it leads that year (newest first). When any accolades exist, at least one appears before the first review (newest award promoted if its year is older than the newest review). Each item needs url + year plus icon and/or freeform label (name is an alias). Label shows as the card description; year is always visible. Size is global via display.accolade_size. Same optional nofollow/noreferrer/rel as platforms.",
       "items": {
         "type": "object",
         "required": [
@@ -287,7 +293,7 @@
           "label": {
             "type": "string",
             "minLength": 1,
-            "description": "Optional freeform caption under the logo. Prefer omitting when the logo already includes the award text."
+            "description": "Freeform description under the logo. Prefer label over name when both are set."
           },
           "year": {
             "type": [
@@ -295,7 +301,7 @@
               "integer",
               "number"
             ],
-            "description": "Required. Sort key is YYYY-12-31 on the shared review timeline (leads that year when scrolling newest to oldest). Appended to a freeform caption when label/name is set; not shown alone for logo-only entries."
+            "description": "Required. Sort key is YYYY-12-31 on the shared review timeline (leads that year when scrolling newest to oldest). Always shown on the accolade card."
           },
           "icon": {
             "type": "string",

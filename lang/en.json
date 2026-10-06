@@ -1,7 +1,7 @@
 {
   "loading": "Loading reviews…",
   "unavailable": "Reviews are unavailable right now.",
-  "tabs_aria": "Filter reviews by platform",
+  "tabs_aria": "Filter reviews by platform or awards",
   "tab_all": "All",
   "tab_all_suffix": " reviews",
   "tab_title": "{name}",
@@ -43,5 +43,11 @@
       "min": 0,
       "label": "Poor"
     }
-  ]
+  ],
+  "tab_accolades": "Awards",
+  "tab_accolades_title": "{name}: {count} awards",
+  "tab_accolades_aria": "{name}, {count} awards",
+  "accolade_one": "award",
+  "accolade_many": "awards",
+  "accolade_card_aria": "{label} ({year}) — opens in a new tab"
 }

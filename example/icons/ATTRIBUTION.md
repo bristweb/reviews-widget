@@ -4,5 +4,5 @@ Platform logos in this folder (**Google**, **Yelp**, **Facebook**, **Trustpilot*
 
 All marks belong to their owners and are used only to identify where each review was posted. This example is not affiliated with those platforms.
 
-Placeholder award badges (`award-choice.svg`, `award-bestof.svg`) are original graphics for this example (not real award marks). Any award names in `config.json` are fictional; logo-only entries intentionally omit captions.
+Placeholder award badges (`award-choice.svg`, `award-bestof.svg`) are original graphics for this example (not real award marks). Any award names in `config.json` are fictional; each entry shows its label and year on the accolade card.
 

@@ -1,7 +1,7 @@
 {
   "loading": "Cargando reseñas…",
   "unavailable": "Las reseñas no están disponibles en este momento.",
-  "tabs_aria": "Filtrar reseñas por plataforma",
+  "tabs_aria": "Filtrar reseñas por plataforma o premios",
   "tab_all": "Todas",
   "tab_all_suffix": " las reseñas",
   "write_review": "Escribir una reseña",
@@ -18,10 +18,32 @@
   "ai_summary": "Resumen",
   "ai_summary_aria": "Resumen de {count} reseñas",
   "rating_labels": [
-    { "min": 4.75, "label": "Excelente" },
-    { "min": 4.25, "label": "Genial" },
-    { "min": 3.5, "label": "Bueno" },
-    { "min": 2.5, "label": "Regular" },
-    { "min": 0, "label": "Malo" }
-  ]
+    {
+      "min": 4.75,
+      "label": "Excelente"
+    },
+    {
+      "min": 4.25,
+      "label": "Genial"
+    },
+    {
+      "min": 3.5,
+      "label": "Bueno"
+    },
+    {
+      "min": 2.5,
+      "label": "Regular"
+    },
+    {
+      "min": 0,
+      "label": "Malo"
+    }
+  ],
+  "tab_accolades": "Premios",
+  "tab_accolades_title": "{name}: {count} premios",
+  "tab_accolades_aria": "{name}, {count} premios",
+  "accolade_one": "premio",
+  "accolade_many": "premios",
+  "accolades_aria": "Premios y reconocimientos",
+  "accolade_card_aria": "{label} ({year}) — se abre en una pestaña nueva"
 }
