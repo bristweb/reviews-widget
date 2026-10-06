@@ -56,7 +56,7 @@
   "tab_testimonials_aria": "{name}, {count} testimonials",
   "testimonial_one": "testimonial",
   "testimonial_many": "testimonials",
-  "view_testimonial": "View testimonial",
+  "view_testimonial": "Learn more",
   "testimonial_from": "{name} from {source}",
   "testimonial_card_aria": "Read {name}'s testimonial{source_clause} (opens in a new tab)",
   "testimonial_card_aria_nolink": "{name}'s testimonial{source_clause}",

@@ -52,7 +52,7 @@
   "tab_testimonials_aria": "{name}, {count} testimonios",
   "testimonial_one": "testimonio",
   "testimonial_many": "testimonios",
-  "view_testimonial": "Ver testimonio",
+  "view_testimonial": "Más información",
   "testimonial_from": "{name} de {source}",
   "testimonial_card_aria": "Leer el testimonio de {name}{source_clause} (se abre en una pestaña nueva)",
   "testimonial_card_aria_nolink": "Testimonio de {name}{source_clause}",

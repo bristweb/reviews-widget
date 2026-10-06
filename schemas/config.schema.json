@@ -118,9 +118,9 @@
         },
         "accolade_size": {
           "type": "number",
-          "minimum": 24,
-          "maximum": 240,
-          "description": "Max edge (px) for every accolade logo in badge cards. Default 120 (promotional award size). One global setting \u2014 no per-item size/width/height."
+          "minimum": 0,
+          "maximum": 480,
+          "description": "Optional max edge (px) for accolade logos in badge cards. Omit or 0 = fill the card\u2019s free space (with padding). Positive values cap the logo. One global setting \u2014 no per-item size/width/height."
         }
       }
     },
@@ -259,7 +259,7 @@
     },
     "accolades": {
       "type": "array",
-      "description": "Optional award badge cards merged into the review track by date after the platform filter (and listed alone on the Awards tab when present). Each item sorts as YYYY-12-31 so it leads that year (newest first). When any accolades exist, at least one appears before the first review (newest award promoted if its year is older than the newest review). Each item needs url + year plus icon and/or freeform label (name is an alias). Cards match review chrome: title + year up top, badge in the middle, View award link cue at the bottom. Size is global via display.accolade_size. Same optional nofollow/noreferrer/rel as platforms.",
+      "description": "Optional award badge cards merged into the review track by date after the platform filter (and listed alone on the Awards tab when present). Each item sorts as YYYY-12-31 so it leads that year (newest first). When any accolades exist, at least one appears before the first review (newest award promoted if its year is older than the newest review). Each item needs url + year plus icon and/or freeform label (name is an alias). Cards match review chrome: title + year up top, badge in the middle, View award link cue at the bottom. Logo fills the card free space by default; optional global max via display.accolade_size. Same optional nofollow/noreferrer/rel as platforms.",
       "items": {
         "type": "object",
         "required": [
@@ -326,7 +326,7 @@
     },
     "testimonials": {
       "type": "array",
-      "description": "Optional testimonial cards merged into the review track by date (newest first) on the All tab, like accolades. Not tied to a review platform. When present, a Testimonials filter tab lists only these cards. Platform filters omit them. Each item needs reviewer_name, text, and date. Optional url (card link), rating (1\u20135), reviewer_image. Optional source: if set, name is required; source.logo (when set) replaces the usual platform icon and is shown in the avatar position (reviewer image moves secondary). Same optional nofollow/noreferrer/rel as platforms.",
+      "description": "Optional testimonial cards merged into the review track by date (newest first) on the All tab, like accolades. Not tied to a review platform. When present, a Testimonials filter tab lists only these cards. Platform filters omit them. Each item needs reviewer_name, text, and date. Optional url (card link), link_text (footer cue; default Learn more / strings.view_testimonial), rating (1\u20135), reviewer_image. Optional source: if set, name is required; source.logo (when set) replaces the usual platform icon and is shown in the avatar position (reviewer image moves secondary). Same optional nofollow/noreferrer/rel as platforms.",
       "items": {
         "type": "object",
         "required": [
@@ -359,6 +359,10 @@
             "type": "string",
             "minLength": 1,
             "description": "Optional outbound link for the card. When omitted, the card is not a link."
+          },
+          "link_text": {
+            "type": "string",
+            "description": "Optional footer link cue when url is set. Overrides strings.view_testimonial (default Learn more). Use when the destination is not the quote itself (e.g. company site)."
           },
           "rating": {
             "anyOf": [

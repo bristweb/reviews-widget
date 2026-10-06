@@ -41,7 +41,7 @@
     accolade_one: 'award', accolade_many: 'awards',
     testimonial_one: 'testimonial', testimonial_many: 'testimonials',
     stars_aria: '{rating} out of 5 stars', recommends: 'Recommends', view_on: 'View on {platform}', view_accolade: 'View award',
-    view_testimonial: 'View testimonial',
+    view_testimonial: 'Learn more',
     card_aria: "Read {name}'s review on {platform} (opens in a new tab)", anonymous: 'Anonymous',
     previous: 'Previous reviews', next: 'Next reviews', ai_summary: 'Summary',
     ai_summary_aria: 'Summary of {count} reviews', accolades_aria: 'Awards and accolades',
@@ -55,7 +55,7 @@
     layout: 'carousel', snippet_chars: 160, abbreviate_last_names: true, max_same_platform_run: 2,
     diversity_window_days: 548, date_locale: 'en-US', date_options: { year: 'numeric', month: 'short', day: 'numeric' },
     font_timeout_ms: 1200, show_rating_only_reviews: false, show_summary: true,
-    theme: 'auto', constrained: false, accolade_size: 120,
+    theme: 'auto', constrained: false, accolade_size: 0,
   };
   const RATING_LABELS = [{ min: 4.75, label: 'Excellent' }, { min: 4.25, label: 'Great' }, { min: 3.5, label: 'Good' }, { min: 0, label: 'Reviews' }];
   const STAR = '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 1.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L10 14.9l-5.2 2.7 1-5.8L1.5 7.7l5.9-.9z"/></svg>';
@@ -315,6 +315,7 @@
     const S = { ...STRINGS, ...fromEn.strings, ...fromSel.strings, ...inline };
     const D = { ...DISPLAY, ...(config.display || {}) };
     {
+      // 0 / unset = badge fills the card’s free space; positive px caps the max edge.
       const n = Number(D.accolade_size);
       if (Number.isFinite(n) && n > 0) el.style.setProperty('--rw-accolade-size', Math.round(n) + 'px');
     }
@@ -693,8 +694,10 @@
         }
         const rating = typeof t.rating === 'number' ? stars(t.rating) : '';
         const text = !isBlank(t.snippet_text) ? `<p class="rw-text">${esc(t.snippet_text)}</p>` : '';
+        const linkRaw = t.link_text != null ? String(t.link_text).trim() : '';
+        const linkLabel = linkRaw || S.view_testimonial;
         const linkCue = hasUrl
-          ? `<span class="rw-link" aria-hidden="true">${esc(S.view_testimonial)} <span class="rw-arrow">→</span></span>`
+          ? `<span class="rw-link" aria-hidden="true">${esc(linkLabel)} <span class="rw-arrow">→</span></span>`
           : '';
         const inner = `<div class="rw-card-top">
             ${primary}
