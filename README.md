@@ -277,7 +277,7 @@ Carousel: 4 / 3 / 2 / 1 cards by width breakpoints.
 1. Create a repo (or folder) for the data; publish it on any static host. If you use GitHub Pages: branch `main`, site root, and keep `.nojekyll`. Optionally add a validate workflow (above).
 2. Add `config.json`, `icons/`, `theme/`, empty `reviews/` + `images/reviewers/`, `"reviews": { "years": [] }`.
 3. Add records and avatars; validate; push.
-4. Embed with `data-source` pointing at that Pages URL.
+4. Embed with `data-source` pointing at that published data URL.
 
 ---
 
