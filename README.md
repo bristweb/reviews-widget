@@ -266,7 +266,7 @@ Clone this repo’s `example/` folder (or copy it into a new repo) and replace t
 
 Review text belongs to its authors; platform marks belong to their owners.
 
-If a feature is missing or you want to run it entirely independently, [fork the repo](https://github.com/bristweb/reviews-widget/fork).
+If a feature is missing or you want to run it entirely independently, [fork the repo](https://github.com/bristweb/reviews-widget/fork). Pull requests are welcome.
 
 ## License
 
