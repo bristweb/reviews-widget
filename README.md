@@ -18,9 +18,7 @@
 
 Paste to try it. For a real site, keep the script `src` and change only `data-source` to your data store. More patterns: [Embed](#embed).
 
-A static, dependency-free reviews widget. Host the files on any static host (GitHub Pages works out of the box). This repo is **code only** — no real reviews. The demo uses a made-up bike shop (“Northwind Cycles”).
-
-You are not limited to a vendor’s source list: gather reviews however you like (automation or by hand). You keep the data as ordinary files you host; `data-source` points the widget at them. Counts, averages, card order and JSON-LD are computed in the browser.
+A static, dependency-free reviews widget. Host the files on any static host (GitHub Pages works out of the box). You are not limited to a vendor supported integrations. Gather reviews whenever, wherever, and however you like (automation or by hand). Counts, averages, card order and JSON-LD are computed in the browser.
 
 Product comparison: [COMPARISON.md](COMPARISON.md).
 
