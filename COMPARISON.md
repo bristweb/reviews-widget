@@ -2,8 +2,6 @@
 
 Side-by-side look at this open, static reviews widget versus common **hosted review-widget** products and **reputation / review-management** platforms. Features and plans change — check each vendor’s docs for the current product.
 
-Inspired by [TanStack Router’s comparison](https://tanstack.com/router/latest/docs/comparison): named options, a feature matrix, and no claim that one row covers every nuance.
-
 **Key**
 
 | | Meaning |
