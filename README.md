@@ -28,17 +28,16 @@ Product comparison: [COMPARISON.md](COMPARISON.md).
 1. [Embed](#embed)
 2. [Options](#options)
 3. [Data format](#data-format)
-4. [Fictional demo data](#fictional-demo-data)
-5. [JSON Schema and validation](#json-schema-and-validation)
-6. [Updating data](#updating-data)
-7. [Summary card](#summary-card)
-8. [Card order](#card-order)
-9. [Structured data (JSON-LD)](#structured-data-json-ld)
-10. [Header behavior](#header-behavior)
-11. [Privacy and presentation](#privacy-and-presentation)
-12. [New data repo](#new-data-repo)
-13. [Technical details](#technical-details)
-14. [Repo layout](#repo-layout)
+4. [JSON Schema and validation](#json-schema-and-validation)
+5. [Updating data](#updating-data)
+6. [Summary card](#summary-card)
+7. [Card order](#card-order)
+8. [Structured data (JSON-LD)](#structured-data-json-ld)
+9. [Header behavior](#header-behavior)
+10. [Privacy and presentation](#privacy-and-presentation)
+11. [New data repo](#new-data-repo)
+12. [Technical details](#technical-details)
+13. [Repo layout](#repo-layout)
 
 ---
 
@@ -61,21 +60,7 @@ The widget renders where the tag is. It loads CSS from this repo and `theme/them
 - Fills the width it is given (up to 1200px) inside page builders that shrink-to-fit their content.
 - Classes are prefixed `rw-`; a small reset limits host CSS leakage.
 
-**Other mount points:**
-
-```html
-<script src="https://bristweb.github.io/reviews-widget/assets/js/reviews-widget.js" defer
-        data-source="https://bristweb.github.io/reviews-widget/example/" data-target="#reviews"></script>
-<div id="reviews"></div>
-
-<script src="https://bristweb.github.io/reviews-widget/assets/js/reviews-widget.js" defer
-        data-source="https://bristweb.github.io/reviews-widget/example/"></script>
-<div data-reviews-widget data-layout="grid" data-platform="maps"></div>
-```
-
-1. `data-target` → that element (its own `data-*` override the script’s).
-2. Else unfilled `[data-reviews-widget]` elements.
-3. Else in place (a `<head>` script with no target goes to the end of `<body>`).
+Other mount points (`data-target="#…"` on the script, or a few legacy hooks) still work for compatibility when the host is limited or you need a special layout. You usually don’t need them — prefer the in-place script above. A script in `<head>` with no target renders at the end of `<body>`.
 
 ### Google Sites / Similar
 
@@ -187,12 +172,6 @@ Formal shape: `schemas/reviews.schema.json` in this repo.
 `theme/theme.css` sets `--rw-font`, `--rw-ink`, `--rw-accent`, `--rw-star`, `--rw-radius`, `--rw-max-width`, and related variables on `.rw-host`. Font URLs are relative to that file.
 
 **Light / dark:** by default (`data-theme="auto"` or `display.theme: "auto"`) the widget matches the **host page** — `data-theme` / `data-bs-theme` on `html` or `body`, common `dark` / `light` classes, or the page’s CSS `color-scheme`. It only tracks the OS `prefers-color-scheme` when the host itself opts into system (e.g. `color-scheme: light dark`). Force with `data-theme="light"` or `"dark"`. Define dark brand tokens under `.rw-host.rw-dark, .rw-host[data-theme="dark"]` in your theme CSS (see `example/theme/theme.css`).
-
----
-
-## Fictional demo data
-
-The live demo above uses a **fictional** bike shop (“Northwind Cycles”) with invented riders and platforms (`maps`, `directory`). Do not present it as real testimonials.
 
 ---
 

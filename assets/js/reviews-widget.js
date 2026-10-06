@@ -15,7 +15,7 @@
  * Public options: data-source (required), data-layout, data-platform (one platforms key, or omit for all),
  *   data-limit, data-summary="off", data-theme="light|dark|auto", data-schema="off", data-constrained="true".
  * Bare pages index.html / embed.html default data via ?source= when the script has no data-source.
- * Explicit target: data-target="#id" on the script, or [data-reviews-widget] elements (their data-* override the script).
+ * Optional: data-target="#id" on the script for a non-in-place mount (compatibility / special layouts).
  * Code root is inferred from the script URL. CSS loads from this repo + <source>theme/theme.css.
  * data-constrained="true" = tight-box preset (fixed height, arrows inside, overflow hidden, no hover-lift,
  *   focus rings inside). Further fitting tweaks are CSS classes on .rw-host / .rw-root (see README).
