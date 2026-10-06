@@ -8,7 +8,6 @@
   <img src="docs/example-widget-light-v2.png" alt="Live example: Northwind Cycles (fictional bike shop)" />
 </picture>
 
-**Not locked to a vendor** — any review source you can gather (automation or by hand). **You own your data** — plain files you host; the widget just displays them.
 
 <a href="https://bristweb.github.io/reviews-widget/embed.html?source=https://bristweb.github.io/reviews-widget/example/" target="_blank" rel="noopener">iframe version</a> · <a href="https://bristweb.github.io/reviews-widget/embed.html?source=https://bristweb.github.io/reviews-widget/example/&constrained=true" target="_blank" rel="noopener">constrained / fixed-height box</a>
 
@@ -21,7 +20,7 @@ Paste to try it. For a real site, keep the script `src` and change only `data-so
 
 A static, dependency-free reviews widget. Host the files on any static host (GitHub Pages works out of the box). This repo is **code only** — no real reviews. The demo uses a made-up bike shop (“Northwind Cycles”). License is TBD (no LICENSE file yet).
 
-Each site points the widget at its own data with `data-source`. Counts, averages, card order and JSON-LD are computed in the browser.
+You are not limited to a vendor’s source list: gather reviews however you like (automation or by hand). You keep the data as ordinary files you host; `data-source` points the widget at them. Counts, averages, card order and JSON-LD are computed in the browser.
 
 Product comparison: [COMPARISON.md](COMPARISON.md).
 
