@@ -11,4 +11,3 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: node --check assets/js/reviews-widget.js && node --check scripts/validate.mjs
-      - run: python3 -m py_compile scripts/import_reviews.py scripts/pull_reviews.py

@@ -1,6 +1,6 @@
 # Reviews widget
 
-A static, dependency-free reviews widget in the style of Elfsight, served by GitHub Pages. This repo holds **only the code**: the widget script and stylesheet, two bare pages for iframes, and the scripts that collect and check reviews. It holds no reviews.
+A static, dependency-free reviews widget in the style of Elfsight, served by GitHub Pages. This repo holds **only the code**: the widget script and stylesheet, two bare pages for iframes, and a validator for the data format the widget reads. It holds no reviews, and it doesn't collect them: each data repo brings its own tooling (or none) and runs it on its own schedule.
 
 Each site's reviews and look live in their own **data repo**, which the widget reads at load time:
 
@@ -24,17 +24,16 @@ There is no build step and no generated file. The widget computes counts, averag
    - [Review records: `reviews/<year>.json`](#review-records-reviewsyearjson)
    - [Avatars: `images/reviewers/`](#avatars-imagesreviewers)
    - [Theme: `theme/theme.css`](#theme-themethemecss)
-4. [Adding and updating reviews](#adding-and-updating-reviews)
-5. [Weekly sync](#weekly-sync)
-6. [AI summary card](#ai-summary-card)
-7. [Validation](#validation)
-8. [Card order](#card-order)
-9. [Structured data (JSON-LD)](#structured-data-json-ld)
-10. [Header behavior](#header-behavior)
-11. [Privacy and presentation](#privacy-and-presentation)
-12. [New site](#new-site)
-13. [Technical details](#technical-details)
-14. [Repo layout](#repo-layout)
+4. [Updating data](#updating-data)
+5. [AI summary card](#ai-summary-card)
+6. [Validation](#validation)
+7. [Card order](#card-order)
+8. [Structured data (JSON-LD)](#structured-data-json-ld)
+9. [Header behavior](#header-behavior)
+10. [Privacy and presentation](#privacy-and-presentation)
+11. [New site](#new-site)
+12. [Technical details](#technical-details)
+13. [Repo layout](#repo-layout)
 
 ---
 
@@ -176,13 +175,13 @@ The platform tabs still let visitors switch filters; the header's rating and cou
 
 ## Data repo format
 
-A data repo is plain files at its root, served by its own GitHub Pages site (branch `main`, root, with `.nojekyll`). Nothing in it is generated.
+A data repo is plain files at its root, served by its own GitHub Pages site (branch `main`, root, with `.nojekyll`). Nothing in it is generated. The widget reads only the files below; anything else in the repo (for example a `scripts/` folder with the site's own collection tooling) is never loaded.
 
 ### Layout
 
 ```
-config.json              business, platforms (display + collection settings), links, display defaults, strings,
-                         schema settings, avatar palette, AI summary, and reviews.years
+config.json              business, platforms, links, display defaults, strings,
+                         schema settings, AI summary, and reviews.years
 reviews/<year>.json      the reviews dated in that year: a JSON array of plain records, newest first
 images/reviewers/        reviewer avatars: <platform>-<platform_review_id, filesystem-safe>.<ext>
 icons/                   platform logos (<platform>.svg unless config says otherwise)
@@ -190,7 +189,6 @@ theme/theme.css          @font-face rules + --rw-* CSS custom properties
 theme/fonts/             self-hosted webfonts (with their licenses)
 README.md                the site's embed snippet and notes about its platforms
 .github/workflows/validate.yml   calls this repo's reusable validator on every push
-.gitignore               .pull/ (raw scraper output, never committed)
 ```
 
 ### `config.json`
@@ -198,9 +196,8 @@ README.md                the site's embed snippet and notes about its platforms
 | Key | What it controls |
 |---|---|
 | `business` | `name`, `website` (used in the JSON-LD and as reference), optional extra details (e.g. `product`) |
-| `sources` | `checked_at` and `notes`: when the site's outbound links were last audited and what was found |
-| `platforms` | one entry per review platform, **in tab order**. Display: `name`, `icon` (data-repo path; default `icons/<key>.svg`), `simple_icon` (fallback slug), `write_url` ("Write a review" target on that tab), `page_url` (the platform page; also the fallback link for reviews without their own URL), `card_link` (`"review"` = each card links to its review, `"page"` = to `page_url`), optional `invert_icon_when_active`. Collection: `scrape_url` or `scrape_urls` (what the [weekly sync](#weekly-sync) scrapes; a platform without one isn't pulled), Amazon `asins` / Etsy `listing_ids` (import only those products), `product_title`. Anything else (`linked_url`, `reported_rating`, `reported_count`, `place_id`, notes, …) is reference data the widget ignores |
-| `links` | other URLs the site links to that have no reviews (social profiles, shops), with notes. Reference only |
+| `sources`, `links` | optional reference notes (e.g. which URLs the site links to and what was checked); ignored by the widget |
+| `platforms` | one entry per review platform, **in tab order**. Display: `name`, `icon` (data-repo path; default `icons/<key>.svg`), `simple_icon` (fallback slug), `write_url` ("Write a review" target on that tab), `page_url` (the platform page; also the fallback link for reviews without their own URL), `card_link` (`"review"` = each card links to its review, `"page"` = to `page_url`), optional `invert_icon_when_active`. Any other fields (a site's own collection settings, reported counts, notes, …) are ignored by the widget |
 | `default_write_platform` | which platform's `write_url` the button uses on the "All" tab |
 | `display.layout` | default layout |
 | `display.snippet_chars` | snippet length in characters (`0` = full text) |
@@ -214,9 +211,8 @@ README.md                the site's embed snippet and notes about its platforms
 | `schema.enabled`, `schema.type`, `schema.max_reviews`, `schema.extra` | the [JSON-LD](#structured-data-json-ld): on/off, `@type` (default `LocalBusiness`), how many Review items (`0` = all), extra properties merged into the entity |
 | `rating_labels` | words next to the score (`min` average → label) |
 | `strings` | every visible or screen-reader text ("Write a review", "Review", "Based on", "View on {platform}", aria labels, …) with `{placeholders}` |
-| `avatars.initials_palette`, `avatars.initials_text_color` | colors of generated initials avatars (used by the importer) |
 | `summary` | `{ "text": "…", "generated_at": "<ISO 8601>" }`, the [AI summary card](#ai-summary-card) |
-| `reviews.years` | every year that has a `reviews/<year>.json`, newest first, e.g. `[2026, 2025, 2024]`. The widget fetches exactly these files, all at once; the importer keeps the list current |
+| `reviews.years` | every year that has a `reviews/<year>.json`, newest first, e.g. `[2026, 2025, 2024]`. The widget fetches exactly these files, all at once, so the list must match the files (the validator checks) |
 
 ### Review records: `reviews/<year>.json`
 
@@ -235,11 +231,11 @@ Each file is a JSON array of the reviews **dated** in that year, newest first. T
   "date": "2026-10-05T20:19:50Z",          // ISO 8601 UTC. Day-only platforms (Amazon, Etsy) are stored at 12:00 UTC
   "review_url": "https://…",               // the individual review where the platform has one, else page_url
   "owner_reply": { "text": "…", "date": "2026-10-05T21:47:17Z" },     // the owner's public reply, or null
-  "collected_at": "2026-10-05T22:00:27Z",  // first imported
-  "updated_at": "…",                       // only when refreshed with --update
-  "source": "apify",                       // how it was collected: direct | apify | elfsight
+  "collected_at": "2026-10-05T22:00:27Z",  // optional: when the record was first stored
+  "updated_at": "…",                       // optional: when it was last refreshed
+  "source": "apify",                       // how it was collected (free text, e.g. direct, apify)
   // optional, platform-specific, e.g.:
-  "featured_on_website": true,             // set by hand: the site quotes this review (kept on --update)
+  "featured_on_website": true,             // the site quotes this review
   "rating_source": "…",                    // when the rating isn't a native star field (Facebook "5 stars" tag)
   "recommended": true, "tags": ["…"],      // Facebook
   "title": "…",                            // Amazon / Zola review title
@@ -253,7 +249,7 @@ The widget identifies a review by `platform` + `platform_review_id` (records car
 
 ### Avatars: `images/reviewers/`
 
-Avatars are always downloaded (never hotlinked). Each is named after the review's **stable source id**: `<platform>-<platform_review_id>.<ext>`, with every character other than `A-Z a-z 0-9 _ -` replaced by `_` so the name is filesystem- and URL-safe (Facebook ids are base64 and may contain `=`). The review id is used because it is the one id every platform provides and never changes: Amazon `R1AS3YUWI1ZYPI`, Google `ChZDSUhNMG9n…`, Yelp `5YetL22t6xV6Vm4DfH_v3Q`, Zola UUIDs, Etsy transaction ids. Reviewer ids aren't available on every platform, and one reviewer could review twice. When the platform has no photo, the importer writes an initials SVG in the `avatars.initials_palette` colors.
+Avatars are files in the data repo (never hotlinked). Each is named after the review's **stable source id**: `<platform>-<platform_review_id>.<ext>`, with every character other than `A-Z a-z 0-9 _ -` replaced by `_` so the name is filesystem- and URL-safe (Facebook ids are base64 and may contain `=`). The review id is used because it is the one id every platform provides and never changes: Amazon `R1AS3YUWI1ZYPI`, Google `ChZDSUhNMG9n…`, Yelp `5YetL22t6xV6Vm4DfH_v3Q`, Zola UUIDs, Etsy transaction ids. Reviewer ids aren't available on every platform, and one reviewer could review twice. A review without a photo still needs an image file, e.g. a generated initials SVG.
 
 ### Theme: `theme/theme.css`
 
@@ -278,58 +274,14 @@ The theme may also add site-specific rules (e.g. FASTONE sets the score and labe
 
 ---
 
-## Adding and updating reviews
+## Updating data
 
-The scripts in `scripts/` work on any data repo checkout; pass it with `--data`. They need only Python 3 and Node (no packages).
+Add or change records however the site likes (by hand or with its own tooling), then check and publish:
 
-**From scraper output:**
-
-```bash
-python3 reviews-widget/scripts/import_reviews.py --data heather-wolfe-art-reviews \
-    --google google.json --yelp yelp.json --facebook facebook.json --source apify
-```
-
-- Converters: `--google` (`compass/Google-Maps-Reviews-Scraper`), `--yelp` (`web_wanderer/yelp-reviews-scraper`), `--facebook` (`apify/facebook-reviews-scraper`), `--zola` (storefront `__NEXT_DATA__` review objects), `--amazon` (`junglee/amazon-reviews-scraper`, run with `includeGdprSensitive`), `--etsy` (`astravalabs/etsy-reviews-scraper`).
-- Only **new** reviews (by `platform` + `platform_review_id`) are added. `--update` also refreshes existing ones; they keep `collected_at`, `source`, their avatar and a hand-set `featured_on_website`, and get `updated_at`.
-- A platform missing from `config.json` `platforms` is skipped; Amazon `asins` / Etsy `listing_ids` filter out other products.
-- Each review goes into `reviews/<year>.json` (re-sorted newest first). A review in a new year creates that file and adds the year to `reviews.years`.
-- Avatars are downloaded to `images/reviewers/` ([naming](#avatars-imagesreviewers)), or an initials SVG is generated.
-
-**By hand:** add the record to the right `reviews/<year>.json` in date order (copy an existing one), put the avatar at `images/reviewers/<platform>-<id>.<ext>`, add the year to `reviews.years` if it's a new file, and run `node reviews-widget/scripts/validate.mjs <data repo>`. Commit and push; GitHub Pages redeploys in about a minute and the widget picks it up (data is fetched with `cache: no-cache`).
-
----
-
-## Weekly sync
-
-Monitoring is a scheduled agent run (on the Bristlecone box, using the Apify connector), one per site, not a GitHub Action. Free, direct methods are used wherever they work; Apify only where they don't.
-
-| Platform | Method | Actor | Why not direct |
-|---|---|---|---|
-| Zola | **direct**, free | storefront HTML, `<script id="__NEXT_DATA__">` | n/a |
-| Google | Apify | `compass/Google-Maps-Reviews-Scraper` | logged-out Maps shows no reviews |
-| Yelp | Apify | `web_wanderer/yelp-reviews-scraper` | yelp.com answers 403 |
-| Facebook | Apify | `apify/facebook-reviews-scraper` | lists only a few reviews without a login |
-| Amazon | Apify | `junglee/amazon-reviews-scraper` | review pages need a login |
-| Etsy | Apify | `astravalabs/etsy-reviews-scraper` | etsy.com is behind DataDome |
-
-Each actor run asks only for reviews newer than the newest stored review on that platform minus 30 days (`--since-days`), and is capped at `maxTotalChargeUsd` 0.5 (Apify's minimum). Etsy has no date filter (shop-wide, newest 50). On Apify's free plan the Amazon actor returns at most 10 reviews per run, so a full pull (`--all`) runs once per star rating.
-
-```bash
-git -C reviews-widget pull && git -C <data-repo> pull
-python3 reviews-widget/scripts/pull_reviews.py --data <data-repo> --print-inputs
-#   -> per platform: actor, input (with the date window), cost cap, and where to save the items (<data-repo>/.pull/<platform>.json)
-#   run each actor (Apify connector call-actor, callOptions.maxTotalChargeUsd 0.5) and save its dataset items there
-python3 reviews-widget/scripts/pull_reviews.py --data <data-repo> --from-raw
-#   -> pulls Zola directly (if listed), imports NEW reviews only, then checks the AI summary
-#   if it prints SUMMARY STALE: rewrite config.json summary.text from <data-repo>/.pull/summary_input.txt and set summary.generated_at
-node reviews-widget/scripts/validate.mjs <data-repo>
-git -C <data-repo> add reviews images/reviewers config.json
-git -C <data-repo> commit -m "reviews: weekly sync $(date +%F)" && git -C <data-repo> push    # only if something changed
-```
-
-Other ways to run it: `APIFY_TOKEN=… python3 reviews-widget/scripts/pull_reviews.py --data <data-repo>` calls the Apify REST API itself; `--all` drops the date window (still adds only new reviews); `import_reviews.py --update` refreshes existing records.
-
-`.pull/` (raw scraper output) is git-ignored; the review records are the record.
+1. Put each record in the `reviews/<year>.json` for its date, keeping the file newest first. A new year needs a new file and its year in `reviews.years`.
+2. Put the avatar at `images/reviewers/<platform>-<safe id>.<ext>`.
+3. Run `node reviews-widget/scripts/validate.mjs <data repo>` (the data repo's workflow also runs it on push).
+4. Commit and push. GitHub Pages redeploys in about a minute and the widget picks it up (data is fetched with `cache: no-cache`).
 
 ---
 
@@ -345,7 +297,7 @@ It lives in the data repo's `config.json`:
 
 Rules for the text: only themes that actually appear in the reviews, no invented facts, no quotes attributed to anyone, no star claims; about 300 characters (longer text scrolls inside the card).
 
-**Staleness:** after an import, `pull_reviews.py` flags the summary as stale when **any review is dated or was collected after `summary.generated_at`**. It prints `SUMMARY STALE` and writes every review text to `<data-repo>/.pull/summary_input.txt`; the weekly run rewrites `summary.text` and sets `summary.generated_at` to the current UTC time.
+`generated_at` records when the text was written, so a site's tooling can tell when newer reviews have arrived and the summary needs rewriting.
 
 **Hide it:** `display.show_summary: false`, `data-summary="off"`, `?summary=off`, or remove `summary` from `config.json`.
 
@@ -426,12 +378,12 @@ The carousel shows 4 cards above 1024px, 3 at ≤ 1024px, 2 at ≤ 760px, and on
 ## New site
 
 1. Create a data repo (public), copy an existing one's layout, and enable GitHub Pages (branch `main`, root). Keep `.nojekyll`, `.gitignore` and `.github/workflows/validate.yml`.
-2. Write `config.json`: `business`, `platforms` (display fields plus `scrape_url`/`scrape_urls`), `links`, `strings`, `display`, `schema`, `avatars`, and `"reviews": {"years": []}`.
+2. Write `config.json`: `business`, `platforms`, `strings`, `display`, `schema`, and `"reviews": {"years": []}`.
 3. Add `icons/`, `theme/theme.css` and `theme/fonts/`.
-4. Collect: `python3 reviews-widget/scripts/pull_reviews.py --data <repo> --all --print-inputs`, run the actors, then `--from-raw`. Write a `summary` when there are reviews.
+4. Add review records and avatars ([format](#review-records-reviewsyearjson)), by hand or with the site's own tooling. Write a `summary` when there are reviews.
 5. Validate, commit, push, and embed with `data-source="https://<owner>.github.io/<repo>/"`.
 
-The importer understands Google, Yelp, Facebook, Zola, Amazon and Etsy. Any other platform works in the widget if it has a `platforms` entry, an icon, and records (by hand, or with a small converter added to `scripts/import_reviews.py`).
+Any platform works in the widget if it has a `platforms` entry, an icon, and records.
 
 ---
 
@@ -455,8 +407,6 @@ The importer understands Google, Yelp, Facebook, Zola, Amazon and Etsy. Any othe
 assets/js/reviews-widget.js     the widget: loads a data repo, renders, computes counts and JSON-LD
 assets/css/reviews-widget.css   layout and behavior; reads the --rw-* variables from the data repo's theme
 index.html, embed.html          bare widget pages (noindex, transparent): ?source=<data repo URL>
-scripts/import_reviews.py       scraper output -> reviews/<year>.json + avatars (new only, or --update)
-scripts/pull_reviews.py         weekly sync: Apify inputs, direct Zola pull, import, AI summary staleness
 scripts/validate.mjs            data repo checks (used by the reusable workflow)
 .github/workflows/validate.yml  reusable workflow the data repos call on push
 .github/workflows/check.yml     syntax check of this repo's code
