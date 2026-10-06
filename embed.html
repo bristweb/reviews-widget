@@ -10,10 +10,18 @@
 <style>html,body{margin:0;background:transparent}</style>
 </head>
 <body>
-<!-- Bare widget, no page chrome (safe to iframe); the script renders in place.
-     Required: ?source=<data repo URL>, e.g. ?source=https://bristweb.github.io/fastone-reviews/
-     Options: &layout=carousel|grid&platform=all|<platform>&limit=N&summary=off
-     Fitting options (see README): &fixed-height=true&arrows=outside|inside|off&hover-lift=false&focus-ring=inside&overflow=clip|visible|hidden&cards=N&padding=N -->
+<!-- Bare widget page (safe to iframe). Defaults to the bundled fictional example/.
+     Override with ?source=<data-repo-url>. Options: &layout=&platform=&limit=&summary=off
+     Fitting: &fixed-height=true&arrows=inside|outside|off&hover-lift=false&focus-ring=inside&overflow=…&cards=&padding= -->
+<script>
+  (function () {
+    var q = new URLSearchParams(location.search);
+    if (!q.has('source')) {
+      q.set('source', new URL('example/', location.href).href);
+      history.replaceState(null, '', location.pathname + '?' + q + location.hash);
+    }
+  })();
+</script>
 <script src="assets/js/reviews-widget.js" defer data-overflow="visible"></script>
 </body>
 </html>

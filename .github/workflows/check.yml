@@ -1,4 +1,4 @@
-# Syntax check for this repo's own code (the data repos run validate.yml).
+# Syntax check + validate the bundled fictional example/.
 name: Check
 on:
   push:
@@ -10,4 +10,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - run: npm ci
       - run: node --check assets/js/reviews-widget.js && node --check scripts/validate.mjs
+      - run: node scripts/validate.mjs example

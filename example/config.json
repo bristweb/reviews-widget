@@ -1,0 +1,108 @@
+{
+  "business": {
+    "name": "Cedar & Pine Studio",
+    "website": "https://example.com/cedar-pine/"
+  },
+  "default_write_platform": "maps",
+  "platforms": {
+    "maps": {
+      "name": "Maps",
+      "icon": "icons/maps.svg",
+      "write_url": "https://example.com/maps/write-review",
+      "page_url": "https://example.com/maps/cedar-pine",
+      "card_link": "review"
+    },
+    "directory": {
+      "name": "Directory",
+      "icon": "icons/directory.svg",
+      "write_url": "https://example.com/directory/write-review",
+      "page_url": "https://example.com/directory/biz/cedar-pine",
+      "card_link": "page"
+    }
+  },
+  "display": {
+    "layout": "carousel",
+    "snippet_chars": 160,
+    "abbreviate_last_names": true,
+    "max_same_platform_run": 2,
+    "diversity_window_days": 548,
+    "date_locale": "en-US",
+    "date_options": {
+      "year": "numeric",
+      "month": "short",
+      "day": "numeric"
+    },
+    "font_timeout_ms": 2500,
+    "show_rating_only_reviews": false,
+    "show_summary": true
+  },
+  "schema": {
+    "enabled": true,
+    "type": "LocalBusiness",
+    "max_reviews": 0
+  },
+  "rating_labels": [
+    {
+      "min": 4.75,
+      "label": "Excellent"
+    },
+    {
+      "min": 4.25,
+      "label": "Great"
+    },
+    {
+      "min": 3.5,
+      "label": "Good"
+    },
+    {
+      "min": 2.5,
+      "label": "Average"
+    },
+    {
+      "min": 0,
+      "label": "Poor"
+    }
+  ],
+  "strings": {
+    "loading": "Loading reviews…",
+    "unavailable": "Reviews are unavailable right now.",
+    "tabs_aria": "Filter reviews by platform",
+    "tab_all": "All",
+    "tab_all_suffix": "reviews",
+    "tab_title": "{name}",
+    "tab_aria": "{name}, {count} reviews",
+    "write_review": "Write a review",
+    "write_review_short": "Review",
+    "based_on": "Based on",
+    "review_one": "review",
+    "review_many": "reviews",
+    "on_platform": "on {platform}",
+    "stars_aria": "{n} out of 5 stars",
+    "recommends": "Recommends",
+    "view_on": "View on {platform}",
+    "card_aria": "Read {name}'s review on {platform} (opens in a new tab)",
+    "anonymous": "Anonymous",
+    "previous": "Previous reviews",
+    "next": "Next reviews",
+    "ai_summary": "AI summary",
+    "ai_summary_aria": "AI-generated summary of {n} reviews"
+  },
+  "avatars": {
+    "initials_palette": [
+      "#5b7c8a",
+      "#8a5b6e",
+      "#5b8a6e"
+    ],
+    "initials_text_color": "#fff"
+  },
+  "summary": {
+    "text": "Guests describe the live painting as a highlight of their event: detailed portraits, kind communication, and colors that fit the venue. Several mention recommending the studio to friends.",
+    "generated_at": "2026-10-01T12:00:00Z"
+  },
+  "reviews": {
+    "years": [
+      2026,
+      2025
+    ]
+  }
+}

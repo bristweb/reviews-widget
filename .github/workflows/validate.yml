@@ -19,4 +19,6 @@ jobs:
           repository: bristweb/reviews-widget
           ref: main
           path: widget
+      - run: npm ci
+        working-directory: widget
       - run: node widget/scripts/validate.mjs data

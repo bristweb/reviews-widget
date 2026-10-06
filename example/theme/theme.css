@@ -1,0 +1,28 @@
+/* Example theme for the bundled fictional data set (Cedar & Pine Studio). */
+@font-face {
+  font-family: "Example Inter";
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: block;
+  src: local("Inter"), local("Helvetica Neue"), local("Arial");
+}
+.rw-host {
+  --rw-font: "Example Inter", Arial, Helvetica, sans-serif;
+  --rw-letter-spacing: -.01em;
+  --rw-ink: #1a2b32;
+  --rw-body: #3d4f56;
+  --rw-muted: #7a8b92;
+  --rw-line: #d5dee2;
+  --rw-line-strong: #b7c4ca;
+  --rw-card: #fff;
+  --rw-tint: #e8f0f3;
+  --rw-accent: #2f6f7e;
+  --rw-accent-2: #1a4a54;
+  --rw-on-accent: #fff;
+  --rw-on-accent-soft: rgba(255,255,255,.18);
+  --rw-star: #f5b301;
+  --rw-star-off: #d5dee3;
+  --rw-nav-shadow: 0 2px 10px rgba(47,111,126,.12);
+  --rw-radius: 12px;
+  --rw-max-width: 1200px;
+}

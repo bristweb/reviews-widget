@@ -1,0 +1,196 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://example.com/reviews-widget/schemas/config.schema.json",
+  "title": "Reviews widget data-repo config.json",
+  "type": "object",
+  "required": [
+    "business",
+    "platforms",
+    "reviews"
+  ],
+  "additionalProperties": true,
+  "properties": {
+    "business": {
+      "type": "object",
+      "required": [
+        "name"
+      ],
+      "additionalProperties": true,
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "website": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "default_write_platform": {
+      "type": "string",
+      "minLength": 1
+    },
+    "platforms": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "additionalProperties": true,
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "icon": {
+            "type": "string"
+          },
+          "simple_icon": {
+            "type": "string"
+          },
+          "write_url": {
+            "type": "string"
+          },
+          "page_url": {
+            "type": "string"
+          },
+          "card_link": {
+            "type": "string",
+            "enum": [
+              "review",
+              "page"
+            ]
+          },
+          "invert_icon_when_active": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "links": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "platform": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "icon": {
+            "type": "string"
+          },
+          "linked_url": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "display": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "schema": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "type": {
+          "type": "string"
+        },
+        "max_reviews": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "extra": {
+          "type": "object"
+        }
+      }
+    },
+    "rating_labels": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "min",
+          "label"
+        ],
+        "properties": {
+          "min": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "strings": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "avatars": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "initials_palette": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "initials_text_color": {
+          "type": "string"
+        }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "required": [
+        "text",
+        "generated_at"
+      ],
+      "additionalProperties": true,
+      "properties": {
+        "text": {
+          "type": "string",
+          "minLength": 1
+        },
+        "generated_at": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}(:\\d{2}(\\.\\d+)?)?(Z|[+-]\\d{2}:\\d{2})$"
+        }
+      }
+    },
+    "reviews": {
+      "type": "object",
+      "required": [
+        "years"
+      ],
+      "additionalProperties": true,
+      "properties": {
+        "years": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 1970,
+            "maximum": 2100
+          }
+        }
+      }
+    },
+    "sources": {
+      "type": "object",
+      "additionalProperties": true
+    }
+  }
+}

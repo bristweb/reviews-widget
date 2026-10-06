@@ -1,151 +1,86 @@
 # Reviews widget
 
-A static, dependency-free reviews widget served by GitHub Pages. This repo holds **only the code**: the widget script and stylesheet, two bare pages for iframes, and a validator for the data format the widget reads. It holds no reviews, and it doesn't collect them: each data repo brings its own tooling (or none) and runs it on its own schedule.
+A static, dependency-free reviews widget for any site. This repository holds **only the code**: the widget script and stylesheet, two bare demo pages, JSON Schemas for the data format, a validator, and a fictional [example/](example/) data set. It holds no real reviews.
 
-| | This widget | Hosted review-widget SaaS | Reputation / review-management platform |
-|---|---|---|---|
-| Self-hosted | yes (your GitHub Pages) | no (vendor hosts the embed) | no (vendor hosts the product) |
-| Free to run | yes (GitHub Pages) | usually a paid plan | usually a paid plan |
-| Static files, no server or database | yes | no | no |
-| Vendor lock-in | none (plain JSON + JS you can fork) | the widget and often the data stay with the vendor | reviews and workflows stay with the vendor |
-| You own the review data | yes (in your data repo) | depends on export | depends on export |
-| schema.org JSON-LD | yes (computed in the browser) | often | often |
-| AI summary card | yes (text you write into config) | sometimes | sometimes |
-| Embed options | JS tag, iframe, fixed-height / Google Sites fitting | vendor snippet | often a dashboard, not a page embed |
-| Sync / collection owned by you | yes (each site's own scripts and schedule) | vendor crawls or imports | vendor manages outreach and replies |
+Each site you embed on points the widget at its own **data repo** (or folder) with `data-source`. Counts, averages, card order and schema.org JSON-LD are computed in the browser. There is no build step and no generated index file.
 
-Each site's reviews and look live in their own **data repo**, which the widget reads at load time:
-
-| Site | Data repo | Data URL (`data-source`) |
-|---|---|---|
-| Heather Wolfe Art | [bristweb/heather-wolfe-art-reviews](https://github.com/bristweb/heather-wolfe-art-reviews) | `https://bristweb.github.io/heather-wolfe-art-reviews/` |
-| FASTONE Pro Paint | [bristweb/fastone-reviews](https://github.com/bristweb/fastone-reviews) | `https://bristweb.github.io/fastone-reviews/` |
-
-There is no build step and no generated file. The widget computes counts, averages, card order and the schema.org JSON-LD in the browser from the stored records.
+A low-priority side-by-side with named commercial widgets and reputation platforms lives in [COMPARISON.md](COMPARISON.md).
 
 ## Contents
 
-1. [Embed on your site](#embed-on-your-site)
-   - [JavaScript embed (preferred)](#javascript-embed-preferred)
-   - [Google Sites and other fixed-height boxes](#google-sites-and-other-fixed-height-boxes)
-   - [Iframe embed (alternative)](#iframe-embed-alternative)
+1. [Embed](#embed)
 2. [Options](#options)
-3. [Data repo format](#data-repo-format)
-   - [Layout](#layout)
-   - [`config.json`](#configjson)
-   - [Review records: `reviews/<year>.json`](#review-records-reviewsyearjson)
-   - [Avatars: `images/reviewers/`](#avatars-imagesreviewers)
-   - [Theme: `theme/theme.css`](#theme-themethemecss)
-4. [Updating data](#updating-data)
-5. [AI summary card](#ai-summary-card)
-6. [Validation](#validation)
-7. [Card order](#card-order)
-8. [Structured data (JSON-LD)](#structured-data-json-ld)
-9. [Header behavior](#header-behavior)
-10. [Privacy and presentation](#privacy-and-presentation)
-11. [New site](#new-site)
-12. [Technical details](#technical-details)
-13. [Repo layout](#repo-layout)
+3. [Data format](#data-format)
+4. [Example data](#example-data)
+5. [JSON Schema and validation](#json-schema-and-validation)
+6. [Updating data](#updating-data)
+7. [AI summary](#ai-summary)
+8. [Card order](#card-order)
+9. [Structured data (JSON-LD)](#structured-data-json-ld)
+10. [Header behavior](#header-behavior)
+11. [Privacy and presentation](#privacy-and-presentation)
+12. [New data repo](#new-data-repo)
+13. [Technical details](#technical-details)
+14. [Repo layout](#repo-layout)
 
 ---
 
-## Embed on your site
+## Embed
 
-### JavaScript embed (preferred)
-
-Paste one tag where the widget should appear. `data-source` (required) is the data repo's URL:
+### JavaScript (preferred)
 
 ```html
-<script src="https://bristweb.github.io/reviews-widget/assets/js/reviews-widget.js"
-        data-source="https://bristweb.github.io/heather-wolfe-art-reviews/" defer></script>
+<script src="https://<host>/reviews-widget/assets/js/reviews-widget.js"
+        data-source="https://<host>/<your-data-repo>/" defer></script>
 ```
 
-The widget renders right where the tag is. It loads `assets/css/reviews-widget.css` from this repo and `theme/theme.css`, `config.json` and every `reviews/<year>.json` from the data repo, all in parallel (the year files as soon as `config.json` has listed them). Then it inserts the widget immediately before the `<script>` element. `defer`, `async`, or neither all work.
+The widget renders where the tag is. It loads CSS from this repo and `theme/theme.css`, `config.json`, and every `reviews/<year>.json` from `data-source`, in parallel. Options go on the same tag ([list](#options)).
 
-Options go on the same tag ([full list](#options)):
+- Sizes itself in the page; no resize script needed for the JS embed.
+- Invisible until font and first layout are ready, then fades in once.
+- Several tags on one page are fine (even different `data-source`s); each source and the CSS are fetched once.
+- Fills the width it is given (up to 1200px) inside page builders that shrink-to-fit their content.
+- Classes are prefixed `rw-`; a small reset limits host CSS leakage.
 
-```html
-<script src="https://bristweb.github.io/reviews-widget/assets/js/reviews-widget.js"
-        data-source="https://bristweb.github.io/fastone-reviews/" defer
-        data-layout="grid" data-platform="amazon" data-limit="12"></script>
-```
-
-- The widget renders directly in your page, so it sizes itself naturally and needs no resize script.
-- It stays invisible until its font and first layout are ready, then fades in once, with no font swap or layout jump.
-- **Several widgets on one page:** use one script tag per widget, each with its own options (even different `data-source`s). Each data repo and the CSS are downloaded only once.
-- **It fills the width it's given, up to 1200px, inside any page builder.** That includes containers that shrink their content to fit: Framer/Squarespace code blocks, centered flex columns, `text-align:center` blocks, inline-block, `fit-content`, floated, and absolutely positioned parents. It never causes horizontal scrolling.
-- The widget's classes all start with `rw-`, its font has its own family name, and a small reset keeps common host styles (line height, image borders, text alignment) from leaking in.
-
-**Rendering somewhere other than the script's position** (optional), for example when the script has to go in `<head>` or a site-wide footer:
+**Other mount points:**
 
 ```html
-<!-- a) point the script at an element -->
-<script src="https://bristweb.github.io/reviews-widget/assets/js/reviews-widget.js" defer
-        data-source="https://bristweb.github.io/heather-wolfe-art-reviews/" data-target="#reviews"></script>
+<script src="https://<host>/reviews-widget/assets/js/reviews-widget.js" defer
+        data-source="https://<host>/<your-data-repo>/" data-target="#reviews"></script>
 <div id="reviews"></div>
 
-<!-- b) or mark one or more elements; each can carry its own options -->
-<script src="https://bristweb.github.io/reviews-widget/assets/js/reviews-widget.js" defer
-        data-source="https://bristweb.github.io/heather-wolfe-art-reviews/"></script>
-<div data-reviews-widget data-layout="grid" data-platform="google"></div>
-<div data-reviews-widget data-limit="6"></div>
+<script src="https://<host>/reviews-widget/assets/js/reviews-widget.js" defer
+        data-source="https://<host>/<your-data-repo>/"></script>
+<div data-reviews-widget data-layout="grid" data-platform="maps"></div>
 ```
 
-How the script decides where to render:
+1. `data-target` → that element (its own `data-*` override the script’s).
+2. Else unfilled `[data-reviews-widget]` elements.
+3. Else in place (a `<head>` script with no target goes to the end of `<body>`).
 
-1. If it has `data-target`, it renders into that element (any CSS selector). The element's own `data-` options (including `data-source`) override the script's.
-2. Otherwise, if the page has `[data-reviews-widget]` elements that no script has filled yet, it fills all of them. Their own `data-` options override the script's.
-3. Otherwise, it renders in place, just before its own tag. A script placed in `<head>` with no target renders at the end of `<body>`.
+If the host hides the script URL, set `data-base` to this repo’s root URL (ending in `/`).
 
-Mount points are chosen only by position, `data-target`, or the `data-reviews-widget` attribute, never by class name. Don't mix in-place tags and `data-reviews-widget` elements on one page; if you need both, give each script a `data-target`.
+### Google Sites and fixed-height boxes
 
-If your site builder loads scripts in a way that hides the script's own URL (rare, e.g. as an ES module), add `data-base="https://bristweb.github.io/reviews-widget/"`.
-
-### Google Sites and other fixed-height boxes
-
-Some site builders put embedded code in a box whose height you set and the code can't change. Google Sites is the common example: *Insert → Embed → Embed code* places your HTML in a sandboxed iframe on `atari-embeds.googleusercontent.com` (with `sandbox="allow-scripts allow-popups allow-forms allow-same-origin allow-popups-to-escape-sandbox allow-downloads allow-modals allow-storage-access-by-user-activation"`). You set its height by dragging the box in the editor. Nothing inside the box can resize it, and anything taller than the box is cut off.
-
-For boxes like that, the widget has a few independent [fitting options](#options). This combination suits Google Sites:
+Builders that put code in a box whose height you set (Google Sites: *Insert → Embed → Embed code*) need fitting options:
 
 ```html
-<script src="https://bristweb.github.io/reviews-widget/assets/js/reviews-widget.js"
-        data-source="https://bristweb.github.io/fastone-reviews/"
+<script src="https://<host>/reviews-widget/assets/js/reviews-widget.js"
+        data-source="https://<host>/<your-data-repo>/"
         data-fixed-height="true" data-arrows="inside" data-overflow="hidden"
         data-hover-lift="false" data-focus-ring="inside"></script>
 ```
 
-In Google Sites: *Insert → Embed → Embed code*, paste the snippet, *Next*, *Insert*. Then stretch the box to the full width of the section and drag it to about **420px** tall.
+Stretch the box full width and about **420px** tall. See [Options](#options) and [Header behavior](#header-behavior) for short heights (tested down to 140px).
 
-- `data-fixed-height="true"`: the widget fills the box's full height and fits inside it. The header stays on top and the cards take the remaining height. A long review scrolls inside its own card. In short boxes the header compacts further (see [Header behavior](#header-behavior)). The widget never tries to resize the box (it sends no height messages).
-- `data-arrows="inside"`: the carousel arrows sit inside the widget's edges instead of overhanging them by 8px.
-- `data-overflow="hidden"`: nothing paints outside the widget, horizontally or vertically.
-- `data-hover-lift="false"`: cards don't rise 2px on hover, so their top edge can't be cut off.
-- `data-focus-ring="inside"`: keyboard focus outlines are drawn inside the tabs, the button, and the arrows.
-
-| Box height | Result |
-|---|---|
-| above 460px | full header, roomy cards |
-| about 420px (recommended) | one-row header without "Excellent" / "Based on"; the whole snippet shows on desktop widths |
-| 300-400px | smaller score, stars, and text; longer snippets scroll inside their card |
-| 140-240px | same layout with fewer extras: a slim one-row header, no dates or "View on" cues, snippets clamped to the lines that fit; the AI summary keeps most of the room. Tested down to 140px tall |
-
-Tested in Chrome with a simulated Google Sites iframe (the sandbox above, and again without `allow-same-origin`, which gives the frame an opaque origin) at heights of 140 to 500px and widths of 320 to 1200px: nothing was cut off and the page inside the box never scrolled. Arrows and touch swipes page through the cards, and clicking a card opens the review in a new tab. *Embed → By URL* works the same with `embed.html?source=…&fixed-height=true&arrows=inside&overflow=hidden&hover-lift=false&focus-ring=inside`.
-
-- **New tabs:** cards and "Write a review" are `target="_blank" rel="noopener"` links. In a sandboxed iframe they need `allow-popups`; Google Sites also grants `allow-popups-to-escape-sandbox`, so the review opens as a normal tab.
-- **Fonts and data:** everything comes from GitHub Pages, which sends `Access-Control-Allow-Origin: *`, so it loads even from an opaque-origin sandbox.
-- **Structured data:** the JSON-LD goes into the embed's own iframe document, not into the Google Sites page.
-
-The same options work in any fixed-height container: a `<div style="height:400px">` around the script tag, or a fixed-height iframe of `embed.html` without the resize script. With `data-fixed-height`, the widget fills its parent element when the parent has a definite height. Otherwise it fills the window from its own top edge down, minus the page's bottom margin.
-
-### Iframe embed (alternative)
-
-Use this when your site builder only accepts iframes, or when you want the widget fully isolated from your page's CSS. `?source=` is required:
+### Iframe
 
 ```html
-<iframe id="reviews-widget" src="https://bristweb.github.io/reviews-widget/embed.html?source=https://bristweb.github.io/heather-wolfe-art-reviews/"
-        title="Reviews" loading="lazy" scrolling="no" style="width:100%;border:0;height:420px"></iframe>
+<iframe id="reviews-widget"
+        src="https://<host>/reviews-widget/embed.html?source=https://<host>/<your-data-repo>/"
+        title="Reviews" loading="lazy" scrolling="no"
+        style="width:100%;border:0;height:420px"></iframe>
 <script>
-  // auto-resize the iframe to the widget's height
   addEventListener('message', function (e) {
     if (e.data && e.data.type === 'reviews-widget-height')
       document.getElementById('reviews-widget').style.height = e.data.height + 'px';
@@ -153,274 +88,220 @@ Use this when your site builder only accepts iframes, or when you want the widge
 </script>
 ```
 
-Other options go in the same query string: `embed.html?source=…&layout=grid&platform=google&limit=12`. Without the resize script, set a fixed height (the carousel is about 410px tall at desktop widths), or add `fixed-height=true` so the widget fits whatever height you give the iframe.
-
-`index.html` and `embed.html` are the same bare page (no chrome, transparent background, `noindex`). Without `?source=`, `index.html` shows a short help line.
+`index.html` and `embed.html` are bare, transparent, `noindex` pages. With no `?source=` they load the bundled [example/](example/).
 
 ---
 
 ## Options
 
-| Attribute (JS embed: script tag or target element) | Query param (iframe / host page) | Values | Default |
+| Attribute | Query param | Values | Default |
 |---|---|---|---|
-| `data-source` | `source` | data repo root URL (a trailing `/` is added if missing). **Required.** `?source=` is used only when the embed has no `data-source`, so a link can't swap a site's data | none |
-| `data-layout` | `layout` | `carousel` (one scrolling row with arrows) or `grid` (all cards, wrapping) | `display.layout` (`carousel`) |
-| `data-platform` | `platform` | `all`, or a platform key from the data repo's `config.json` | `all` |
-| `data-limit` | `limit` | maximum number of review cards (`0` = no limit) | `0` |
-| `data-summary` | `summary` | `off` hides the [AI summary card](#ai-summary-card) | shown (`display.show_summary`) |
-| `data-schema` | n/a | `off` skips injecting the [JSON-LD](#structured-data-json-ld) | injected (`schema.enabled`) |
-| `data-base` | n/a | this repo's root URL, ending in `/` | worked out from the script URL |
-| **Fitting options** | | | |
-| `data-fixed-height` | `fixed-height` | `true`: fill the full height of the parent element (or, if it has no definite height, of the window below the widget) and fit everything inside it; the header compacts in short boxes, long text scrolls inside its card, no height messages are sent. `false`: as tall as its content | `display.fixed_height` (`false`) |
-| `data-overflow` | `overflow` | `clip`: the arrows' 8px overhang is clipped sideways. `visible`: the arrows overhang the widget edge (the bare pages use this). `hidden`: nothing paints outside the widget | `display.overflow` (`clip`) |
-| `data-arrows` | `arrows` | `outside` (overhang the edges by 8px), `inside`, or `off` (swiping and scrolling still work) | `display.arrows` (`outside`) |
-| `data-hover-lift` | `hover-lift` | `true`: cards rise 2px on hover and focus. `false`: only the border changes | `display.hover_lift` (`true`) |
-| `data-focus-ring` | `focus-ring` | `outside` or `inside` (focus outlines drawn inside tabs, button and arrows) | `display.focus_ring` (`outside`) |
-| `data-cards` | `cards` | the most cards side by side: carousel `1`-`3`, grid `1`-`4`; `0` = automatic (carousel up to 4; grid as many 270px columns as fit) | `display.cards` (`0`) |
-| `data-padding` | `padding` | space around the widget, in px | `display.padding` (`6`) |
+| `data-source` | `source` | Data repo root URL (trailing `/` added if missing). **Required** on real embeds. `?source=` applies only when there is no `data-source` | none |
+| `data-layout` | `layout` | `carousel` \| `grid` | `display.layout` |
+| `data-platform` | `platform` | `all` or a `platforms` key | `all` |
+| `data-limit` | `limit` | max review cards (`0` = no limit) | `0` |
+| `data-summary` | `summary` | `off` hides the AI summary card | shown |
+| `data-schema` | n/a | `off` skips JSON-LD | injected |
+| `data-base` | n/a | this code repo’s root | from the script URL |
+| `data-fixed-height` | `fixed-height` | `true` = fill parent/viewport height and fit inside | `false` |
+| `data-overflow` | `overflow` | `clip` \| `visible` \| `hidden` | `clip` |
+| `data-arrows` | `arrows` | `outside` \| `inside` \| `off` | `outside` |
+| `data-hover-lift` | `hover-lift` | `true` \| `false` | `true` |
+| `data-focus-ring` | `focus-ring` | `outside` \| `inside` | `outside` |
+| `data-cards` | `cards` | max cards across (carousel 1–3, grid 1–4; `0` = auto) | `0` |
+| `data-padding` | `padding` | px around the widget | `6` |
 
-Query parameters on the page that hosts the widget override the `data-` attributes (for every widget on that page). For options with a `display` key the order is: query parameter, `data-` attribute, `display` in the data repo's `config.json`, built-in default. On/off options take `true` / `false` (also `1` / `0`, `on` / `off`, `yes` / `no`), and a bare `data-fixed-height` means `true`. Each fitting option works on its own.
-
-The platform tabs still let visitors switch filters; the header's rating and count follow the selected tab.
+Precedence: query param → `data-*` → `display` in config → built-in default.
 
 ---
 
-## Data repo format
+## Data format
 
-A data repo is plain files at its root, served by its own GitHub Pages site (branch `main`, root, with `.nojekyll`). Nothing in it is generated. The widget reads only the files below; anything else in the repo (for example a `scripts/` folder with the site's own collection tooling) is never loaded.
-
-### Layout
+Plain files at the data root (GitHub Pages: branch `main`, root, `.nojekyll`). The widget reads only these paths; other folders (e.g. your own `scripts/`) are never loaded.
 
 ```
-config.json              business, platforms, links, display defaults, strings,
-                         schema settings, AI summary, and reviews.years
-reviews/<year>.json      the reviews dated in that year: a JSON array of plain records, newest first
-images/reviewers/        reviewer avatars: <platform>-<platform_review_id, filesystem-safe>.<ext>
-icons/                   platform logos (<platform>.svg unless config says otherwise)
-theme/theme.css          @font-face rules + --rw-* CSS custom properties
-theme/fonts/             self-hosted webfonts (with their licenses)
-README.md                the site's embed snippet and notes about its platforms
-.github/workflows/validate.yml   calls this repo's reusable validator on every push
+config.json              business, platforms, display, strings, schema, summary, reviews.years, …
+reviews/<year>.json      reviews dated that year (array, newest first)
+images/reviewers/        <platform>-<platform_review_id>.<ext> (filesystem-safe id)
+icons/                   platform logos
+theme/theme.css          @font-face + --rw-* variables
+theme/fonts/             optional self-hosted fonts
 ```
 
 ### `config.json`
 
-| Key | What it controls |
+| Key | Role |
 |---|---|
-| `business` | `name`, `website` (used in the JSON-LD and as reference), optional extra details (e.g. `product`) |
-| `sources`, `links` | optional reference notes (e.g. which URLs the site links to and what was checked); ignored by the widget |
-| `platforms` | one entry per review platform, **in tab order**. Display: `name`, `icon` (data-repo path; default `icons/<key>.svg`), `simple_icon` (fallback slug), `write_url` ("Write a review" target on that tab), `page_url` (the platform page; also the fallback link for reviews without their own URL), `card_link` (`"review"` = each card links to its review, `"page"` = to `page_url`), optional `invert_icon_when_active`. Any other fields (a site's own collection settings — scrape URLs, how reviews are obtained, reported counts, notes, …) are ignored by the widget; how a review was collected is never stored on the review itself |
-| `default_write_platform` | which platform's `write_url` the button uses on the "All" tab |
-| `display.layout` | default layout |
-| `display.snippet_chars` | snippet length in characters (`0` = full text) |
-| `display.abbreviate_last_names` | `true`: "Kylee M." and surnames in the snippet shown as initials; `false`: full names |
-| `display.max_same_platform_run`, `display.diversity_window_days` | card-order diversity (see [Card order](#card-order)) |
-| `display.date_locale`, `display.date_options` | date formatting (`Intl.DateTimeFormat`) |
-| `display.font_timeout_ms` | how long to wait for the webfont before showing the fallback face |
-| `display.show_rating_only_reviews` | `false` (default): reviews with no text count in the header but get no card |
-| `display.show_summary` | show the [AI summary card](#ai-summary-card) (default `true`) |
-| `display.fixed_height`, `.overflow`, `.arrows`, `.hover_lift`, `.focus_ring`, `.cards`, `.padding` | site-wide defaults for the [fitting options](#options) |
-| `schema.enabled`, `schema.type`, `schema.max_reviews`, `schema.extra` | the [JSON-LD](#structured-data-json-ld): on/off, `@type` (default `LocalBusiness`), how many Review items (`0` = all), extra properties merged into the entity |
-| `rating_labels` | words next to the score (`min` average → label) |
-| `strings` | every visible or screen-reader text ("Write a review", "Review", "Based on", "View on {platform}", aria labels, …) with `{placeholders}` |
-| `summary` | `{ "text": "…", "generated_at": "<ISO 8601>" }`, the [AI summary card](#ai-summary-card) |
-| `reviews.years` | every year that has a `reviews/<year>.json`, newest first, e.g. `[2026, 2025, 2024]`. The widget fetches exactly these files, all at once, so the list must match the files (the validator checks) |
+| `business` | `name` (required), optional `website` and extras |
+| `platforms` | review platforms in **tab order**: `name`, `icon`, `write_url`, `page_url`, `card_link` (`review`\|`page`), optional `invert_icon_when_active`. Extra fields (scrape URLs, notes, …) are ignored by the widget |
+| `default_write_platform` | `write_url` used on the “All” tab |
+| `display.*` | layout, snippets, diversity, dates, fitting defaults, … |
+| `schema.*` | JSON-LD on/off, `@type`, `max_reviews`, `extra` |
+| `rating_labels`, `strings` | score words and UI copy |
+| `summary` | `{ "text", "generated_at" }` for the AI summary card |
+| `reviews.years` | year files to fetch, newest first, e.g. `[2026, 2025]` |
 
-### Review records: `reviews/<year>.json`
+Formal shape: [`schemas/config.schema.json`](schemas/config.schema.json).
 
-Each file is a JSON array of the reviews **dated** in that year, newest first. The data policy is *store everything*: full name, full text, owner reply, profile and avatar source URLs, individual review URL and every platform extra. Abbreviation happens only when the widget renders.
+### `reviews/<year>.json`
+
+Array of records for that calendar year, newest first. Store full names, full text, replies, URLs, and platform extras; the widget abbreviates at render time.
 
 ```jsonc
 {
-  "platform": "google",                    // a key of config.json platforms
-  "platform_review_id": "Ci9DQUlRQUNv…",  // the platform's own review id (Etsy: transaction id). Unique per platform
-  "reviewer_name": "Kylee Morris",         // full name as shown on the platform (widget shows "Kylee M."); null if anonymous
-  "reviewer_profile_url": "https://www.google.com/maps/contrib/…",   // or null
-  "reviewer_image": "images/reviewers/google-Ci9DQUlRQUNv….jpg",     // downloaded copy or generated initials SVG
-  "reviewer_image_source_url": "https://lh3.googleusercontent.com/…", // where it came from (may expire), or null
-  "rating": 5,                             // 1-5, or null (e.g. Facebook "recommends" with no star value)
-  "text": "full review text",              // complete and verbatim; "" for rating-only reviews
-  "date": "2026-10-05T20:19:50Z",          // ISO 8601 UTC. Day-only platforms (Amazon, Etsy) are stored at 12:00 UTC
-  "review_url": "https://…",               // the individual review where the platform has one, else page_url
-  "owner_reply": { "text": "…", "date": "2026-10-05T21:47:17Z" },     // the owner's public reply, or null
-  "collected_at": "2026-10-05T22:00:27Z",  // optional: when the record was first stored
-  "updated_at": "…",                       // optional: when it was last refreshed
-  // optional, platform-specific, e.g.:
-  "featured_on_website": true,             // the site quotes this review
-  "rating_source": "…",                    // when the rating isn't a native star field (Facebook "5 stars" tag)
-  "recommended": true, "tags": ["…"],      // Facebook
-  "title": "…",                            // Amazon / Zola review title
-  "item_reviewed": { "title": "…", "asin": "…", "url": "…" },        // Amazon / Etsy product
-  "verified_purchase": true, "amazon_vine": true, "helpful_votes": 2, // Amazon (Etsy: verified_purchase always true)
-  "review_image_urls": ["…"], "reviewer_review_count": 3, "language": "en"
+  "platform": "maps",
+  "platform_review_id": "ex-maps-001",
+  "reviewer_name": "Avery Quinn",
+  "reviewer_profile_url": null,
+  "reviewer_image": "images/reviewers/maps-ex-maps-001.svg",
+  "reviewer_image_source_url": null,
+  "rating": 5,
+  "text": "full review text",
+  "date": "2026-09-14T18:22:00Z",
+  "review_url": "https://example.com/maps/reviews/ex-maps-001",
+  "owner_reply": { "text": "…", "date": "2026-09-14T21:00:00Z" },
+  "collected_at": "2026-10-01T12:00:00Z"
 }
 ```
 
-The widget identifies a review by `platform` + `platform_review_id` (records carry no separate id). Counts, per-platform averages and the header numbers are computed from these records on load.
+Identity is `platform` + `platform_review_id` (no separate `id` field). How a review was collected belongs in your tooling/config, not on the record.
 
-### Avatars: `images/reviewers/`
+Avatars: `images/reviewers/<platform>-<id>.<ext>` with characters other than `A-Z a-z 0-9 _ -` replaced by `_`.
 
-Avatars are files in the data repo (never hotlinked). Each is named after the review's **stable source id**: `<platform>-<platform_review_id>.<ext>`, with every character other than `A-Z a-z 0-9 _ -` replaced by `_` so the name is filesystem- and URL-safe (Facebook ids are base64 and may contain `=`). The review id is used because it is the one id every platform provides and never changes: Amazon `R1AS3YUWI1ZYPI`, Google `ChZDSUhNMG9n…`, Yelp `5YetL22t6xV6Vm4DfH_v3Q`, Zola UUIDs, Etsy transaction ids. Reviewer ids aren't available on every platform, and one reviewer could review twice. A review without a photo still needs an image file, e.g. a generated initials SVG.
+Formal shape: [`schemas/reviews.schema.json`](schemas/reviews.schema.json).
 
-### Theme: `theme/theme.css`
+### Theme
 
-`@font-face` rules (fonts in `theme/fonts/`) and CSS custom properties on `.rw-host`, read by this repo's stylesheet:
+`theme/theme.css` sets `--rw-font`, `--rw-ink`, `--rw-accent`, `--rw-star`, `--rw-radius`, `--rw-max-width`, and related variables on `.rw-host`. Font URLs are relative to that file.
 
-| Variable | Used for |
+---
+
+## Example data
+
+[`example/`](example/) is a **fictional** business (“Cedar & Pine Studio”) with invented reviewers and platforms (`maps`, `directory`). The demo pages load it by default. Do not present it as real testimonials.
+
+---
+
+## JSON Schema and validation
+
+| Schema | Validates |
 |---|---|
-| `--rw-font` | font stack; the widget waits for the first family (weights 400, 700, italic 300) |
-| `--rw-letter-spacing` | body letter spacing |
-| `--rw-ink` / `--rw-body` / `--rw-muted` | names and score / review text / dates and "Based on" |
-| `--rw-line` / `--rw-line-strong` | borders / tab hover border |
-| `--rw-card` | card, header, tab and arrow background |
-| `--rw-tint` | count chips, avatar placeholder, AI summary card |
-| `--rw-accent` / `--rw-accent-2` | active tab, button, links, focus ring, card hover border / hover shade |
-| `--rw-on-accent` / `--rw-on-accent-soft` | text on the accent / count chip on the active tab |
-| `--rw-star` / `--rw-star-off` | filled / empty stars |
-| `--rw-nav-shadow` | carousel arrow shadow |
-| `--rw-radius` | card and header corner radius |
-| `--rw-max-width` | widget max width (centered) |
+| [`schemas/config.schema.json`](schemas/config.schema.json) | `config.json` |
+| [`schemas/reviews.schema.json`](schemas/reviews.schema.json) | each `reviews/<year>.json` array |
 
-The theme may also add site-specific rules (e.g. FASTONE sets the score and labels in uppercase Oswald). Font URLs are relative to `theme.css`, so they resolve inside the data repo. A host page can override any variable in its own CSS, e.g. `html .rw-root{--rw-accent:#8a2be2}`.
+[`scripts/validate.mjs`](scripts/validate.mjs) checks both schemas (via [Ajv](https://ajv.js.org/)) and filesystem rules: icons and avatars exist, `reviews.years` matches the files and is newest-first, dates sit in the right year file, `(platform, platform_review_id)` is unique, avatar paths match the safe-id pattern.
+
+```bash
+# from a checkout of this repo (once):
+npm ci
+
+# validate any data directory (the bundled example, or your data repo):
+node scripts/validate.mjs example
+node scripts/validate.mjs /path/to/your-data-repo
+```
+
+A data repo can call the reusable workflow on every push:
+
+```yaml
+# .github/workflows/validate.yml
+name: Validate reviews data
+on:
+  push:
+  workflow_dispatch:
+jobs:
+  validate:
+    uses: bristweb/reviews-widget/.github/workflows/validate.yml@main
+```
+
+That workflow checks out this repo, runs `npm ci`, then `node scripts/validate.mjs` on the caller.
 
 ---
 
 ## Updating data
 
-Add or change records however the site likes (by hand or with its own tooling), then check and publish:
-
-1. Put each record in the `reviews/<year>.json` for its date, keeping the file newest first. A new year needs a new file and its year in `reviews.years`.
-2. Put the avatar at `images/reviewers/<platform>-<safe id>.<ext>`.
-3. Run `node reviews-widget/scripts/validate.mjs <data repo>` (the data repo's workflow also runs it on push).
-4. Commit and push. GitHub Pages redeploys in about a minute and the widget picks it up (data is fetched with `cache: no-cache`).
+1. Edit `reviews/<year>.json` (newest first); add the year to `reviews.years` when you add a file.
+2. Place avatars under `images/reviewers/`.
+3. Run `node scripts/validate.mjs <data-dir>`.
+4. Commit and push; Pages redeploys in about a minute (`cache: no-cache` on fetches).
 
 ---
 
-## AI summary card
+## AI summary
 
-The first card in "All reviews" (carousel and grid) is a short summary of what reviewers say, written by AI from the stored review texts and labeled as such: a sparkle icon and **AI summary** (`strings.ai_summary`), `role="note"`, aria label "AI-generated summary of N reviews". It is not a link, has no stars or platform icon, isn't counted in any total or rating, doesn't count against `data-limit`, and is never in the JSON-LD. It doesn't appear on single-platform tabs.
-
-It lives in the data repo's `config.json`:
-
-```json
-"summary": { "text": "2-4 sentences", "generated_at": "2026-10-06T02:31:00Z" }
-```
-
-Rules for the text: only themes that actually appear in the reviews, no invented facts, no quotes attributed to anyone, no star claims; about 300 characters (longer text scrolls inside the card).
-
-`generated_at` records when the text was written, so a site's tooling can tell when newer reviews have arrived and the summary needs rewriting.
-
-**Hide it:** `display.show_summary: false`, `data-summary="off"`, `?summary=off`, or remove `summary` from `config.json`.
-
----
-
-## Validation
-
-`scripts/validate.mjs <data repo>` checks:
-
-- `config.json` parses, has `business.name` and `platforms`, every platform/link icon exists, `summary` (if present) has text and an ISO `generated_at`;
-- `reviews.years` is a list of integers, newest first, and matches the `reviews/*.json` files exactly (no missing, unlisted or empty files);
-- every record has `platform`, `platform_review_id`, `reviewer_name`, `reviewer_image`, `text`, `date`, `review_url`; the platform is in `config.json`; `rating` is 1-5 or null; dates are ISO 8601; each record is in the file for its year, newest first; `owner_reply` is null or `{text, date}`;
-- `platform` + `platform_review_id` is unique across all years;
-- each `reviewer_image` is `images/reviewers/<platform>-<safe id>.<ext>` and exists, and no avatar file is unused.
-
-Each data repo's `.github/workflows/validate.yml` calls this repo's reusable workflow (`bristweb/reviews-widget/.github/workflows/validate.yml@main`) on every push. It only checks; it never commits.
+Optional first card on “All reviews”: `config.summary` `{ text, generated_at }`. Not linked, not rated, not in JSON-LD, not counted by `data-limit`. Hide with `display.show_summary: false`, `data-summary="off"`, or omit `summary`.
 
 ---
 
 ## Card order
 
-Deterministic, the same on every load:
-
-- **"All reviews": newest first, with gentle platform diversity.** For each slot the widget takes the newest remaining review; if its platform matches the previous **2** cards (`display.max_same_platform_run`), it takes the newest review from a *different* platform instead, but only if that one is at most **548 days** (`display.diversity_window_days`) older. Otherwise it takes the newest anyway.
-- The [AI summary card](#ai-summary-card) comes first in "All reviews".
-- **Single-platform tab:** newest first.
-- Ties are broken by `platform:platform_review_id`.
-- Rating-only reviews (empty or whitespace-only text) get no card but count in the header, unless `display.show_rating_only_reviews` is `true`.
+Deterministic: on “All”, newest first with platform diversity (`display.max_same_platform_run`, `display.diversity_window_days`). Single-platform tabs are newest first. Ties break on `platform:platform_review_id`. Rating-only reviews count in the header but get no card unless `display.show_rating_only_reviews`.
 
 ---
 
 ## Structured data (JSON-LD)
 
-The widget builds the schema.org JSON-LD from the loaded records and injects it once per page as `<script type="application/ld+json" id="reviews-widget-schema">` in `<head>`, however many widgets the page has. Turn it off with `schema.enabled: false` or `data-schema="off"`. If the page already has a script with that id, nothing is added.
-
-- One entity, `@type` from `schema.type` (default `LocalBusiness`; FASTONE uses `Product`), `@id` `<website>#business`, `name` and `url` from `business`, plus everything in `schema.extra`.
-- `aggregateRating`: `ratingValue` (one decimal), `bestRating` 5, `worstRating` 1, `ratingCount` / `reviewCount` = every review **with a 1-5 rating**. Unrated reviews (e.g. Facebook recommendations) are left out rather than counted as 5 stars.
-- `review`: every review (`schema.max_reviews: 0`; a number caps it): text reviews in "All reviews" card order, then the rating-only ones newest first. Each has `author` (`Person`, the displayed abbreviated name), `datePublished`, `publisher` (`Organization`, the platform), `reviewRating` when rated, and `reviewBody` (the card's snippet) when it has text.
-
-**Google caveat:** Google shows no review stars for *self-serving* reviews (a business's markup about itself, `LocalBusiness` / `Organization`) and asks sites not to aggregate reviews from other websites, so don't expect stars in search. The markup still describes the business and its reviews accurately to search engines and AI crawlers. Use one aggregate per page: if the site has its own markup, use the same `@id` so they merge, or turn this off.
+Built in the browser and injected once per page as `#reviews-widget-schema`. `@type` from `schema.type` (default `LocalBusiness`), `aggregateRating` from 1–5 ratings only, `review` items in card order. Disable with `schema.enabled: false` or `data-schema="off"`. Google often withholds review stars for self-serving business markup; the JSON-LD still describes the entity accurately.
 
 ---
 
 ## Header behavior
 
-One compact row: rating on the left, platform tabs in the middle, **Write a review** on the right. It responds to the widget's own width through CSS container queries (`container: rw / inline-size` on `.rw-root`), so it follows the embed or iframe width, not the window:
+Container queries on the widget’s own width (and height when `data-fixed-height`):
 
-| Widget width | Header |
+| Width | Header |
 |---|---|
-| > 1020px | score, "Excellent", stars, "Based on N reviews" · tabs with icon, name and count · button |
-| ≤ 1020px | tabs collapse to icon and count (the name stays in `title` / `aria-label`) |
-| ≤ 720px | "Excellent" and "Based on" hidden (score, stars, "N reviews"), tighter tabs and button |
-| ≤ 575px | tabs hidden (the cards show all reviews); rating on the left, compact button on the right |
-| ≤ 360px | the button reads "Review" (`strings.write_review_short`; accessible name stays "Write a review") |
+| > 1020px | full score row, named tabs, button |
+| ≤ 1020px | tabs → icon + count |
+| ≤ 720px | hide “Excellent” / “Based on” |
+| ≤ 575px | hide tabs |
+| ≤ 360px | button label → short string |
 
-With [`data-fixed-height`](#google-sites-and-other-fixed-height-boxes) it also responds to height (the root becomes a `size` container):
-
-| Widget height | Header and cards |
+| Height (fixed mode) | |
 |---|---|
-| ≤ 460px | "Excellent" and "Based on" hidden, tighter padding |
-| ≤ 360px | smaller score, stars, button, tabs, avatars and text |
-| ≤ 300px | tighter still |
-| ≤ 240px | one slim header row (no "N reviews" line); cards drop the date and "View on" cue and clamp the snippet to the lines that fit; the AI summary keeps its label and scrolls its text; smaller arrows |
-| ≤ 180px | slightly smaller still |
+| ≤ 460px | compact header |
+| ≤ 240px | slim header; cards drop date / “View on”; snippets clamp |
 
-The carousel shows 4 cards above 1024px, 3 at ≤ 1024px, 2 at ≤ 760px, and one card (88% wide, swipeable, no arrows) at ≤ 575px. "Write a review" goes to the active platform's `write_url`, or `default_write_platform`'s on "All".
+Carousel: 4 / 3 / 2 / 1 cards by width breakpoints.
 
 ---
 
 ## Privacy and presentation
 
-- **Storage is complete.** The records store everything collected: full reviewer name, profile URL, avatar source URL, full text, owner reply, individual review URL, dates and platform extras. The data repos are public, so all of it is publicly readable.
-- **Presentation is abbreviated**, computed at render time: names as **first name + last initial** ("Kylee M."; couples like "Ann & Bob C." kept), text clipped to a **~160-character snippet** at a word boundary, the reviewer's own surname inside the snippet shown as an initial, screen-reader labels abbreviated too. Each card links to the original review (or the platform page, per `card_link`).
-- **Search engines:** `index.html` and `embed.html` carry `<meta name="robots" content="noindex, nofollow, noarchive">`. The repos have no description, topics or homepage link, but they're public and findable through GitHub search.
+- **Storage:** full names, text, replies, URLs, extras in the public data files.
+- **Presentation:** first name + last initial; ~160-character snippets; card links back to the platform.
 
 ---
 
-## New site
+## New data repo
 
-1. Create a data repo (public), copy an existing one's layout, and enable GitHub Pages (branch `main`, root). Keep `.nojekyll`, `.gitignore` and `.github/workflows/validate.yml`.
-2. Write `config.json`: `business`, `platforms`, `strings`, `display`, `schema`, and `"reviews": {"years": []}`.
-3. Add `icons/`, `theme/theme.css` and `theme/fonts/`.
-4. Add review records and avatars ([format](#review-records-reviewsyearjson)), by hand or with the site's own tooling. Write a `summary` when there are reviews.
-5. Validate, commit, push, and embed with `data-source="https://<owner>.github.io/<repo>/"`.
-
-Any platform works in the widget if it has a `platforms` entry, an icon, and records.
+1. Create a public repo; enable Pages (`main`, root); keep `.nojekyll` and a validate workflow (above).
+2. Add `config.json`, `icons/`, `theme/`, empty `reviews/` + `images/reviewers/`, `"reviews": { "years": [] }`.
+3. Add records and avatars; validate; push.
+4. Embed with `data-source` pointing at that Pages URL.
 
 ---
 
 ## Technical details
 
-- **Loading:** the script finds this repo's root as `new URL('../../', document.currentScript.src)` (or `data-base`). Per data source it fetches `config.json`, then all `reviews/<year>.json` listed in `reviews.years` in parallel (`cache: no-cache`), while adding `<link>`s for `assets/css/reviews-widget.css` and `<source>theme/theme.css` (unless the page already has them). Everything is fetched once per page and source, however many widgets there are (shared through `window.__reviewsWidget`). Without a `data-source` (or `?source=` on the bare pages) the widget shows "Reviews are unavailable right now" and logs a console warning.
-- **Mounting:** each copy of the script captures its own `document.currentScript`, then picks `data-target`, unfilled `[data-reviews-widget]` elements, or a new `<div>` before its own tag. A script that runs while the page is parsing waits for `DOMContentLoaded`. Each element is filled once.
-- **Sizing:** the mount element becomes `.rw-host` (a full-width block with a doubled class so page-builder rules can't override it). It holds a zero-height `.rw-sizer` (24 inline blocks giving an intrinsic max-content width of `--rw-max-width` and min-content of 1/24 of it, so shrink-to-fit parents size the widget to the available width) and the widget, `.rw-root`, whose `container-type: inline-size` drives the container queries. `.rw-clip` (`overflow-x: clip`) trims the arrows' overhang; `data-overflow="hidden"` uses `overflow: hidden`.
-- **Fixed height:** the host gets `100%` when its parent has a definite height (checked with a probe), otherwise the window height below the widget's top minus the page's bottom margin, recalculated on resize. `.rw-root.rw-fixed` becomes a flex column with `container-type: size`; card text scrolls vertically (`overflow-y: auto`, `overflow-x: hidden`) without blocking horizontal swipes.
-- **No flash:** the root starts at `opacity: 0`, waits for the stylesheets and the first `--rw-font` family (timeout `display.font_timeout_ms`, then the theme's metric-matched fallback), then fades in over 0.18s (instantly with reduced motion).
-- **Icons:** the data repo's SVG (`icon`, else `icons/<platform>.svg`); only if it fails does the `<img>` switch to the [Simple Icons CDN](https://simpleicons.org/).
-- **Accessibility:** each card is a single `<a>` (new tab, `rel="noopener"`) with a label like "Read Kylee M.'s review on Google (opens in a new tab)". Tabs are `role="tab"` buttons with counts in their labels; stars have text labels; focus rings are visible.
-- **Iframe height:** inside an iframe the widget posts `{type: 'reviews-widget-height', height}` to the parent on render, resize and tab change (not with `data-fixed-height`).
-- **Local preview:** serve the parent folder of both checkouts with CORS (e.g. a small server adding `Access-Control-Allow-Origin: *`) and open `http://localhost:8000/reviews-widget/?source=http://localhost:8000/<data-repo>/`.
+- Loads `config.json`, then all year files in parallel; injects CSS if missing.
+- Without `data-source` / `?source=`, shows the unavailable message.
+- Fixed-height mode: host height 100% or viewport remainder; card text scrolls without blocking horizontal swipe.
+- Icons: data-repo SVG, then Simple Icons CDN fallback.
+- Local preview: serve this repo (and your data) with CORS (`Access-Control-Allow-Origin: *`) and open `index.html` or point `data-source` at a local URL.
 
 ---
 
 ## Repo layout
 
 ```
-assets/js/reviews-widget.js     the widget: loads a data repo, renders, computes counts and JSON-LD
-assets/css/reviews-widget.css   layout and behavior; reads the --rw-* variables from the data repo's theme
-index.html, embed.html          bare widget pages (noindex, transparent): ?source=<data repo URL>
-scripts/validate.mjs            data repo checks (used by the reusable workflow)
-.github/workflows/validate.yml  reusable workflow the data repos call on push
-.github/workflows/check.yml     syntax check of this repo's code
+assets/js/reviews-widget.js   widget
+assets/css/reviews-widget.css layout (reads --rw-* from the data theme)
+index.html, embed.html        demos (default data-source: example/)
+example/                      fictional sample data
+schemas/*.schema.json         config + reviews JSON Schema
+scripts/validate.mjs          Ajv + filesystem checks
+COMPARISON.md                 optional product comparison
+.github/workflows/            check (this repo) + reusable validate
 ```
 
-Review content belongs to its authors and is shown with a link back to the original. Platform marks belong to their owners (see each data repo's README for icon sources and font licenses).
+Review text belongs to its authors; platform marks belong to their owners.

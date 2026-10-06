@@ -1,0 +1,29 @@
+{
+  "name": "reviews-widget",
+  "version": "1.0.0",
+  "description": "Static reviews widget (code only)",
+  "main": "index.js",
+  "directories": {
+    "example": "example"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bristweb/reviews-widget.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bristweb/reviews-widget/issues"
+  },
+  "homepage": "https://github.com/bristweb/reviews-widget#readme",
+  "type": "module",
+  "private": "true",
+  "dependencies": {
+    "ajv": "^8.20.0",
+    "ajv-formats": "^3.0.1"
+  }
+}

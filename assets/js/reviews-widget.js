@@ -10,10 +10,10 @@
  * snippet (both computed here at render time).
  *
  * Usage (JS embed) — one script tag renders the widget right where the tag is (defer/async are fine):
- *   <script src="https://bristweb.github.io/reviews-widget/assets/js/reviews-widget.js"
- *           data-source="https://<host>/<data-repo>/" data-layout="carousel|grid"
+ *   <script src="…/reviews-widget/assets/js/reviews-widget.js"
+ *           data-source="…/<your-data-repo>/" data-layout="carousel|grid"
  *           data-platform="all|<platform>" data-limit="0" defer></script>
- * data-source is required (the bare pages index.html / embed.html take ?source= instead).
+ * data-source is required (the bare pages index.html / embed.html default to ./example/ via ?source=).
  * Explicit target instead of in place:
  *   data-target="#some-id" on the script tag, or element(s) with a data-reviews-widget attribute (their own
  *   data-source/-layout/-platform/-limit override the script's). If the page has unclaimed [data-reviews-widget]
@@ -174,7 +174,7 @@
     }));
     let config, reviews;
     try {
-      if (!base) throw new Error('[reviews-widget] data-source is required (the data repo URL, e.g. https://bristweb.github.io/<repo>/)');
+      if (!base) throw new Error('[reviews-widget] data-source is required (URL of a data repo root, ending in /)');
       [config, reviews] = await load(code, base);
     } catch (e) {
       console.warn(e);
