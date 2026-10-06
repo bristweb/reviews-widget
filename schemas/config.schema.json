@@ -259,11 +259,10 @@
     },
     "accolades": {
       "type": "array",
-      "description": "Optional award badge cards merged into the review track by date after the platform filter (and listed alone on the Awards tab when present). Each item sorts as YYYY-12-31 so it leads that year (newest first). When any accolades exist, at least one appears before the first review (newest award promoted if its year is older than the newest review). Each item needs url + year plus icon and/or freeform label (name is an alias). Cards match review chrome: title + year up top, badge in the middle, View award link cue at the bottom. Logo fills the card free space by default; optional global max via display.accolade_size. Same optional nofollow/noreferrer/rel as platforms.",
+      "description": "Optional award badge cards merged into the review track by date after the platform filter (and listed alone on the Awards tab when present). Each item sorts as YYYY-12-31 so it leads that year (newest first). When any accolades exist, at least one appears before the first review (newest award promoted if its year is older than the newest review). Each item needs year plus icon and/or freeform label (name is an alias). Optional url: when set the card is a link with a View award cue; when omitted the card is not clickable and has no footer cue. Logo fills the card free space by default; optional global max via display.accolade_size. Same optional nofollow/noreferrer/rel as platforms.",
       "items": {
         "type": "object",
         "required": [
-          "url",
           "year"
         ],
         "additionalProperties": true,
@@ -305,11 +304,12 @@
           },
           "icon": {
             "type": "string",
-            "description": "Image URL or path relative to the data root. Shown as the badge in the middle of the card; when omitted, title + year + link cue still render."
+            "description": "Image URL or path relative to the data root. Shown as the badge in the middle of the card; when omitted, title + year still render (link cue only if url is set)."
           },
           "url": {
             "type": "string",
-            "minLength": 1
+            "minLength": 1,
+            "description": "Optional. When set, the card is a link (View award cue). When omitted, the card is not clickable and has no footer link text."
           },
           "nofollow": {
             "type": "boolean"
@@ -326,7 +326,7 @@
     },
     "testimonials": {
       "type": "array",
-      "description": "Optional testimonial cards merged into the review track by date (newest first) on the All tab, like accolades. Not tied to a review platform. When present, a Testimonials filter tab lists only these cards. Platform filters omit them. Each item needs reviewer_name, text, and date. Optional url (card link), link_text (footer cue; default Learn more / strings.view_testimonial), rating (1\u20135), reviewer_image. Optional source: if set, name is required; source.logo (when set) replaces the usual platform icon and is shown in the avatar position (reviewer image moves secondary). Same optional nofollow/noreferrer/rel as platforms.",
+      "description": "Optional testimonial cards merged into the review track by date (newest first) on the All tab, like accolades. Not tied to a review platform. When present, a Testimonials filter tab lists only these cards. Platform filters omit them. Each item needs reviewer_name, text, and date. Optional url (when set the card links with a footer cue; when omitted not clickable and no footer cue), link_text (footer cue when url is set; default Learn more / strings.view_testimonial), rating (1\u20135), reviewer_image. Optional source: if set, name is required; source.logo (when set) replaces the usual platform icon and is shown in the avatar position (reviewer image moves secondary). Same optional nofollow/noreferrer/rel as platforms.",
       "items": {
         "type": "object",
         "required": [
@@ -382,7 +382,7 @@
               "name"
             ],
             "additionalProperties": true,
-            "description": "Optional organization for corporate credibility (e.g. Bob from Microsoft). name required when source is present; logo shown prominently in the avatar slot.",
+            "description": "Optional organization for corporate credibility. name required when source is present; shown as its own prominent line under the reviewer name (not folded into the name). logo shown in the avatar slot when set.",
             "properties": {
               "name": {
                 "type": "string",

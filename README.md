@@ -137,8 +137,8 @@ theme/fonts/             optional self-hosted fonts
 | `strings` | optional inline UI copy overrides (object only; merged last) |
 | `rating_labels` | score words (`[{ min, label }, …]`); overrides language-file labels when set |
 | `summary` | `{ "text", "generated_at" }` for the summary card; optional `title` is the card headline (else language/strings `ai_summary`, e.g. Highlights) |
-| `accolades` | optional award badges merged into the review track by date (each sorts as `YYYY-12-31` so it leads that year; newest first after the platform filter). Always at least one accolade before the first review when any exist (newest award promoted if needed). When present, an **Awards** filter tab lists only accolade cards. Each item needs `url` + `year` plus `icon` and/or freeform `label` (`name` alias). Cards match review chrome: title + year up top, badge in the middle, “View award” link cue at the bottom. Logo fills the card’s free space by default; optional global max: `display.accolade_size` (px). Same optional `nofollow` / `noreferrer` / `rel` as platforms |
-| `testimonials` | optional testimonial cards (review-like) merged into the **All** track by date, newest first. No required platform/source. When present, a **Testimonials** filter tab lists only these cards; platform filters omit them. Each item needs `reviewer_name`, `text`, `date`. Optional `url`, `link_text` (footer cue; default **Learn more** / `strings.view_testimonial`), `rating`, `reviewer_image`. Optional `source` (`name` required when set; `logo` shown prominently in the avatar slot, reviewer image secondary). Cards read like “Bob from Microsoft…”. Same optional `nofollow` / `noreferrer` / `rel` |
+| `accolades` | optional award badges merged into the review track by date (each sorts as `YYYY-12-31` so it leads that year; newest first after the platform filter). Always at least one accolade before the first review when any exist (newest award promoted if needed). When present, an **Awards** filter tab lists only accolade cards. Each item needs `year` plus `icon` and/or freeform `label` (`name` alias). Optional `url`: when set the card links with a “View award” cue; when omitted the card is not clickable and has no footer cue. Logo fills the card’s free space by default; optional global max: `display.accolade_size` (px). Same optional `nofollow` / `noreferrer` / `rel` as platforms |
+| `testimonials` | optional testimonial cards (review-like) merged into the **All** track by date, newest first. No required platform/source. When present, a **Testimonials** filter tab lists only these cards; platform filters omit them. Each item needs `reviewer_name`, `text`, `date`. Optional `url`, `link_text` (footer cue; default **Learn more** / `strings.view_testimonial`), `rating`, `reviewer_image`. Optional `source` (`name` required when set; `logo` shown in the avatar slot, reviewer image secondary). Reviewer name and source name are separate lines (source is its own prominent line — not folded into “Name from Org”). Same optional `nofollow` / `noreferrer` / `rel` |
 | `reviews.years` | year files to fetch, newest first, e.g. `[2026, 2025]` |
 
 Formal shape: `schemas/config.schema.json` in this repo.
@@ -226,11 +226,13 @@ Container queries on the widget’s own width (and height when constrained / `.r
 
 | Width | Header |
 |---|---|
-| > 1020px | full score row, named tabs, button |
-| ≤ 1020px | tabs → icon + count |
+| > 1020px | full score row; All + as many filter pills as fit + **More** overflow menu; Write |
+| ≤ 1020px | tabs → icon + count (still fit-to-width; overflow in More; no horizontal scroll) |
 | ≤ 720px | hide “Excellent” / “Based on” |
 | ≤ 575px | hide tabs |
 | ≤ 360px | button label → short string |
+
+Filter pills never wrap or scroll horizontally. The active filter is always kept as a visible pill (promoted out of More if needed). Write stays outside the overflow control.
 
 | Height (fixed mode) | |
 |---|---|

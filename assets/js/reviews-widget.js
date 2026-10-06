@@ -36,6 +36,7 @@
     tab_title: '{name}: {count} reviews', tab_aria: '{name}, {count} reviews',
     tab_accolades: 'Awards', tab_accolades_title: '{name}: {count} awards', tab_accolades_aria: '{name}, {count} awards',
     tab_testimonials: 'Testimonials', tab_testimonials_title: '{name}: {count} testimonials', tab_testimonials_aria: '{name}, {count} testimonials',
+    tabs_more: 'More', tabs_more_aria: 'More filters',
     write_review: 'Write a review', write_review_short: 'Review',
     based_on: 'Based on ', review_one: 'review', review_many: 'reviews', on_platform: ' on {platform}',
     accolade_one: 'award', accolade_many: 'awards',
@@ -46,6 +47,8 @@
     previous: 'Previous reviews', next: 'Next reviews', ai_summary: 'Summary',
     ai_summary_aria: 'Summary of {count} reviews', accolades_aria: 'Awards and accolades',
     accolade_card_aria: '{label} ({year}) — opens in a new tab',
+    accolade_card_aria_nolink: '{label} ({year})',
+    card_aria_nolink: "{name}'s review on {platform}",
     testimonial_from: '{name} from {source}',
     testimonial_card_aria: "Read {name}'s testimonial{source_clause} (opens in a new tab)",
     testimonial_card_aria_nolink: "{name}'s testimonial{source_clause}",
@@ -497,7 +500,7 @@
     // Accolades (config-level): reused for the Awards tab and for merging into the review track.
     const accoladesList = Array.isArray(config.accolades)
       ? config.accolades
-          .filter(a => a && a.url && a.year != null && String(a.year).trim() && (a.icon || a.label || a.name))
+          .filter(a => a && a.year != null && String(a.year).trim() && (a.icon || a.label || a.name))
           .slice()
           .sort((a, b) => {
             const ya = Number(a.year), yb = Number(b.year);
@@ -514,7 +517,7 @@
       const d = String(r.date || '').slice(0, 10);
       return /^\d{4}-\d{2}-\d{2}$/.test(d) ? d : '0000-00-00';
     };
-    // Testimonials (config-level): review-like cards with optional corporate source (logo prominent).
+    // Testimonials (config-level): review-like cards with optional corporate source (logo + own name line).
     const testimonialSource = t => {
       const s = t && t.source;
       if (!s || typeof s !== 'object') return null;
@@ -587,11 +590,18 @@
               : isTes
                 ? `<span class="rw-tab-name">${esc(S.tab_testimonials)}</span>`
                 : `${icon(p)}<span class="rw-tab-name">${esc(name)}</span>`;
-          return `<button role="tab" class="rw-tab ${p === active ? 'is-active' : ''}" data-p="${p}" aria-selected="${p === active}"
+          return `<button type="button" role="tab" class="rw-tab ${p === active ? 'is-active' : ''}" data-p="${p}" aria-selected="${p === active}"
             title="${esc(fill(titleTpl, { name, count: n }))}" aria-label="${esc(fill(ariaTpl, { name, count: n }))}">
             ${labelHtml}
             <em>${n}</em></button>`;
-        }).join('')}</div>` : '';
+        }).join('')}
+        <div class="rw-tabs-overflow" hidden>
+          <button type="button" class="rw-tabs-more" aria-haspopup="menu" aria-expanded="false" aria-label="${esc(S.tabs_more_aria)}" title="${esc(S.tabs_more)}">
+            <span>${esc(S.tabs_more)}</span><span class="rw-tabs-more-caret" aria-hidden="true">▾</span>
+          </button>
+          <div class="rw-tabs-menu" role="menu" hidden></div>
+        </div>
+      </div>` : '';
 
       const basedCount = onAccolades ? accoladesList.length : onTestimonials ? testimonialsList.length : pool.length;
       const basedUnit = onAccolades
@@ -649,31 +659,34 @@
       }
 
       const accoladeCard = a => {
-        // Same card chrome as reviews: title + year up top, badge in the middle, link cue at the bottom.
+        // Same card chrome as reviews: title + year up top, badge in the middle; link cue only when url is set.
         const rawCap = [a.label, a.name].find(v => v != null && String(v).trim());
         const labelText = rawCap ? String(rawCap).trim() : '';
         const title = labelText || S.tab_accolades;
         const yearStr = String(a.year).trim();
-        const aria = fill(S.accolade_card_aria, { label: title, year: yearStr || '' });
+        const hasUrl = a.url && String(a.url).trim();
+        const aria = fill(hasUrl ? S.accolade_card_aria : S.accolade_card_aria_nolink, { label: title, year: yearStr || '' });
         const img = a.icon ? `<img class="rw-accolade-badge" src="${esc(url(a.icon))}" alt="" loading="lazy">` : '';
-        return `<a class="rw-card rw-accolade-card" href="${esc(a.url)}" target="_blank" rel="${esc(linkRel(a))}" title="${esc(aria)}" aria-label="${esc(aria)}">
-          <div class="rw-card-top">
+        const linkCue = hasUrl
+          ? `<span class="rw-link" aria-hidden="true">${esc(S.view_accolade)} <span class="rw-arrow">→</span></span>`
+          : '';
+        const inner = `<div class="rw-card-top">
             <div class="rw-who">
               <div class="rw-name">${esc(title)}</div>
               ${yearStr ? `<time datetime="${esc(yearStr)}">${esc(yearStr)}</time>` : ''}
             </div>
           </div>
           ${img}
-          <span class="rw-link" aria-hidden="true">${esc(S.view_accolade)} <span class="rw-arrow">→</span></span>
-        </a>`;
+          ${linkCue}`;
+        if (hasUrl) {
+          return `<a class="rw-card rw-accolade-card" href="${esc(a.url)}" target="_blank" rel="${esc(linkRel(a))}" title="${esc(aria)}" aria-label="${esc(aria)}">${inner}</a>`;
+        }
+        return `<div class="rw-card rw-accolade-card" role="article" aria-label="${esc(aria)}">${inner}</div>`;
       };
       const testimonialCard = t => {
         // Review-like chrome. Source logo (when set) takes the avatar slot; reviewer image is secondary.
-        // No required platform — no platform icon unless a source logo fills that visual role.
+        // Reviewer name stays on its own line; source name is a separate prominent line (never “Name from Org”).
         const source = t._source;
-        const nameLine = source
-          ? fill(S.testimonial_from, { name: t.display_name, source: source.name })
-          : t.display_name;
         const sourceClause = source
           ? fill(S.testimonial_source_clause, { source: source.name })
           : '';
@@ -699,10 +712,14 @@
         const linkCue = hasUrl
           ? `<span class="rw-link" aria-hidden="true">${esc(linkLabel)} <span class="rw-arrow">→</span></span>`
           : '';
+        const sourceLine = source
+          ? `<div class="rw-source-name">${esc(source.name)}</div>`
+          : '';
         const inner = `<div class="rw-card-top">
             ${primary}
             <div class="rw-who">
-              <div class="rw-name">${esc(nameLine)}</div>
+              <div class="rw-name">${esc(t.display_name)}</div>
+              ${sourceLine}
               <time datetime="${esc(t.date)}">${fmtDate(t.date)}</time>
             </div>
             ${secondary}
@@ -718,10 +735,13 @@
       const reviewCard = r => {
         const name = pname(r.platform);
         const rating = typeof r.rating === 'number' ? stars(r.rating) : `<span class="rw-rec">${THUMB}${esc(S.recommends)}</span>`;
-        const aria = fill(S.card_aria, { name: r.display_name, platform: name });
-        // The whole card is one link; nothing inside it is interactive (no nested links).
-        return `<a class="rw-card" data-platform="${esc(r.platform)}" href="${esc(cardHref(r))}" target="_blank" rel="${esc(cardRel(r))}" aria-label="${esc(aria)}">
-          <div class="rw-card-top">
+        const href = cardHref(r);
+        const hasUrl = href && String(href).trim();
+        const aria = fill(hasUrl ? S.card_aria : S.card_aria_nolink, { name: r.display_name, platform: name });
+        const linkCue = hasUrl
+          ? `<span class="rw-link" aria-hidden="true">${esc(fill(S.view_on, { platform: name }))} <span class="rw-arrow">→</span></span>`
+          : '';
+        const inner = `<div class="rw-card-top">
             <img class="rw-avatar" src="${esc(url(r.reviewer_image))}" alt="" loading="lazy" width="44" height="44">
             <div class="rw-who">
               <div class="rw-name">${esc(r.display_name)}</div>
@@ -731,8 +751,12 @@
           </div>
           ${rating}
           ${hasText(r) ? `<p class="rw-text">${esc(r.snippet_text)}</p>` : ''}
-          <span class="rw-link" aria-hidden="true">${esc(fill(S.view_on, { platform: name }))} <span class="rw-arrow">→</span></span>
-        </a>`;
+          ${linkCue}`;
+        // Linked cards are one <a>; nothing inside is interactive. No URL → static article (no footer cue).
+        if (hasUrl) {
+          return `<a class="rw-card" data-platform="${esc(r.platform)}" href="${esc(href)}" target="_blank" rel="${esc(cardRel(r))}" aria-label="${esc(aria)}">${inner}</a>`;
+        }
+        return `<div class="rw-card" data-platform="${esc(r.platform)}" role="article" aria-label="${esc(aria)}">${inner}</div>`;
       };
 
       // Summary card: first card in "All reviews" only; not a link, not counted, not in the JSON-LD.
@@ -761,12 +785,8 @@
       useFallbackIcons(el);
       fitSummary();
       clampText();
-      el.querySelectorAll('.rw-tab').forEach(b => b.addEventListener('click', () => {
-        // Re-clicking the active filter clears it (back to All / unfiltered).
-        const p = b.dataset.p;
-        active = p === active ? 'all' : p;
-        render();
-      }));
+      bindTabs();
+      fitTabs();
       const track = el.querySelector('.rw-track');
       const step = dir => track.scrollBy({ left: dir * track.clientWidth * 0.9, behavior: 'smooth' });
       el.querySelector('.rw-prev')?.addEventListener('click', () => step(-1));
@@ -796,10 +816,127 @@
       const t = el.querySelector('.rw-ai-text');
       if (t) t.classList.toggle('rw-ai-more', t.scrollHeight > t.clientHeight + 2 && t.scrollTop + t.clientHeight < t.scrollHeight - 2);
     }
+    // Filter pills: use available width (All + as many as fit + Write outside). Overflow goes in a More menu.
+    // Active filter is always promoted into the visible row — never only behind More.
+    function closeTabsMenu() {
+      const more = el.querySelector('.rw-tabs-more');
+      const menu = el.querySelector('.rw-tabs-menu');
+      if (more) {
+        more.setAttribute('aria-expanded', 'false');
+        more.classList.remove('is-open');
+      }
+      if (menu) menu.hidden = true;
+    }
+    function bindTabs() {
+      const tabsEl = el.querySelector('.rw-tabs');
+      if (!tabsEl) return;
+      const moreBtn = tabsEl.querySelector('.rw-tabs-more');
+      const menu = tabsEl.querySelector('.rw-tabs-menu');
+      const selectFilter = p => {
+        // Re-clicking the active filter clears it (back to All / unfiltered).
+        active = p === active ? 'all' : p;
+        render();
+      };
+      tabsEl.addEventListener('click', e => {
+        const more = e.target.closest('.rw-tabs-more');
+        if (more && tabsEl.contains(more)) {
+          e.preventDefault();
+          const open = more.getAttribute('aria-expanded') === 'true';
+          if (open) closeTabsMenu();
+          else {
+            more.setAttribute('aria-expanded', 'true');
+            more.classList.add('is-open');
+            if (menu) menu.hidden = false;
+          }
+          return;
+        }
+        const tab = e.target.closest('.rw-tab[data-p]');
+        if (!tab || !tabsEl.contains(tab)) return;
+        e.preventDefault();
+        selectFilter(tab.dataset.p);
+      });
+      if (!el.__rwTabsOutside) {
+        el.__rwTabsOutside = true;
+        document.addEventListener('click', e => {
+          if (!el.contains(e.target)) closeTabsMenu();
+        });
+        document.addEventListener('keydown', e => {
+          if (e.key === 'Escape') closeTabsMenu();
+        });
+      }
+    }
+    function fitTabs() {
+      const tabsEl = el.querySelector('.rw-tabs');
+      if (!tabsEl || getComputedStyle(tabsEl).display === 'none') return;
+      const overflow = tabsEl.querySelector('.rw-tabs-overflow');
+      const moreBtn = tabsEl.querySelector('.rw-tabs-more');
+      const menu = tabsEl.querySelector('.rw-tabs-menu');
+      if (!overflow || !moreBtn || !menu) return;
+
+      closeTabsMenu();
+      const pills = [...tabsEl.querySelectorAll(':scope > .rw-tab[data-p]')];
+      pills.forEach(p => { p.hidden = false; });
+      overflow.hidden = true;
+      menu.innerHTML = '';
+      if (pills.length <= 1) return;
+
+      const avail = tabsEl.clientWidth;
+      if (avail <= 0) return;
+      const gap = parseFloat(getComputedStyle(tabsEl).columnGap || getComputedStyle(tabsEl).gap) || 0;
+      const widths = pills.map(p => p.getBoundingClientRect().width);
+
+      // First pass: do all pills fit without More?
+      let total = 0;
+      widths.forEach((w, i) => { total += w + (i ? gap : 0); });
+      if (total <= avail + 0.5) return;
+
+      // Need More. Measure it, then pick visible set (All + active always; then fill left-to-right).
+      overflow.hidden = false;
+      const moreW = moreBtn.getBoundingClientRect().width;
+      const widthOf = (idxs) => {
+        const sorted = [...idxs].sort((a, b) => a - b);
+        let w = 0;
+        sorted.forEach((i, k) => { w += widths[i] + (k ? gap : 0); });
+        return w + gap + moreW;
+      };
+      const must = new Set([0]);
+      const activeIdx = pills.findIndex(p => p.dataset.p === active);
+      if (activeIdx > 0) must.add(activeIdx);
+
+      const visible = new Set(must);
+      for (let i = 1; i < pills.length; i++) {
+        if (visible.has(i)) continue;
+        visible.add(i);
+        if (widthOf(visible) > avail + 0.5) visible.delete(i);
+        // Keep scanning so a promoted active later in the list does not block earlier packing,
+        // and so we still try later pills when an earlier one was too wide.
+      }
+
+      const overflowed = [];
+      pills.forEach((p, i) => {
+        if (visible.has(i)) p.hidden = false;
+        else {
+          p.hidden = true;
+          overflowed.push(p);
+        }
+      });
+
+      if (!overflowed.length) {
+        overflow.hidden = true;
+        return;
+      }
+
+      // Active is always promoted into the row, so menu items are never the selected filter.
+      menu.innerHTML = overflowed.map(p => {
+        const pKey = p.dataset.p;
+        return `<button type="button" role="menuitem" class="rw-tab" data-p="${pKey}"
+          aria-label="${esc(p.getAttribute('aria-label') || '')}" title="${esc(p.getAttribute('title') || '')}">${p.innerHTML}</button>`;
+      }).join('');
+    }
     el.addEventListener('scroll', e => { if (e.target.classList && e.target.classList.contains('rw-ai-text')) fitSummary(); }, { capture: true, passive: true });
     render();
     reveal();
-    new ResizeObserver(() => { fitSummary(); clampText(); if (!cfg.fixed) notifyHeight(); }).observe(el);
+    new ResizeObserver(() => { fitTabs(); fitSummary(); clampText(); if (!cfg.fixed) notifyHeight(); }).observe(el);
   }
 
   // When rendered inside an iframe (embed.html), tell the parent page our height.

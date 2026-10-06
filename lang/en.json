@@ -1,5 +1,5 @@
 {
-  "loading": "Loading reviews\u2026",
+  "loading": "Loading reviews…",
   "unavailable": "Reviews are unavailable right now.",
   "tabs_aria": "Filter reviews by platform, awards, or testimonials",
   "tab_all": "All",
@@ -50,7 +50,7 @@
   "tab_accolades_aria": "{name}, {count} awards",
   "accolade_one": "award",
   "accolade_many": "awards",
-  "accolade_card_aria": "{label} ({year}) \u2014 opens in a new tab",
+  "accolade_card_aria": "{label} ({year}) — opens in a new tab",
   "tab_testimonials": "Testimonials",
   "tab_testimonials_title": "{name}: {count} testimonials",
   "tab_testimonials_aria": "{name}, {count} testimonials",
@@ -60,5 +60,9 @@
   "testimonial_from": "{name} from {source}",
   "testimonial_card_aria": "Read {name}'s testimonial{source_clause} (opens in a new tab)",
   "testimonial_card_aria_nolink": "{name}'s testimonial{source_clause}",
-  "testimonial_source_clause": " ({source})"
+  "testimonial_source_clause": " ({source})",
+  "tabs_more": "More",
+  "tabs_more_aria": "More filters",
+  "accolade_card_aria_nolink": "{label} ({year})",
+  "card_aria_nolink": "{name}'s review on {platform}"
 }

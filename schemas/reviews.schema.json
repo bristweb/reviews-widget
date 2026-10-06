@@ -12,8 +12,7 @@
       "reviewer_name",
       "reviewer_image",
       "text",
-      "date",
-      "review_url"
+      "date"
     ],
     "additionalProperties": true,
     "properties": {
@@ -72,7 +71,8 @@
       },
       "review_url": {
         "type": "string",
-        "minLength": 1
+        "minLength": 1,
+        "description": "Optional. When set (or platforms.*.card_link page_url resolves), the card is a link with a View on cue. When no href resolves, the card is not clickable and has no footer link text."
       },
       "owner_reply": {
         "anyOf": [

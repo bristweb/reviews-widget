@@ -31,9 +31,20 @@
 .rw-root{line-height:normal;font-size:16px;text-align:start}
 .rw-root img{border:0;max-width:none;margin:0;padding:0}
 .rw-loading{padding:40px;text-align:center;color:var(--rw-muted,#888)}
-.rw-tabs{order:2;flex:1 1 auto;min-width:0;display:flex;align-items:center;align-self:center;gap:6px;flex-wrap:nowrap;justify-content:safe center;overflow-x:auto;overflow-y:hidden;scrollbar-width:thin;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}
-.rw-tabs::-webkit-scrollbar{height:4px}.rw-tabs::-webkit-scrollbar-thumb{background:var(--rw-line-strong,#c8c8c8);border-radius:999px}
-.rw-tab:focus-visible,.rw-write:focus-visible,.rw-nav:focus-visible,.rw-accolade-card:focus-visible,.rw-testimonial-card:focus-visible{outline:2px solid var(--rw-accent,#333);outline-offset:2px}
+.rw-tabs{order:2;flex:1 1 auto;min-width:0;display:flex;align-items:center;align-self:center;gap:6px;flex-wrap:nowrap;justify-content:safe center;overflow:visible}
+.rw-tab:focus-visible,.rw-write:focus-visible,.rw-nav:focus-visible,.rw-tabs-more:focus-visible,.rw-accolade-card:focus-visible,.rw-testimonial-card:focus-visible{outline:2px solid var(--rw-accent,#333);outline-offset:2px}
+/* Overflow “More” control: remaining filters in a dropdown; no horizontal scroll / wrap on the pill row. */
+.rw-tabs-overflow{position:relative;flex:none;display:inline-flex;align-items:center}
+.rw-tabs-overflow[hidden]{display:none!important}
+.rw-tabs-more{display:inline-flex;align-items:center;gap:4px;flex:none;border:1px solid var(--rw-line,#e3e3e3);background:var(--rw-card,#fff);border-radius:999px;padding:6px 12px;font:inherit;font-size:13.5px;color:var(--rw-ink,#111);cursor:pointer;transition:all .15s;white-space:nowrap}
+.rw-tabs-more:hover{border-color:var(--rw-line-strong,#c8c8c8)}
+.rw-tabs-more.is-open{border-color:var(--rw-line-strong,#c8c8c8)}
+.rw-tabs-more-caret{font-size:10px;line-height:1;opacity:.75}
+.rw-tabs-menu{position:absolute;top:calc(100% + 6px);right:0;z-index:6;min-width:min(240px,70vw);max-width:min(320px,85vw);display:flex;flex-direction:column;gap:4px;padding:6px;margin:0;background:var(--rw-card,#fff);border:1px solid var(--rw-line,#e3e3e3);border-radius:12px;box-shadow:var(--rw-nav-shadow,0 2px 12px rgba(0,0,0,.12))}
+.rw-tabs-menu[hidden]{display:none!important}
+.rw-tabs-menu .rw-tab{width:100%;justify-content:flex-start;border-radius:8px}
+/* Menu always shows names (even when the pill row is icon-only ≤1020). */
+.rw-tabs-menu .rw-tab-name,.rw-tabs-menu .rw-tab-long{display:inline!important}
 .rw-tab{display:inline-flex;align-items:center;gap:6px;flex:none;border:1px solid var(--rw-line,#e3e3e3);background:var(--rw-card,#fff);border-radius:999px;padding:6px 12px;font:inherit;font-size:13.5px;color:var(--rw-ink,#111);cursor:pointer;transition:all .15s;white-space:nowrap}
 .rw-tab img{width:16px;height:16px}
 .rw-tab em{font-style:normal;font-size:12px;color:var(--rw-accent-2,#555);background:var(--rw-tint,#f1f1f1);border-radius:999px;padding:1px 7px}
@@ -62,13 +73,17 @@
 @container rw (max-width:1024px){.rw-layout-carousel .rw-track{grid-auto-columns:calc((100% - 32px)/3)}}
 @container rw (max-width:760px){.rw-layout-carousel .rw-track{grid-auto-columns:calc((100% - 16px)/2)}}
 @container rw (max-width:575px){.rw-layout-carousel .rw-track{grid-auto-columns:88%}}
-.rw-card{color:inherit;text-decoration:none;cursor:pointer;display:flex;flex-direction:column;gap:10px;background:var(--rw-card,#fff);border:1px solid var(--rw-line,#e3e3e3);border-radius:var(--rw-radius,14px);padding:18px;min-height:240px;box-shadow:none;transition:transform .2s,border-color .2s}
-.rw-card:hover,.rw-card:focus-visible{border-color:var(--rw-accent,#333);box-shadow:none;transform:translateY(-2px)}
-.rw-card:focus{outline:none}
-.rw-card:focus-visible{outline:3px solid var(--rw-accent,#333);outline-offset:-1px;box-shadow:none}
-.rw-card:active{transform:translateY(0)}
-.rw-card:hover .rw-link{color:var(--rw-accent-2,#555)}
-.rw-card:hover .rw-arrow{transform:translateX(3px)}
+.rw-card{color:inherit;text-decoration:none;display:flex;flex-direction:column;gap:10px;background:var(--rw-card,#fff);border:1px solid var(--rw-line,#e3e3e3);border-radius:var(--rw-radius,14px);padding:18px;min-height:240px;box-shadow:none;transition:transform .2s,border-color .2s}
+a.rw-card{cursor:pointer}
+a.rw-card:hover,a.rw-card:focus-visible{border-color:var(--rw-accent,#333);box-shadow:none;transform:translateY(-2px)}
+a.rw-card:focus{outline:none}
+a.rw-card:focus-visible{outline:3px solid var(--rw-accent,#333);outline-offset:-1px;box-shadow:none}
+a.rw-card:active{transform:translateY(0)}
+a.rw-card:hover .rw-link{color:var(--rw-accent-2,#555)}
+a.rw-card:hover .rw-arrow{transform:translateX(3px)}
+/* Non-link cards (no url): not clickable; no hover lift. Summary (.rw-ai) keeps its own chrome. */
+div.rw-card:not(.rw-ai){cursor:default}
+div.rw-card:not(.rw-ai):hover,div.rw-card:not(.rw-ai):focus-visible,div.rw-card:not(.rw-ai):active{transform:none;border-color:var(--rw-line,#e3e3e3)}
 .rw-arrow{display:inline-block;transition:transform .15s}
 .rw-card-top{display:flex;align-items:center;gap:11px}
 .rw-avatar{width:44px;height:44px;border-radius:50%;object-fit:cover;flex:none;background:var(--rw-tint,#f1f1f1)}
@@ -103,21 +118,21 @@
 /* Testimonials: review-like cards. Source logo sits in the avatar slot (slightly squared); reviewer photo is secondary. */
 .rw-testimonial-card{background:var(--rw-card,#fff)}
 .rw-source-logo{border-radius:10px;object-fit:contain;background:var(--rw-tint,#f1f1f1);padding:3px}
+.rw-source-name{font-size:13px;font-weight:600;line-height:1.25;color:var(--rw-ink,#111);margin-top:1px}
 .rw-avatar-secondary{width:22px;height:22px;border-radius:50%;object-fit:cover;flex:none;background:var(--rw-tint,#f1f1f1)}
 .rw-initials{display:grid;place-items:center;font-size:14px;font-weight:700;line-height:1;letter-spacing:.02em;user-select:none}
 .rw-nav:disabled{opacity:0;pointer-events:none}
 @container rw (max-width:575px){.rw-nav{display:none}}
 
 /* Header responsiveness follows the widget's own width (container queries), not the window.
-   >1020 one row: rating | tabs (icon + name + count; scroll if needed) | button
-   ≤1020 tabs collapse to icon + count (names stay in title/aria-label); tabs still scroll, never wrap
+   >1020 one row: rating | tabs (All + as many filters as fit + More overflow) | Write
+   ≤1020 tabs collapse to icon + count (names stay in title/aria-label); overflow still fits, never wraps/scrolls
    ≤720  compact: rating label and "Based on" hidden
-   ≤575  two-row grid, button spans both rows
-   ≤450  button text wraps to two lines
-   ≤380  fully stacked, full-width button */
-@container rw (max-width:1020px){.rw-tab:not([data-p=all]):not([data-p=accolades]):not([data-p=testimonials]) .rw-tab-name,.rw-tab-long{display:none}.rw-tab{padding:6px 10px;gap:5px}.rw-tabs{gap:5px}}
+   ≤575  one row: filters hidden; rating + Write only
+   ≤360  button label → short string */
+@container rw (max-width:1020px){.rw-tab:not([data-p=all]):not([data-p=accolades]):not([data-p=testimonials]) .rw-tab-name,.rw-tab-long{display:none}.rw-tab,.rw-tabs-more{padding:6px 10px;gap:5px}.rw-tabs{gap:5px}}
 @container rw (max-width:720px){.rw-header{gap:8px 10px;padding:9px 12px}.rw-summary{gap:9px}.rw-score{font-size:30px}.rw-label,.rw-based-pre{display:none}.rw-stars-lg i{width:15px;height:15px}
-  .rw-write{padding:8px 13px;font-size:12.5px}.rw-tabs{gap:4px}.rw-tab{padding:4px 7px;gap:4px;font-size:12.5px}.rw-tab img{width:14px;height:14px}.rw-tab em{padding:0 5px;font-size:11px}}
+  .rw-write{padding:8px 13px;font-size:12.5px}.rw-tabs{gap:4px}.rw-tab,.rw-tabs-more{padding:4px 7px;gap:4px;font-size:12.5px}.rw-tab img{width:14px;height:14px}.rw-tab em{padding:0 5px;font-size:11px}}
 /* Narrow: one row only. The filter tabs are hidden (the cards show every review), the rating and a compact button share the row. */
 @container rw (max-width:575px){.rw-header{flex-wrap:nowrap;justify-content:space-between;gap:10px;padding:8px 12px}.rw-tabs{display:none}.rw-summary{flex:0 1 auto;min-width:0}.rw-write{margin-left:auto}}
 .rw-write-short{display:none}
@@ -127,9 +142,9 @@
 /* data-arrows="inside": arrows sit within the widget's edges instead of overhanging them */
 .rw-arrows-inside .rw-prev{left:6px}.rw-arrows-inside .rw-next{right:6px}
 /* data-hover-lift="false": no 2px rise on hover/focus (nothing moves toward the edges) */
-.rw-nolift .rw-card:hover,.rw-nolift .rw-card:focus-visible,.rw-nolift .rw-card:active{transform:none}
+.rw-nolift a.rw-card:hover,.rw-nolift a.rw-card:focus-visible,.rw-nolift a.rw-card:active{transform:none}
 /* data-focus-ring="inside": focus outlines drawn inside tabs, button and arrows (never cut off at the edges) */
-.rw-focus-inside .rw-tab:focus-visible,.rw-focus-inside .rw-write:focus-visible,.rw-focus-inside .rw-nav:focus-visible{outline-offset:-4px}
+.rw-focus-inside .rw-tab:focus-visible,.rw-focus-inside .rw-write:focus-visible,.rw-focus-inside .rw-nav:focus-visible,.rw-focus-inside .rw-tabs-more:focus-visible{outline-offset:-4px}
 /* data-cards="N": at most N cards side by side */
 @container rw (min-width:1025px){.rw-cards-3.rw-layout-carousel .rw-track{grid-auto-columns:calc((100% - 32px)/3)}}
 @container rw (min-width:761px){.rw-cards-2.rw-layout-carousel .rw-track{grid-auto-columns:calc((100% - 16px)/2)}}
@@ -159,7 +174,7 @@
   .rw-fixed .rw-label,.rw-fixed .rw-based-pre{display:none}.rw-fixed .rw-card{padding:14px;gap:8px}}
 @container rw (max-height:360px){
   .rw-fixed .rw-header{padding:7px 10px;margin-bottom:8px}.rw-fixed .rw-score{font-size:26px}.rw-fixed .rw-stars i{width:15px;height:15px}.rw-fixed .rw-stars-lg i{width:14px;height:14px}
-  .rw-fixed .rw-write{padding:7px 12px;font-size:12.5px}.rw-fixed .rw-tab{padding:4px 7px;font-size:12.5px}
+  .rw-fixed .rw-write{padding:7px 12px;font-size:12.5px}.rw-fixed .rw-tab,.rw-fixed .rw-tabs-more{padding:4px 7px;font-size:12.5px}
   .rw-fixed .rw-card{padding:12px;gap:6px}.rw-fixed .rw-avatar{width:36px;height:36px}.rw-fixed .rw-name{font-size:14px}
   .rw-fixed .rw-text{font-size:14px;line-height:1.5}.rw-fixed .rw-ai-text{font-size:13px;line-height:1.45}}
 @container rw (max-height:300px){
@@ -172,7 +187,7 @@
 @container rw (max-height:240px){
   .rw-fixed .rw-header{padding:4px 10px;margin-bottom:6px;gap:8px}.rw-fixed .rw-summary{gap:7px}
   .rw-fixed .rw-score{font-size:22px}.rw-fixed .rw-based{display:none}.rw-fixed .rw-stars-lg i{width:13px;height:13px}
-  .rw-fixed .rw-write{padding:4px 10px;font-size:12px}.rw-fixed .rw-tab{padding:2px 7px;font-size:12px}
+  .rw-fixed .rw-write{padding:4px 10px;font-size:12px}.rw-fixed .rw-tab,.rw-fixed .rw-tabs-more{padding:2px 7px;font-size:12px}
   .rw-fixed.rw-layout-carousel .rw-track{padding:2px 2px 4px}
   .rw-fixed .rw-nav{width:28px;height:28px;font-size:20px;padding:0 0 2px}
   .rw-fixed .rw-card{padding:8px 10px;gap:4px}

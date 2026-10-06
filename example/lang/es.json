@@ -56,5 +56,9 @@
   "testimonial_from": "{name} de {source}",
   "testimonial_card_aria": "Leer el testimonio de {name}{source_clause} (se abre en una pestaña nueva)",
   "testimonial_card_aria_nolink": "Testimonio de {name}{source_clause}",
-  "testimonial_source_clause": " ({source})"
+  "testimonial_source_clause": " ({source})",
+  "tabs_more": "Más",
+  "tabs_more_aria": "Más filtros",
+  "accolade_card_aria_nolink": "{label} ({year})",
+  "card_aria_nolink": "Reseña de {name} en {platform}"
 }
