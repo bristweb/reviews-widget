@@ -115,6 +115,12 @@
             "auto"
           ],
           "description": "Color scheme. auto = follow host page theme (data-theme/class/color-scheme); light|dark force."
+        },
+        "accolade_size": {
+          "type": "number",
+          "minimum": 24,
+          "maximum": 240,
+          "description": "Max edge (px) for every accolade logo in the strip. Default 120 (promotional award size). One global setting \u2014 no per-item size/width/height."
         }
       }
     },
@@ -247,11 +253,12 @@
     },
     "accolades": {
       "type": "array",
-      "description": "Optional award badges under the summary. Most awards are logo-only (name/label omitted). Each item links out; same optional nofollow/noreferrer/rel as platforms.",
+      "description": "Optional award badges under the summary. Each item needs url + year (strip sorts newest year first) plus icon and/or optional freeform label (name is an alias). Logo-only is fine when label is omitted. Size is global via display.accolade_size. Same optional nofollow/noreferrer/rel as platforms.",
       "items": {
         "type": "object",
         "required": [
-          "url"
+          "url",
+          "year"
         ],
         "additionalProperties": true,
         "anyOf": [
@@ -275,12 +282,12 @@
           "name": {
             "type": "string",
             "minLength": 1,
-            "description": "Optional freeform caption. Prefer omitting when the logo already includes the award text."
+            "description": "Optional freeform caption alias for label. Prefer label over name when both are set."
           },
           "label": {
             "type": "string",
             "minLength": 1,
-            "description": "Optional freeform caption alias for name. Prefer label over name when both are set."
+            "description": "Optional freeform caption under the logo. Prefer omitting when the logo already includes the award text."
           },
           "year": {
             "type": [
@@ -288,7 +295,7 @@
               "integer",
               "number"
             ],
-            "description": "Optional. When a caption is shown, year is appended to that freeform caption (not a separate title+year layout). Not shown alone."
+            "description": "Required. Used to sort the badge strip (newest first). Appended to a freeform caption when label/name is set; not shown alone for logo-only entries."
           },
           "icon": {
             "type": "string",
@@ -297,36 +304,6 @@
           "url": {
             "type": "string",
             "minLength": 1
-          },
-          "size": {
-            "description": "Logo size preset (default md / compact) or a numeric max edge in px.",
-            "oneOf": [
-              {
-                "type": "string",
-                "enum": [
-                  "sm",
-                  "md",
-                  "lg"
-                ]
-              },
-              {
-                "type": "number",
-                "minimum": 16,
-                "maximum": 160
-              }
-            ]
-          },
-          "width": {
-            "type": "number",
-            "minimum": 16,
-            "maximum": 240,
-            "description": "Optional max width hint in px (with height, overrides size preset)."
-          },
-          "height": {
-            "type": "number",
-            "minimum": 16,
-            "maximum": 240,
-            "description": "Optional max height hint in px (with width, overrides size preset)."
           },
           "nofollow": {
             "type": "boolean"

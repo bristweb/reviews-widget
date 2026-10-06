@@ -130,14 +130,14 @@ theme/fonts/             optional self-hosted fonts
 | `business` | `name` (required), optional `website` and extras |
 | `platforms` | review platforms in **tab order**: `name`, `icon`, `write_url`, `page_url`, `card_link` (`review`\|`page`), optional `invert_icon_when_active`, optional `nofollow` / `noreferrer` (or `rel`) for outbound write/card links. Extra fields (scrape URLs, notes, …) are ignored by the widget |
 | `default_write_platform` | `write_url` used on the “All” tab |
-| `display.*` | layout, snippets, diversity, dates, `theme`, `constrained`, … |
+| `display.*` | layout, snippets, diversity, dates, `theme`, `constrained`, `accolade_size` (px, default **120**), … |
 | `schema.*` | JSON-LD on/off, `@type`, `max_reviews`, `extra` |
 | `languages` | optional `[{ "lang", "url" }]` — ISO tag + wording file (URL or path from data root) |
 | `defaultLanguage` | fallback ISO tag when embed/page language do not match `languages` |
 | `strings` | optional inline UI copy overrides (object only; merged last) |
 | `rating_labels` | score words (`[{ min, label }, …]`); overrides language-file labels when set |
 | `summary` | `{ "text", "generated_at" }` for the summary card |
-| `accolades` | optional badge strip under the summary: each item needs `url` plus `icon` and/or a freeform caption (`name` or `label`); `year` optional (appended to caption only, never invents text). Logo-only is fine. Optional `size` (`sm` / `md` / `lg` or px; default compact) or `width` / `height` for larger marks without clipping. Same optional `nofollow` / `noreferrer` / `rel` as platforms |
+| `accolades` | optional badge strip under the summary: each item needs `url` + `year` (sorts newest first) plus `icon` and/or optional freeform `label` (`name` alias). Logo-only when caption omitted. Logo size is global: `display.accolade_size` (px, default 120). Same optional `nofollow` / `noreferrer` / `rel` as platforms |
 | `reviews.years` | year files to fetch, newest first, e.g. `[2026, 2025]` |
 
 Formal shape: `schemas/config.schema.json` in this repo.

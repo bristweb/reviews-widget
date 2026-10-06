@@ -44,7 +44,7 @@
     layout: 'carousel', snippet_chars: 160, abbreviate_last_names: true, max_same_platform_run: 2,
     diversity_window_days: 548, date_locale: 'en-US', date_options: { year: 'numeric', month: 'short', day: 'numeric' },
     font_timeout_ms: 1200, show_rating_only_reviews: false, show_summary: true,
-    theme: 'auto', constrained: false,
+    theme: 'auto', constrained: false, accolade_size: 120,
   };
   const RATING_LABELS = [{ min: 4.75, label: 'Excellent' }, { min: 4.25, label: 'Great' }, { min: 3.5, label: 'Good' }, { min: 0, label: 'Reviews' }];
   const STAR = '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 1.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L10 14.9l-5.2 2.7 1-5.8L1.5 7.7l5.9-.9z"/></svg>';
@@ -303,6 +303,10 @@
     const inline = (config.strings && typeof config.strings === 'object' && !Array.isArray(config.strings)) ? config.strings : {};
     const S = { ...STRINGS, ...fromEn.strings, ...fromSel.strings, ...inline };
     const D = { ...DISPLAY, ...(config.display || {}) };
+    {
+      const n = Number(D.accolade_size);
+      if (Number.isFinite(n) && n > 0) el.style.setProperty('--rw-accolade-size', Math.round(n) + 'px');
+    }
     const PLATFORMS = config.platforms || {};
     const RL = (config.rating_labels || fromSel.rating_labels || fromEn.rating_labels || RATING_LABELS).slice().sort((a, b) => b.min - a.min);
     // URL param > data-* > config.json display > built-in default.
@@ -541,30 +545,26 @@
       }).join('');
 
       const accoladesList = Array.isArray(config.accolades)
-        ? config.accolades.filter(a => a && a.url && (a.icon || a.name || a.label))
+        ? config.accolades
+            .filter(a => a && a.url && a.year != null && String(a.year).trim() && (a.icon || a.label || a.name))
+            .slice()
+            .sort((a, b) => {
+              const ya = Number(a.year), yb = Number(b.year);
+              const na = Number.isFinite(ya) ? ya : 0, nb = Number.isFinite(yb) ? yb : 0;
+              return nb - na;
+            })
         : [];
       const accolades = accoladesList.length ? `<div class="rw-accolades" role="list" aria-label="${esc(S.accolades_aria)}">
         ${accoladesList.map(a => {
-          // Freeform caption: label || name; year only appended when a caption exists (never invent text).
+          // Optional freeform caption (label preferred over name). Year sorts the strip; not shown alone.
           const rawCap = [a.label, a.name].find(v => v != null && String(v).trim());
-          const yearStr = a.year != null && String(a.year).trim() ? String(a.year).trim() : '';
+          const yearStr = String(a.year).trim();
           const caption = rawCap
-            ? (yearStr ? `${String(rawCap).trim()} ${yearStr}` : String(rawCap).trim())
+            ? `${String(rawCap).trim()} ${yearStr}`
             : '';
           const aria = caption || yearStr || 'Award';
-          const sizePreset = a.size === 'sm' || a.size === 'md' || a.size === 'lg' ? a.size : (typeof a.size === 'number' && a.size > 0 ? null : 'md');
-          const sizeClass = sizePreset ? ` rw-accolade-${sizePreset}` : '';
-          let imgStyle = '';
-          if (a.width || a.height) {
-            const parts = [];
-            if (a.width) parts.push(`max-width:${Number(a.width)}px`);
-            if (a.height) parts.push(`max-height:${Number(a.height)}px`);
-            imgStyle = ` style="${parts.join(';')}"`;
-          } else if (typeof a.size === 'number' && a.size > 0) {
-            imgStyle = ` style="max-width:${Number(a.size)}px;max-height:${Number(a.size)}px"`;
-          }
           const img = a.icon
-            ? `<img src="${esc(url(a.icon))}" alt="" loading="lazy"${imgStyle}>`
+            ? `<img src="${esc(url(a.icon))}" alt="" loading="lazy">`
             : '';
           const capEl = caption
             ? `<span class="rw-accolade-caption">${esc(caption)}</span>`
@@ -572,7 +572,7 @@
           // Logo-only: no visible text. Text-only (no icon): caption alone.
           const body = img || capEl;
           const extra = img && capEl ? capEl : '';
-          return `<a class="rw-accolade${sizeClass}" role="listitem" href="${esc(a.url)}" target="_blank" rel="${esc(linkRel(a))}" title="${esc(aria)}" aria-label="${esc(aria)}">${body}${extra}</a>`;
+          return `<a class="rw-accolade" role="listitem" href="${esc(a.url)}" target="_blank" rel="${esc(linkRel(a))}" title="${esc(aria)}" aria-label="${esc(aria)}">${body}${extra}</a>`;
         }).join('')}
       </div>` : '';
 
