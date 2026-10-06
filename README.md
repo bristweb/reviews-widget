@@ -4,7 +4,7 @@ A static, dependency-free reviews widget for any site. Host the files anywhere t
 
 Each site you embed on points the widget at its own **data repo** (or folder) with `data-source`. Counts, averages, card order and schema.org JSON-LD are computed in the browser. There is no build step and no generated index file.
 
-A low-priority side-by-side with named commercial widgets and reputation platforms lives in [COMPARISON.md](COMPARISON.md).
+See [COMPARISON.md](COMPARISON.md) for a side-by-side with named review widgets and reputation platforms.
 
 ## Contents
 
