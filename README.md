@@ -259,3 +259,7 @@ Clone this repo’s `example/` folder (or copy it into a new repo) and replace t
 - Local preview: serve this repo (and your data) from any static origin with CORS (`Access-Control-Allow-Origin: *`) and open `index.html` or point `data-source` at a local URL.
 
 Review text belongs to its authors; platform marks belong to their owners.
+
+## License
+
+License: MIT
