@@ -30,13 +30,11 @@ Product comparison: [COMPARISON.md](COMPARISON.md).
 3. [Data format](#data-format)
 4. [JSON Schema and validation](#json-schema-and-validation)
 5. [Updating data](#updating-data)
-6. [Summary card](#summary-card)
-7. [Card order](#card-order)
-8. [Structured data (JSON-LD)](#structured-data-json-ld)
-9. [Header behavior](#header-behavior)
-10. [Privacy and presentation](#privacy-and-presentation)
-11. [New data repo](#new-data-repo)
-12. [Technical details](#technical-details)
+6. [Structured data (JSON-LD)](#structured-data-json-ld)
+7. [Header behavior](#header-behavior)
+8. [Privacy and presentation](#privacy-and-presentation)
+9. [New data repo](#new-data-repo)
+10. [Technical details](#technical-details)
 
 ---
 
@@ -166,12 +164,6 @@ Array of records for that calendar year, newest first. Store full names, full te
 
 Formal shape: `schemas/reviews.schema.json` in this repo.
 
-### Theme
-
-`theme/theme.css` sets `--rw-font`, `--rw-ink`, `--rw-accent`, `--rw-star`, `--rw-radius`, `--rw-max-width`, and related variables on `.rw-host`. Font URLs are relative to that file.
-
-**Light / dark:** by default (`data-theme="auto"` or `display.theme: "auto"`) the widget matches the **host page** — `data-theme` / `data-bs-theme` on `html` or `body`, common `dark` / `light` classes, or the page’s CSS `color-scheme`. It only tracks the OS `prefers-color-scheme` when the host itself opts into system (e.g. `color-scheme: light dark`). Force with `data-theme="light"` or `"dark"`. Define dark brand tokens under `.rw-host.rw-dark, .rw-host[data-theme="dark"]` in your theme CSS (see `example/theme/theme.css`).
-
 ---
 
 ## JSON Schema and validation
@@ -181,18 +173,9 @@ Formal shape: `schemas/reviews.schema.json` in this repo.
 | `schemas/config.schema.json` | `config.json` |
 | `schemas/reviews.schema.json` | each `reviews/<year>.json` array |
 
-`scripts/validate.mjs` checks both schemas (via [Ajv](https://ajv.js.org/)) and light filesystem rules: icons exist, relative `reviewer_image` paths resolve, `reviews.years` matches files and is newest-first, dates sit in the right year file, `(platform, platform_review_id)` is unique. Avatar naming is not enforced.
+Optional check: from a checkout of this repo, run `node scripts/validate.mjs <data-dir>` (install deps in this repo first with `npm ci`). It checks the JSON schemas plus light filesystem rules (icons exist, relative `reviewer_image` paths resolve, `reviews.years` matches files, newest-first, dates in the right year file, unique `platform` + `platform_review_id`).
 
-```bash
-# from a checkout of this repo (once):
-npm ci
-
-# validate any data directory (the bundled example, or your data repo):
-node scripts/validate.mjs example
-node scripts/validate.mjs /path/to/your-data-repo
-```
-
-A data repo can call the reusable workflow on every push:
+A data repo can run the same check on every push:
 
 ```yaml
 # .github/workflows/validate.yml
@@ -205,28 +188,11 @@ jobs:
     uses: bristweb/reviews-widget/.github/workflows/validate.yml@main
 ```
 
-That workflow checks out this repo, runs `npm ci`, then `node scripts/validate.mjs` on the caller.
-
 ---
 
 ## Updating data
 
-1. Edit `reviews/<year>.json` (newest first); add the year to `reviews.years` when you add a file.
-2. Set `reviewer_image` to any working URL or path (optional local files under `images/reviewers/` are fine).
-3. Run `node scripts/validate.mjs <data-dir>`.
-4. Publish the data files (`cache: no-cache` on fetches means the widget picks them up quickly after your host updates).
-
----
-
-## Summary card
-
-Optional first card on “All reviews”: `config.summary` `{ text, generated_at }`. Not linked, not rated, not in JSON-LD, not counted by `data-limit`. Hide with `display.show_summary: false`, `data-summary="off"`, or omit `summary`.
-
----
-
-## Card order
-
-Deterministic: on “All”, newest first with platform diversity (`display.max_same_platform_run`, `display.diversity_window_days`). Single-platform tabs are newest first. Ties break on `platform:platform_review_id`. Rating-only reviews count in the header but get no card unless `display.show_rating_only_reviews`.
+Edit the cloned data repo (same shape as `example/`): add or change records in `reviews/<year>.json` (newest first), update `reviews.years` when you add a year file, adjust `config.json` / icons / theme as needed, then publish. Optionally run `node scripts/validate.mjs <data-dir>` from a reviews-widget checkout before you push.
 
 ---
 
@@ -266,10 +232,7 @@ Carousel: 4 / 3 / 2 / 1 cards by width breakpoints.
 
 ## New data repo
 
-1. Create a repo (or folder) for the data; publish it on any static host. If you use GitHub Pages: branch `main`, site root, and keep `.nojekyll`. Optionally add a validate workflow (above).
-2. Add `config.json`, `icons/`, `theme/`, empty `reviews/` + `images/reviewers/`, `"reviews": { "years": [] }`.
-3. Add records and avatars; validate; push.
-4. Embed with `data-source` pointing at that published data URL.
+Clone this repo’s `example/` folder (or copy it into a new repo) and replace the fictional content with yours — `config.json`, `reviews/`, `icons/`, `theme/`, and optional images. Publish on any static host (GitHub Pages: branch `main`, site root, keep `.nojekyll`). Point the widget’s `data-source` at that published URL. Optionally add the validate workflow from [JSON Schema and validation](#json-schema-and-validation).
 
 ---
 
