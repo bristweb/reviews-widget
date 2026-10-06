@@ -60,7 +60,7 @@ The widget renders where the tag is. It loads CSS from this repo and `theme/them
 - Fills the width it is given (up to 1200px) inside page builders that shrink-to-fit their content.
 - Classes are prefixed `rw-`; a small reset limits host CSS leakage.
 
-Other mount points (`data-target="#…"` on the script, or a few legacy hooks) still work for compatibility when the host is limited or you need a special layout. You usually don’t need them — prefer the in-place script above. A script in `<head>` with no target renders at the end of `<body>`.
+Optional: `data-target="#…"` on the script mounts into that element instead (compatibility when the host is limited or you need a special layout). Prefer the in-place script above. A script in `<head>` with no target renders at the end of `<body>`.
 
 ### Google Sites / Similar
 

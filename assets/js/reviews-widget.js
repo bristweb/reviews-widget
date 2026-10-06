@@ -497,25 +497,20 @@
   };
   function start() {
     const target = ME && ME.dataset.target;
-    if (target) { // explicit target on the script tag
+    if (target) { // optional compatibility mount when in-place isn’t suitable
       const el = document.querySelector(target);
       if (!el) return console.warn('[reviews-widget] data-target not found:', target);
       if (claim(el)) mount(el, { ...scriptOpts, ...pick(el.dataset) });
       return;
     }
-    const marked = [...document.querySelectorAll('[data-reviews-widget]')].filter(claim);
-    if (marked.length) { // element targets: <div data-reviews-widget data-layout="grid"></div>
-      marked.forEach(el => mount(el, { ...scriptOpts, ...pick(el.dataset) }));
-      return;
-    }
-    // default: render in place, right before this script tag
+    // Preferred: render in place, right before this script tag
     const el = document.createElement('div');
     claim(el);
     if (ME && ME.parentNode && !(document.head && document.head.contains(ME))) ME.parentNode.insertBefore(el, ME);
     else document.body.appendChild(el);
     mount(el, scriptOpts);
   }
-  // Plain/async scripts can run while the page is still parsing; wait so later [data-reviews-widget] targets
-  // exist. Deferred scripts run after parsing, so they render at once.
+  // Plain/async scripts can run while the page is still parsing; wait for <body> when needed.
+  // Deferred scripts run after parsing, so they render at once.
   document.readyState === 'loading' ? document.addEventListener('DOMContentLoaded', start) : start();
 })();
