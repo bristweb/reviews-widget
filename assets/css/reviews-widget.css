@@ -1,0 +1,162 @@
+/* Reviews widget — generic layout and behavior. All site-specific look (fonts, colors, radius) comes from the
+   CSS custom properties in data/theme/theme.css; the fallbacks below are neutral defaults. */
+/* Host = the inserted container (or your data-target / [data-reviews-widget] element). Doubled class for
+   specificity so page-builder rules (flex/grid centering, text-align, floats) can't shrink it. .rw-clip (default;
+   data-overflow="visible" turns it off) trims the carousel arrows' 8px overhang at the edges instead of causing
+   horizontal page scroll. */
+.rw-host.rw-host{display:block;box-sizing:border-box;width:100%;max-width:100%;min-width:0;flex:1 1 100%;align-self:stretch;justify-self:stretch;float:none;text-align:left}
+.rw-host.rw-clip{overflow-x:clip}
+.rw-host.rw-overflow-hidden{overflow:hidden}
+/* Intrinsic width for shrink-to-fit parents: max-content = --rw-max-width, min-content = 1/24 of it. Zero height. */
+.rw-sizer{display:block;height:0;overflow:hidden;visibility:hidden;font-size:0;line-height:0;margin:0;padding:0;white-space:normal}
+.rw-sizer i{display:inline-block;width:calc(var(--rw-max-width,1200px) / 24);height:0;vertical-align:top}
+.rw-root{container:rw / inline-size;
+  font-family:var(--rw-font,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif);letter-spacing:var(--rw-letter-spacing,normal);color:var(--rw-ink,#111);max-width:var(--rw-max-width,1200px);margin:0 auto;padding:var(--rw-pad,6px);box-sizing:border-box;background:transparent;opacity:0;transition:opacity .18s ease-out}
+.rw-root.rw-ready{opacity:1}
+@media (prefers-reduced-motion:reduce){.rw-root{transition:none}}
+.rw-root *{box-sizing:border-box}
+/* light reset so host-page styles don't leak in (values equal browser defaults on a bare page) */
+.rw-root{line-height:normal;font-size:16px;text-align:start}
+.rw-root img{border:0;max-width:none;margin:0;padding:0}
+.rw-loading{padding:40px;text-align:center;color:var(--rw-muted,#888)}
+.rw-tabs{order:2;flex:1 1 auto;min-width:0;display:flex;align-items:center;align-self:center;gap:6px;flex-wrap:nowrap;justify-content:center}
+.rw-tab:focus-visible,.rw-write:focus-visible,.rw-nav:focus-visible{outline:2px solid var(--rw-accent,#333);outline-offset:2px}
+.rw-tab{display:inline-flex;align-items:center;gap:6px;flex:none;border:1px solid var(--rw-line,#e3e3e3);background:var(--rw-card,#fff);border-radius:999px;padding:6px 12px;font:inherit;font-size:13.5px;color:var(--rw-ink,#111);cursor:pointer;transition:all .15s;white-space:nowrap}
+.rw-tab img{width:16px;height:16px}
+.rw-tab em{font-style:normal;font-size:12px;color:var(--rw-accent-2,#555);background:var(--rw-tint,#f1f1f1);border-radius:999px;padding:1px 7px}
+.rw-tab:hover{border-color:var(--rw-line-strong,#c8c8c8)}
+.rw-tab.is-active{background:var(--rw-accent,#333);color:var(--rw-on-accent,#fff);border-color:var(--rw-accent,#333)}
+.rw-tab.is-active img.rw-icon-invert{filter:brightness(0) invert(1)}
+.rw-tab.is-active em{background:var(--rw-on-accent-soft,rgba(255,255,255,.18));color:var(--rw-on-accent,#fff)}
+.rw-header{display:flex;align-items:center;gap:12px 20px;background:var(--rw-card,#fff);border:1px solid var(--rw-line,#e3e3e3);border-radius:var(--rw-radius,14px);padding:12px 18px;margin-bottom:14px;box-shadow:none}
+.rw-summary{display:flex;align-items:center;align-self:center;gap:12px;flex:none;order:1}
+.rw-score{font-size:38px;font-weight:700;line-height:1;letter-spacing:-.04em}
+.rw-label{font-weight:700;font-size:15px;line-height:1.2;margin-bottom:1px}
+.rw-based{font-size:12px;color:var(--rw-muted,#888);margin-top:2px;white-space:nowrap}
+.rw-write{order:3;flex:none;align-self:center;background:var(--rw-accent,#333);color:var(--rw-on-accent,#fff);text-decoration:none;font-weight:600;font-size:13.5px;padding:9px 18px;border-radius:999px;transition:background .15s;white-space:nowrap}
+.rw-write:hover{background:var(--rw-accent-2,#555)}
+.rw-stars{display:inline-flex;gap:2px;vertical-align:middle}
+.rw-stars i{display:block;width:17px;height:17px}
+.rw-stars svg{width:100%;height:100%;fill:var(--rw-star-off,#ddd)}
+.rw-stars i.on svg{fill:var(--rw-star,#f5b301)}
+.rw-stars-lg i{width:17px;height:17px}
+.rw-viewport{position:relative}
+.rw-track{display:grid;gap:16px}
+.rw-layout-grid .rw-track{grid-template-columns:repeat(auto-fill,minmax(270px,1fr))}
+.rw-layout-carousel .rw-track{grid-auto-flow:column;grid-auto-columns:calc((100% - 48px)/4);overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;padding:2px 2px 8px}
+.rw-layout-carousel .rw-track::-webkit-scrollbar{display:none}
+.rw-layout-carousel .rw-card{scroll-snap-align:start}
+@container rw (max-width:1024px){.rw-layout-carousel .rw-track{grid-auto-columns:calc((100% - 32px)/3)}}
+@container rw (max-width:760px){.rw-layout-carousel .rw-track{grid-auto-columns:calc((100% - 16px)/2)}}
+@container rw (max-width:575px){.rw-layout-carousel .rw-track{grid-auto-columns:88%}}
+.rw-card{color:inherit;text-decoration:none;cursor:pointer;display:flex;flex-direction:column;gap:10px;background:var(--rw-card,#fff);border:1px solid var(--rw-line,#e3e3e3);border-radius:var(--rw-radius,14px);padding:18px;min-height:240px;box-shadow:none;transition:transform .2s,border-color .2s}
+.rw-card:hover,.rw-card:focus-visible{border-color:var(--rw-accent,#333);box-shadow:none;transform:translateY(-2px)}
+.rw-card:focus{outline:none}
+.rw-card:focus-visible{outline:3px solid var(--rw-accent,#333);outline-offset:-1px;box-shadow:none}
+.rw-card:active{transform:translateY(0)}
+.rw-card:hover .rw-link{color:var(--rw-accent-2,#555)}
+.rw-card:hover .rw-arrow{transform:translateX(3px)}
+.rw-arrow{display:inline-block;transition:transform .15s}
+.rw-card-top{display:flex;align-items:center;gap:11px}
+.rw-avatar{width:44px;height:44px;border-radius:50%;object-fit:cover;flex:none;background:var(--rw-tint,#f1f1f1)}
+.rw-who{flex:1;min-width:0}
+.rw-name{font-weight:700;font-size:15px;color:var(--rw-ink,#111);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rw-who time{font-size:12.5px;color:var(--rw-muted,#888)}
+.rw-platform{width:20px;height:20px;flex:none}
+.rw-rec{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--rw-accent,#333)}
+.rw-rec svg{width:16px;height:16px;fill:currentColor}
+.rw-text{margin:0;font-size:15px;line-height:1.6;color:var(--rw-body,#444);font-style:italic;font-weight:300;flex:1}
+.rw-link{font-size:13px;font-weight:600;color:var(--rw-accent,#333);text-decoration:none;align-self:flex-start;margin-top:auto}
+.rw-nav{position:absolute;top:50%;transform:translateY(-60%);z-index:2;width:40px;height:40px;border-radius:50%;border:1px solid var(--rw-line,#e3e3e3);background:var(--rw-card,#fff);box-shadow:var(--rw-nav-shadow,0 2px 10px rgba(0,0,0,.12));font-size:26px;line-height:1;color:var(--rw-accent,#333);cursor:pointer;display:grid;place-items:center;padding:0 0 3px}
+.rw-prev{left:-14px}.rw-next{right:-14px}
+/* AI summary card: first card in "All reviews"; a note, not a link. contain:size keeps it from making its row taller
+   than the review cards (it stretches to the row height; long text scrolls inside). */
+.rw-ai{cursor:default;contain:size;background:var(--rw-ai-bg,var(--rw-tint,#f4f4f4));border-color:var(--rw-ai-line,var(--rw-line,#e3e3e3));gap:8px}
+.rw-ai:hover{transform:none;border-color:var(--rw-ai-line,var(--rw-line,#e3e3e3))}
+.rw-ai-top{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:700;letter-spacing:.02em;color:var(--rw-accent,#333)}
+.rw-ai-icon{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--rw-accent,#333)}
+.rw-ai-icon svg{width:14px;height:14px;fill:var(--rw-on-accent,#fff)}
+.rw-ai-text{margin:0;font-size:14px;line-height:1.55;color:var(--rw-body,#444);flex:1;min-height:0;overflow-y:auto;scrollbar-width:thin}
+.rw-ai-text.rw-ai-more{-webkit-mask-image:linear-gradient(#000 calc(100% - 2.4em),transparent);mask-image:linear-gradient(#000 calc(100% - 2.4em),transparent)}
+.rw-nav:disabled{opacity:0;pointer-events:none}
+@container rw (max-width:575px){.rw-nav{display:none}}
+
+/* Header responsiveness follows the widget's own width (container queries), not the window.
+   >1020 one row: rating | tabs (icon + name + count) | button
+   ≤1020 tabs collapse to icon + count (names stay in title/aria-label)
+   ≤720  compact: rating label and "Based on" hidden
+   ≤575  two-row grid, button spans both rows
+   ≤450  button text wraps to two lines
+   ≤380  fully stacked, full-width button */
+@container rw (max-width:1020px){.rw-tab:not([data-p=all]) .rw-tab-name,.rw-tab-long{display:none}.rw-tab{padding:6px 10px;gap:5px}.rw-tabs{gap:5px}}
+@container rw (max-width:720px){.rw-header{gap:8px 10px;padding:9px 12px}.rw-summary{gap:9px}.rw-score{font-size:30px}.rw-label,.rw-based-pre{display:none}.rw-stars-lg i{width:15px;height:15px}
+  .rw-write{padding:8px 13px;font-size:12.5px}.rw-tabs{gap:4px}.rw-tab{padding:4px 7px;gap:4px;font-size:12.5px}.rw-tab img{width:14px;height:14px}.rw-tab em{padding:0 5px;font-size:11px}}
+/* Narrow: one row only. The filter tabs are hidden (the cards show every review), the rating and a compact button share the row. */
+@container rw (max-width:575px){.rw-header{flex-wrap:nowrap;justify-content:space-between;gap:10px;padding:8px 12px}.rw-tabs{display:none}.rw-summary{flex:0 1 auto;min-width:0}.rw-write{margin-left:auto}}
+.rw-write-short{display:none}
+@container rw (max-width:360px){.rw-write-long{display:none}.rw-write-short{display:inline}.rw-write{padding:8px 14px}.rw-summary{gap:7px}.rw-score{font-size:28px}}
+
+/* ---- Fitting options (all opt-in; see the README "Options" table). Nothing below applies by default. ---- */
+/* data-arrows="inside": arrows sit within the widget's edges instead of overhanging them */
+.rw-arrows-inside .rw-prev{left:6px}.rw-arrows-inside .rw-next{right:6px}
+/* data-hover-lift="false": no 2px rise on hover/focus (nothing moves toward the edges) */
+.rw-nolift .rw-card:hover,.rw-nolift .rw-card:focus-visible,.rw-nolift .rw-card:active{transform:none}
+/* data-focus-ring="inside": focus outlines drawn inside tabs, button and arrows (never cut off at the edges) */
+.rw-focus-inside .rw-tab:focus-visible,.rw-focus-inside .rw-write:focus-visible,.rw-focus-inside .rw-nav:focus-visible{outline-offset:-4px}
+/* data-cards="N": at most N cards side by side */
+@container rw (min-width:1025px){.rw-cards-3.rw-layout-carousel .rw-track{grid-auto-columns:calc((100% - 32px)/3)}}
+@container rw (min-width:761px){.rw-cards-2.rw-layout-carousel .rw-track{grid-auto-columns:calc((100% - 16px)/2)}}
+@container rw (min-width:576px){.rw-cards-1.rw-layout-carousel .rw-track{grid-auto-columns:100%}}
+.rw-cards-1.rw-layout-grid .rw-track{grid-template-columns:minmax(0,1fr)}
+.rw-cards-2.rw-layout-grid .rw-track{grid-template-columns:repeat(auto-fill,minmax(max(270px,calc((100% - 16px)/2)),1fr))}
+.rw-cards-3.rw-layout-grid .rw-track{grid-template-columns:repeat(auto-fill,minmax(max(270px,calc((100% - 32px)/3)),1fr))}
+.rw-cards-4.rw-layout-grid .rw-track{grid-template-columns:repeat(auto-fill,minmax(max(270px,calc((100% - 48px)/4)),1fr))}
+/* data-fixed-height="true": the host gets a height (its parent's, or the viewport's below it) and everything fits
+   inside: header on top, the card track takes the remaining height, long text scrolls inside its card. The root
+   becomes a size container so the header can also compact by available height. */
+.rw-host.rw-fixed-host{box-sizing:border-box}
+.rw-root.rw-fixed{height:100%;display:flex;flex-direction:column;container-type:size;overflow:hidden}
+.rw-fixed .rw-header{flex:none}
+.rw-fixed .rw-loading{margin:auto}
+.rw-fixed .rw-viewport{flex:1 1 auto;min-height:0;display:flex;flex-direction:column}
+.rw-fixed .rw-track{flex:1 1 auto;min-height:0}
+.rw-fixed.rw-layout-carousel .rw-track{grid-template-rows:minmax(0,1fr);overflow-y:hidden}
+.rw-fixed.rw-layout-carousel .rw-card{min-height:0;overflow:hidden}
+.rw-fixed.rw-layout-carousel .rw-text{flex:1 1 auto;min-height:0;overflow-x:hidden;overflow-y:auto;scrollbar-width:thin}
+.rw-fixed.rw-layout-grid .rw-track{overflow-y:auto;align-content:start;scrollbar-width:thin}
+.rw-fixed .rw-card-top,.rw-fixed .rw-stars,.rw-fixed .rw-rec,.rw-fixed .rw-link,.rw-fixed .rw-ai-top{flex:none}
+@container rw (max-height:460px){
+  .rw-fixed .rw-header{padding:9px 12px;margin-bottom:10px;gap:8px 12px}.rw-fixed .rw-score{font-size:30px}
+  .rw-fixed .rw-label,.rw-fixed .rw-based-pre{display:none}.rw-fixed .rw-card{padding:14px;gap:8px}}
+@container rw (max-height:360px){
+  .rw-fixed .rw-header{padding:7px 10px;margin-bottom:8px}.rw-fixed .rw-score{font-size:26px}.rw-fixed .rw-stars i{width:15px;height:15px}.rw-fixed .rw-stars-lg i{width:14px;height:14px}
+  .rw-fixed .rw-write{padding:7px 12px;font-size:12.5px}.rw-fixed .rw-tab{padding:4px 7px;font-size:12.5px}
+  .rw-fixed .rw-card{padding:12px;gap:6px}.rw-fixed .rw-avatar{width:36px;height:36px}.rw-fixed .rw-name{font-size:14px}
+  .rw-fixed .rw-text{font-size:14px;line-height:1.5}.rw-fixed .rw-ai-text{font-size:13px;line-height:1.45}}
+@container rw (max-height:300px){
+  .rw-fixed .rw-header{padding:6px 10px;margin-bottom:6px}.rw-fixed .rw-score{font-size:24px}.rw-fixed .rw-based{margin-top:0}
+  .rw-fixed .rw-card{padding:10px 12px;gap:5px}.rw-fixed .rw-avatar{width:32px;height:32px}.rw-fixed .rw-card-top{gap:9px}
+  .rw-fixed .rw-text{font-size:13.5px;line-height:1.45}.rw-fixed .rw-link{font-size:12.5px}}
+/* Very short fixed-height boxes: same layout, fewer extras. The header stays one compact row (no review count line),
+   cards drop the date and the "View on" cue, the snippet is clamped to the whole lines that fit, and the AI summary
+   keeps as much room as possible for its text (which scrolls, with a fade at the bottom). */
+@container rw (max-height:240px){
+  .rw-fixed .rw-header{padding:4px 10px;margin-bottom:6px;gap:8px}.rw-fixed .rw-summary{gap:7px}
+  .rw-fixed .rw-score{font-size:22px}.rw-fixed .rw-based{display:none}.rw-fixed .rw-stars-lg i{width:13px;height:13px}
+  .rw-fixed .rw-write{padding:4px 10px;font-size:12px}.rw-fixed .rw-tab{padding:2px 7px;font-size:12px}
+  .rw-fixed.rw-layout-carousel .rw-track{padding:2px 2px 4px}
+  .rw-fixed .rw-nav{width:28px;height:28px;font-size:20px;padding:0 0 2px}
+  .rw-fixed .rw-card{padding:8px 10px;gap:4px}
+  .rw-fixed .rw-card-top{gap:8px}.rw-fixed .rw-avatar{width:26px;height:26px}.rw-fixed .rw-name{font-size:13px}
+  .rw-fixed .rw-who time,.rw-fixed .rw-link{display:none}
+  .rw-fixed .rw-stars i{width:13px;height:13px}.rw-fixed .rw-stars svg{display:block}
+  .rw-fixed.rw-layout-carousel .rw-text{display:-webkit-box;-webkit-box-orient:vertical;overflow:hidden;font-size:13px;line-height:1.4}
+  .rw-fixed .rw-ai{gap:3px}.rw-fixed .rw-ai-top{font-size:11px;gap:5px}
+  .rw-fixed .rw-ai-icon{width:16px;height:16px}.rw-fixed .rw-ai-icon svg{width:10px;height:10px}
+  .rw-fixed .rw-ai-text{font-size:13px;line-height:1.4}}
+@container rw (max-height:180px){
+  .rw-fixed .rw-header{padding:3px 8px;margin-bottom:4px}.rw-fixed .rw-score{font-size:20px}
+  .rw-fixed .rw-card{padding:6px 9px;gap:3px}.rw-fixed .rw-avatar{width:20px;height:20px}
+  .rw-fixed .rw-stars i{width:12px;height:12px}
+  .rw-fixed.rw-layout-carousel .rw-text,.rw-fixed .rw-ai-text{font-size:12.5px;line-height:1.35}
+  .rw-fixed .rw-nav{width:24px;height:24px;font-size:18px}}

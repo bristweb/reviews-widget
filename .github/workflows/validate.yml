@@ -1,0 +1,22 @@
+# Reusable check for a reviews data repo. A data repo calls it with:
+#   jobs:
+#     validate:
+#       uses: bristweb/reviews-widget/.github/workflows/validate.yml@main
+name: Validate reviews data
+on:
+  workflow_call:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: data
+      - uses: actions/checkout@v4
+        with:
+          repository: bristweb/reviews-widget
+          ref: main
+          path: widget
+      - run: node widget/scripts/validate.mjs data

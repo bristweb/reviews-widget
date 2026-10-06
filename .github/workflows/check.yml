@@ -1,0 +1,14 @@
+# Syntax check for this repo's own code (the data repos run validate.yml).
+name: Check
+on:
+  push:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: node --check assets/js/reviews-widget.js && node --check scripts/validate.mjs
+      - run: python3 -m py_compile scripts/import_reviews.py scripts/pull_reviews.py

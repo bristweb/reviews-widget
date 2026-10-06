@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reviews</title>
+<meta name="robots" content="noindex, nofollow, noarchive">
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="assets/css/reviews-widget.css">
+<style>html,body{margin:0;background:transparent}</style>
+</head>
+<body>
+<!-- Bare widget, no page chrome (safe to iframe); the script renders in place.
+     Required: ?source=<data repo URL>, e.g. ?source=https://bristweb.github.io/fastone-reviews/
+     Options: &layout=carousel|grid&platform=all|<platform>&limit=N&summary=off
+     Fitting options (see README): &fixed-height=true&arrows=outside|inside|off&hover-lift=false&focus-ring=inside&overflow=clip|visible|hidden&cards=N&padding=N -->
+<script src="assets/js/reviews-widget.js" defer data-overflow="visible"></script>
+<script>if (!new URLSearchParams(location.search).get('source')) document.body.insertAdjacentHTML('afterbegin', '<p style="font:15px/1.5 system-ui,sans-serif;margin:24px">Reviews widget demo. Add <code>?source=&lt;data repo URL&gt;</code>, e.g. <a href="?source=https://bristweb.github.io/fastone-reviews/">?source=https://bristweb.github.io/fastone-reviews/</a>. See <a href="https://github.com/bristweb/reviews-widget">the README</a>.</p>');</script>
+</body>
+</html>
