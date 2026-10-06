@@ -73,18 +73,17 @@ The widget renders where the tag is. It loads CSS from this repo and `theme/them
 
 If the page builder hides the script URL, set `data-base="https://bristweb.github.io/reviews-widget/"`.
 
-### Google Sites and fixed-height boxes
+### Google Sites and other fixed-height boxes
 
-Builders that put code in a box whose height you set (Google Sites: *Insert → Embed → Embed code*) need fitting options:
+When the host gives you a box whose height you set and the code can’t change (Google Sites: *Insert → Embed → Embed code*), turn on **one** toggle:
 
 ```html
 <script src="https://bristweb.github.io/reviews-widget/assets/js/reviews-widget.js"
         data-source="https://bristweb.github.io/reviews-widget/example/"
-        data-fixed-height="true" data-arrows="inside" data-overflow="hidden"
-        data-hover-lift="false" data-focus-ring="inside"></script>
+        data-constrained="true"></script>
 ```
 
-Stretch the box full width and about **420px** tall. Swap `data-source` for your data when you go live. See [Options](#options) and [Header behavior](#header-behavior) for short heights (tested down to 140px).
+`data-constrained="true"` packs the widget into that box: fill the height, arrows inside, nothing painted outside, no hover lift, focus rings drawn inside. It is named “constrained” (not “fixed proportions”) because it follows the box you give it rather than locking an aspect ratio. Stretch the box full width and about **420px** tall; swap `data-source` for your data when you go live. See [Header behavior](#header-behavior) for short heights (tested down to 140px). Individual fitting attributes remain available as overrides ([Options](#options)).
 
 ### Iframe
 
@@ -116,15 +115,17 @@ Stretch the box full width and about **420px** tall. Swap `data-source` for your
 | `data-summary` | `summary` | `off` hides the AI summary card | shown |
 | `data-schema` | n/a | `off` skips JSON-LD | injected |
 | `data-base` | n/a | this code repo’s root | from the script URL |
-| `data-fixed-height` | `fixed-height` | `true` = fill parent/viewport height and fit inside | `false` |
-| `data-overflow` | `overflow` | `clip` \| `visible` \| `hidden` | `clip` |
-| `data-arrows` | `arrows` | `outside` \| `inside` \| `off` | `outside` |
-| `data-hover-lift` | `hover-lift` | `true` \| `false` | `true` |
-| `data-focus-ring` | `focus-ring` | `outside` \| `inside` | `outside` |
+| `data-constrained` | `constrained` | `true` = tight-box preset (fixed height, arrows inside, overflow hidden, no hover lift, focus rings inside). Prefer this over setting the fine-grained attrs below | `false` |
 | `data-cards` | `cards` | max cards across (carousel 1–3, grid 1–4; `0` = auto) | `0` |
 | `data-padding` | `padding` | px around the widget | `6` |
+| *Fine-grained (optional overrides)* | | | |
+| `data-fixed-height` | `fixed-height` | fill parent/viewport height and fit inside | off unless `constrained` |
+| `data-overflow` | `overflow` | `clip` \| `visible` \| `hidden` | `clip` (or `hidden` if constrained) |
+| `data-arrows` | `arrows` | `outside` \| `inside` \| `off` | `outside` (or `inside` if constrained) |
+| `data-hover-lift` | `hover-lift` | `true` \| `false` | `true` (or off if constrained) |
+| `data-focus-ring` | `focus-ring` | `outside` \| `inside` | `outside` (or `inside` if constrained) |
 
-Precedence: query param → `data-*` → `display` in config → built-in default.
+Precedence: query param → `data-*` → `display` in config (and the `constrained` preset when that toggle is on) → built-in default.
 
 ---
 

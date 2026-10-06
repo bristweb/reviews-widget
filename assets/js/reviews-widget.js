@@ -23,18 +23,13 @@
  * The script finds its own repo root from its URL (override with data-base="https://.../"), loads the CSS
  * (assets/css/reviews-widget.css + <source>theme/theme.css) if the page doesn't already have it, then renders.
  * Also: data-summary="off" hides the AI summary card; data-schema="off" skips the JSON-LD injection.
- * Fitting options (each independent; defaults in config.json `display`, overridden by the data- attribute):
- *   data-fixed-height="true"   fill the container's (or the viewport's) height and fit everything inside it:
- *                              header compacts, cards take the remaining height, long text scrolls in its card,
- *                              no height messages to a parent frame
- *   data-overflow="clip|visible|hidden"  clip (default) trims the arrows' sideways overhang; hidden clips both axes
- *   data-arrows="outside|inside|off"     carousel arrows overhang the edges (default), sit inside them, or are hidden
- *   data-hover-lift="true|false"         cards rise 2px on hover/focus (default true)
- *   data-focus-ring="outside|inside"     keyboard focus outline drawn outside (default) or inside tabs/button/arrows
- *   data-cards="N"                       at most N cards side by side (carousel: 1-3; grid: 1-4; 0 = automatic)
- *   data-padding="N"                     padding around the widget in px (default 6)
- * URL params on the host page (?layout=grid&platform=google&limit=12&summary=off&fixed-height=true&arrows=inside…)
- * override data attributes. ?source= is used only when no data-source is set (so a link can't swap a site's data).
+ * Constrained embeds (Google Sites and other fixed-height boxes): one toggle packs the widget into the box —
+ *   data-constrained="true"  (= fixed-height + arrows inside + overflow hidden + no hover-lift + focus-ring inside).
+ *   Named "constrained" (not "fixed-proportions") because it adapts to the box you give it rather than locking an aspect ratio.
+ * Optional fine-grained overrides (still work; defaults in config.json `display`):
+ *   data-fixed-height, data-overflow, data-arrows, data-hover-lift, data-focus-ring, data-cards, data-padding
+ * URL params (?layout=&platform=&limit=&summary=off&constrained=true…) override data attributes.
+ * ?source= is used only when no data-source is set (so a link can't swap a site's data).
  */
 (function () {
   // Captured at execution time (works for plain, defer and async scripts; null only for ES modules).
@@ -57,7 +52,7 @@
     diversity_window_days: 548, date_locale: 'en-US', date_options: { year: 'numeric', month: 'short', day: 'numeric' },
     font_timeout_ms: 1200, show_rating_only_reviews: false, show_summary: true,
     // fitting options (script data- attributes / URL params override these)
-    fixed_height: false, overflow: 'clip', arrows: 'outside', hover_lift: true, focus_ring: 'outside', cards: 0, padding: null,
+    constrained: false, fixed_height: false, overflow: 'clip', arrows: 'outside', hover_lift: true, focus_ring: 'outside', cards: 0, padding: null,
   };
   const RATING_LABELS = [{ min: 4.75, label: 'Excellent' }, { min: 4.25, label: 'Great' }, { min: 3.5, label: 'Good' }, { min: 0, label: 'Reviews' }];
   const STAR = '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 1.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L10 14.9l-5.2 2.7 1-5.8L1.5 7.7l5.9-.9z"/></svg>';
@@ -186,13 +181,19 @@
     const D = { ...DISPLAY, ...(config.display || {}) };
     const PLATFORMS = config.platforms || {};
     const RL = (config.rating_labels || RATING_LABELS).slice().sort((a, b) => b.min - a.min);
-    // URL param > data- attribute > config.json display > built-in default
+    // URL param > data- attribute > config.json display > built-in default.
+    // data-constrained packs the Google Sites / fixed-box preset; individual fitting attrs still override it.
     const opt = (param, key, dkey) => (q.get(param) !== null ? q.get(param) : opts[key] != null ? opts[key] : D[dkey]);
+    const constrained = toBool(opt('constrained', 'constrained', 'constrained'));
+    if (constrained) Object.assign(D, {
+      fixed_height: true, overflow: 'hidden', arrows: 'inside', hover_lift: false, focus_ring: 'inside',
+    });
     const cfg = {
       layout: q.get('layout') || opts.layout || D.layout,
       platform: q.get('platform') || opts.platform || 'all',
       limit: +(q.get('limit') || opts.limit || 0),
       summary: (q.get('summary') || opts.summary) !== 'off' && D.show_summary !== false,
+      constrained,
       fixed: toBool(opt('fixed-height', 'fixedHeight', 'fixed_height')),
       overflow: String(opt('overflow', 'overflow', 'overflow') || 'clip'),
       arrows: String(opt('arrows', 'arrows', 'arrows') || 'outside'),
@@ -459,8 +460,8 @@
 
   // ---- where to render (no class-name selectors) ----
   const OPTION_KEYS = ['source', 'layout', 'platform', 'limit', 'base', 'overflow', 'schema', 'summary',
-    'fixedHeight', 'arrows', 'hoverLift', 'focusRing', 'cards', 'padding'];
-  const BOOL_KEYS = ['fixedHeight', 'hoverLift']; // a bare attribute (data-fixed-height) means true
+    'constrained', 'fixedHeight', 'arrows', 'hoverLift', 'focusRing', 'cards', 'padding'];
+  const BOOL_KEYS = ['constrained', 'fixedHeight', 'hoverLift']; // a bare attribute (data-constrained) means true
   const pick = ds => Object.fromEntries(OPTION_KEYS.filter(k => ds && ds[k] != null && (ds[k] !== '' || BOOL_KEYS.includes(k)))
     .map(k => [k, ds[k] === '' ? 'true' : ds[k]]));
   const scriptOpts = pick(ME && ME.dataset);
