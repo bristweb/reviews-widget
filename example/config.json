@@ -34,11 +34,17 @@
       "card_link": "review"
     }
   },
-  "languages": {
-    "en": "lang/en.json",
-    "es": "lang/es.json"
-  },
-  "default_language": "en",
+  "languages": [
+    {
+      "lang": "en",
+      "url": "lang/en-override.json"
+    },
+    {
+      "lang": "es",
+      "url": "lang/es.json"
+    }
+  ],
+  "defaultLanguage": "en",
   "display": {
     "layout": "carousel",
     "snippet_chars": 160,

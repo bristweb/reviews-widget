@@ -55,16 +55,26 @@ for (const [k, p] of Object.entries(platforms)) relIcon(`platforms.${k}`, p.icon
 for (const l of (config && config.links) || []) relIcon(`links.${l.platform}`, l.icon);
 if (!existsSync(path.join(root, 'theme', 'theme.css'))) warn('theme/theme.css not found (the widget loads it)');
 
-// Language files listed in config.languages (ISO → path/URL). default_language should be a key in that map.
+// Language files listed in config.languages: [{ lang, url }, …]. defaultLanguage is a fallback ISO tag.
 if (config) {
-  const langs = (config.languages && typeof config.languages === 'object' && !Array.isArray(config.languages)) ? config.languages : null;
+  if (config.default_language != null) warn('config.json: default_language is obsolete; use defaultLanguage');
+  if (config.languages && typeof config.languages === 'object' && !Array.isArray(config.languages)) {
+    err('config.json: languages must be an array of { lang, url } (object map form is obsolete)');
+  }
+  const langs = Array.isArray(config.languages) ? config.languages : null;
   if (langs) {
-    const keys = Object.keys(langs);
-    for (const [code, rel] of Object.entries(langs)) {
-      if (rel == null || !String(rel).trim()) { err(`config.json: languages.${code} must be a non-empty path or URL`); continue; }
+    const norm = c => String(c || '').trim().replace(/_/g, '-').toLowerCase();
+    const tags = [];
+    langs.forEach((entry, i) => {
+      if (!entry || typeof entry !== 'object') { err(`config.json: languages[${i}] must be an object`); return; }
+      const code = entry.lang;
+      const rel = entry.url;
+      if (code == null || !String(code).trim()) err(`config.json: languages[${i}].lang is required`);
+      else tags.push(norm(code));
+      if (rel == null || !String(rel).trim()) { err(`config.json: languages[${i}].url must be a non-empty path or URL`); return; }
       const langRel = String(rel).trim();
-      if (/^(https?:)?\/\//i.test(langRel) || langRel.startsWith('/')) continue;
-      if (!existsSync(path.join(root, langRel))) err(`config.json: languages.${code} file ${langRel} not found`);
+      if (/^(https?:)?\/\//i.test(langRel) || langRel.startsWith('/')) return;
+      if (!existsSync(path.join(root, langRel))) err(`config.json: languages[${i}].url file ${langRel} not found`);
       else {
         const pack = readJson(langRel);
         if (pack && typeof pack === 'object') {
@@ -72,16 +82,15 @@ if (config) {
           if (!sk.length) warn(`${langRel}: no string entries`);
         }
       }
-    }
-    const def = config.default_language || config.defaultLanguage;
+    });
+    const def = config.defaultLanguage;
     if (def != null && String(def).trim()) {
-      const want = String(def).trim().toLowerCase().replace(/_/g, '-');
-      const have = new Set(keys.map(k => String(k).trim().toLowerCase().replace(/_/g, '-')));
-      if (!have.has(want) && !have.has(want.split('-')[0])) {
-        err(`config.json: default_language "${def}" is not a key in languages`);
-      }
-    } else if (keys.length) {
-      warn('config.json: languages set but default_language missing');
+      const want = norm(def);
+      const wantPrimary = want.split('-')[0];
+      const matchable = tags.some(t => t === want || t === wantPrimary || t.split('-')[0] === want || t.split('-')[0] === wantPrimary);
+      if (tags.length && !matchable) warn(`config.json: defaultLanguage "${def}" does not match any languages[].lang (widget English will be used)`);
+    } else if (tags.length) {
+      warn('config.json: languages set but defaultLanguage missing');
     }
   }
   if (typeof config.strings === 'string') err('config.json: strings must be an object of inline overrides (use languages for translation files)');

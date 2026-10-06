@@ -1,8 +1,8 @@
 /* Reviews widget — static, no dependencies, no site-specific code. https://github.com/bristweb/reviews-widget
  * The code lives in this repo; everything about a site lives in a separate data repo, named by data-source:
- *   <source>config.json          business, platforms, display defaults, languages/default_language/strings, schema,
+ *   <source>config.json          business, platforms, display defaults, languages/defaultLanguage/strings, schema,
  *                                summary card, and reviews.years (which yearly review files exist)
- *   <source>lang/<code>.json     optional UI wording files listed in config.languages (ISO → URL/path). Partial OK.
+ *   <source>lang/<code>.json     optional UI wording files listed in config.languages[{lang,url}]. Partial OK.
  *   <source>reviews/<year>.json  the reviews (plain records, newest first) — the only copy of the review data
  *   <source>theme/theme.css      fonts + CSS custom properties (colors, radius)
  *   <source>icons/, images/      platform icons, reviewer avatars
@@ -100,38 +100,44 @@
     return { strings, rating_labels: labels };
   }
   const normLang = c => String(c || '').trim().replace(/_/g, '-').toLowerCase();
-  // Map ISO codes (normalized) → translation file path/URL from config.languages.
-  function languageMap(c) {
-    const raw = (c && c.languages && typeof c.languages === 'object' && !Array.isArray(c.languages)) ? c.languages : {};
-    const out = {};
-    for (const [k, v] of Object.entries(raw)) {
-      const n = normLang(k);
-      if (n && v != null && String(v).trim()) out[n] = String(v).trim();
+  // config.languages: [{ lang, url }, …] — lang is an ISO tag; url is absolute or relative to the data root.
+  function languageEntries(c) {
+    const raw = (c && Array.isArray(c.languages)) ? c.languages : [];
+    const out = [];
+    for (const e of raw) {
+      if (!e || typeof e !== 'object') continue;
+      const lang = normLang(e.lang);
+      const url = e.url != null ? String(e.url).trim() : '';
+      if (lang && url) out.push({ lang, url });
     }
     return out;
   }
-  // Match a tag against available ISO codes: exact, then primary subtag (en-US → en).
-  function matchAvailable(tag, available) {
+  // Match a request tag to an entry's lang: exact, then primary subtag of either side (en-US↔en, en↔en-us, en-GB↔en-us).
+  function findLanguageEntry(tag, entries) {
     const n = normLang(tag);
-    if (!n) return null;
-    if (available[n]) return n;
+    if (!n || !entries.length) return null;
+    const exact = entries.find(e => e.lang === n);
+    if (exact) return exact;
     const primary = n.split('-')[0];
-    return (primary && available[primary]) ? primary : null;
+    const byPrimary = entries.find(e => e.lang === primary);
+    if (byPrimary) return byPrimary;
+    return entries.find(e => {
+      const ep = e.lang.split('-')[0];
+      return n === ep || primary === ep;
+    }) || null;
   }
-  // Priority: embed lang attr/param → page/browser → config default_language → null (widget English only).
-  function resolveLanguage(opts, q, available, config) {
-    const tryCode = tag => matchAvailable(tag, available);
+  // Priority: embed lang attr/param → page/browser → config defaultLanguage → null (widget English only).
+  function resolveLanguage(opts, q, entries, config) {
     const fromEmbed = q.get('lang') || opts.lang;
-    let hit = tryCode(fromEmbed);
+    let hit = findLanguageEntry(fromEmbed, entries);
     if (hit) return hit;
     const tags = [];
     const htmlLang = document.documentElement && document.documentElement.lang;
     if (htmlLang) tags.push(htmlLang);
     if (navigator.languages && navigator.languages.length) tags.push(...navigator.languages);
     else if (navigator.language) tags.push(navigator.language);
-    for (const t of tags) { hit = tryCode(t); if (hit) return hit; }
-    const def = config.default_language || config.defaultLanguage;
-    hit = tryCode(def);
+    for (const t of tags) { hit = findLanguageEntry(t, entries); if (hit) return hit; }
+    hit = findLanguageEntry(config.defaultLanguage, entries);
     if (hit) return hit;
     return null;
   }
@@ -260,12 +266,12 @@
       reveal();
       return;
     }
-    // UI copy: JS fallback ← widget lang/en.json ← selected site language file (partial OK) ← inline strings.
-    const available = languageMap(config);
-    const selected = resolveLanguage(opts, q, available, config);
+    // UI copy: built-ins ← widget lang/en.json ← matched language URL file (partial OK) ← inline strings.
+    const entries = languageEntries(config);
+    const selected = resolveLanguage(opts, q, entries, config);
     const [enPack, selPack] = await Promise.all([
       loadLang(code + 'lang/en.json'),
-      selected ? loadLang(resolveUrl(base, available[selected])) : Promise.resolve(null),
+      selected ? loadLang(resolveUrl(base, selected.url)) : Promise.resolve(null),
     ]);
     const fromEn = pickLang(enPack);
     const fromSel = pickLang(selPack);

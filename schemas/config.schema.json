@@ -144,17 +144,33 @@
       }
     },
     "languages": {
-      "type": "object",
-      "additionalProperties": {
-        "type": "string",
-        "minLength": 1
-      },
-      "description": "Map of ISO 639 language codes to a translation JSON file (URL or path relative to the data root). Partial catalogs are fine; missing keys fall through to the widget's lang/en.json."
+      "type": "array",
+      "description": "Translation catalogs as { lang, url }. lang is an ISO language tag (en, en-us, es, …); url is absolute or relative to the data root. Partial catalogs are fine; missing keys fall through to the widget's lang/en.json.",
+      "items": {
+        "type": "object",
+        "required": [
+          "lang",
+          "url"
+        ],
+        "additionalProperties": true,
+        "properties": {
+          "lang": {
+            "type": "string",
+            "minLength": 1,
+            "description": "ISO language tag for this catalog (matched against data-lang / browser / defaultLanguage)."
+          },
+          "url": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Absolute URL or path relative to the data root for the translation JSON."
+          }
+        }
+      }
     },
-    "default_language": {
+    "defaultLanguage": {
       "type": "string",
       "minLength": 1,
-      "description": "ISO language code from languages used when embed/page/browser do not select an available language."
+      "description": "ISO code or primary subtag used when embed/page/browser do not match a languages[].lang entry. Matched against languages the same way; if nothing matches, the widget English catalog is used."
     },
     "strings": {
       "type": "object",
