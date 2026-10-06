@@ -1,6 +1,6 @@
 # Reviews widget
 
-# [▶ Live demo](https://bristweb.github.io/reviews-widget/?source=https://bristweb.github.io/reviews-widget/example/)
+## [▶ Live demo](https://bristweb.github.io/reviews-widget/?source=https://bristweb.github.io/reviews-widget/example/)
 
 **[Open the demo](https://bristweb.github.io/reviews-widget/?source=https://bristweb.github.io/reviews-widget/example/)** · **[iframe version](https://bristweb.github.io/reviews-widget/embed.html?source=https://bristweb.github.io/reviews-widget/example/)** · **[constrained / fixed-height box](https://bristweb.github.io/reviews-widget/embed.html?source=https://bristweb.github.io/reviews-widget/example/&constrained=true)**
 
