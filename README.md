@@ -1,28 +1,30 @@
 # Reviews widget
 
-**[Live demo →](https://bristweb.github.io/reviews-widget/?source=https://bristweb.github.io/reviews-widget/example/)** · [iframe](https://bristweb.github.io/reviews-widget/embed.html?source=https://bristweb.github.io/reviews-widget/example/) · fictional bike-shop [example/](example/) data
+# [▶ Live demo](https://bristweb.github.io/reviews-widget/?source=https://bristweb.github.io/reviews-widget/example/)
 
-[![Example reviews widget](docs/example-widget.png)](https://bristweb.github.io/reviews-widget/?source=https://bristweb.github.io/reviews-widget/example/)
+**[Open the demo](https://bristweb.github.io/reviews-widget/?source=https://bristweb.github.io/reviews-widget/example/)** · **[iframe version](https://bristweb.github.io/reviews-widget/embed.html?source=https://bristweb.github.io/reviews-widget/example/)** · **[constrained / fixed-height box](https://bristweb.github.io/reviews-widget/embed.html?source=https://bristweb.github.io/reviews-widget/example/&constrained=true)**
+
+[![Live example: Northwind Cycles (fictional bike shop)](docs/example-widget.png)](https://bristweb.github.io/reviews-widget/?source=https://bristweb.github.io/reviews-widget/example/)
 
 ```html
 <script src="https://bristweb.github.io/reviews-widget/assets/js/reviews-widget.js"
         data-source="https://bristweb.github.io/reviews-widget/example/" defer></script>
 ```
 
-Paste that tag to try it; for a real site keep the script `src` and point `data-source` at your own data store. More embeds (Google Sites, iframe, mount targets): [Embed](#embed).
+Paste to try it. For a real site, keep the script `src` and change only `data-source` to your data store. More patterns: [Embed](#embed).
 
-A static, dependency-free reviews widget for any site. Host the files anywhere that can serve static assets (GitHub Pages works out of the box; any other static host is fine). This repository holds **only the code**: the widget script and stylesheet, two bare demo pages, JSON Schemas for the data format, a validator, and the fictional example above. It holds no real reviews. License is TBD — there is no LICENSE file yet.
+A static, dependency-free reviews widget. Host the files on any static host (GitHub Pages works out of the box). This repo is **code only** — no real reviews. The demo uses a made-up bike shop (“Northwind Cycles”). License is TBD (no LICENSE file yet).
 
-Each site you embed on points the widget at its own **data repo** (or folder) with `data-source`. Counts, averages, card order and schema.org JSON-LD are computed in the browser. There is no build step and no generated index file.
+Each site points the widget at its own data with `data-source`. Counts, averages, card order and JSON-LD are computed in the browser.
 
-See [COMPARISON.md](COMPARISON.md) for a side-by-side with named review widgets and reputation platforms.
+Product comparison: [COMPARISON.md](COMPARISON.md).
 
 ## Contents
 
 1. [Embed](#embed)
 2. [Options](#options)
 3. [Data format](#data-format)
-4. [Example data](#example-data)
+4. [Fictional demo data](#fictional-demo-data)
 5. [JSON Schema and validation](#json-schema-and-validation)
 6. [Updating data](#updating-data)
 7. [AI summary](#ai-summary)
@@ -38,7 +40,7 @@ See [COMPARISON.md](COMPARISON.md) for a side-by-side with named review widgets 
 
 ## Embed
 
-Same [example/](example/) URLs as at the top of this README. For a real site, keep the script `src` and change only `data-source` (or the iframe `?source=`) to your own data store URL.
+Same live demo URLs as at the top of this README. For a real site, keep the script `src` and change only `data-source` (or the iframe `?source=`) to your own data store URL.
 
 ### JavaScript (preferred)
 
@@ -100,7 +102,7 @@ When the host gives you a box whose height you set and the code can’t change (
 </script>
 ```
 
-`index.html` and `embed.html` are bare, transparent, `noindex` pages. With no `?source=` they load [example/](example/) the same way.
+`index.html` and `embed.html` are bare, transparent, `noindex` pages. With no `?source=` they load the bundled fictional demo data the same way.
 
 ---
 
@@ -155,7 +157,7 @@ theme/fonts/             optional self-hosted fonts
 | `summary` | `{ "text", "generated_at" }` for the AI summary card |
 | `reviews.years` | year files to fetch, newest first, e.g. `[2026, 2025]` |
 
-Formal shape: [`schemas/config.schema.json`](schemas/config.schema.json).
+Formal shape: `schemas/config.schema.json` in this repo.
 
 ### `reviews/<year>.json`
 
@@ -182,7 +184,7 @@ Identity is `platform` + `platform_review_id` (no separate `id` field). How a re
 
 Avatars: `images/reviewers/<platform>-<id>.<ext>` with characters other than `A-Z a-z 0-9 _ -` replaced by `_`.
 
-Formal shape: [`schemas/reviews.schema.json`](schemas/reviews.schema.json).
+Formal shape: `schemas/reviews.schema.json` in this repo.
 
 ### Theme
 
@@ -190,9 +192,9 @@ Formal shape: [`schemas/reviews.schema.json`](schemas/reviews.schema.json).
 
 ---
 
-## Example data
+## Fictional demo data
 
-[`example/`](example/) is a **fictional** business (“Northwind Cycles”, a made-up neighborhood bike shop) with invented riders and platforms (`maps`, `directory`). The demo pages load it by default. Do not present it as real testimonials.
+The live demo above uses a **fictional** bike shop (“Northwind Cycles”) with invented riders and platforms (`maps`, `directory`). Do not present it as real testimonials.
 
 ---
 
@@ -200,10 +202,10 @@ Formal shape: [`schemas/reviews.schema.json`](schemas/reviews.schema.json).
 
 | Schema | Validates |
 |---|---|
-| [`schemas/config.schema.json`](schemas/config.schema.json) | `config.json` |
-| [`schemas/reviews.schema.json`](schemas/reviews.schema.json) | each `reviews/<year>.json` array |
+| `schemas/config.schema.json` | `config.json` |
+| `schemas/reviews.schema.json` | each `reviews/<year>.json` array |
 
-[`scripts/validate.mjs`](scripts/validate.mjs) checks both schemas (via [Ajv](https://ajv.js.org/)) and filesystem rules: icons and avatars exist, `reviews.years` matches the files and is newest-first, dates sit in the right year file, `(platform, platform_review_id)` is unique, avatar paths match the safe-id pattern.
+`scripts/validate.mjs` checks both schemas (via [Ajv](https://ajv.js.org/)) and filesystem rules: icons and avatars exist, `reviews.years` matches the files and is newest-first, dates sit in the right year file, `(platform, platform_review_id)` is unique, avatar paths match the safe-id pattern.
 
 ```bash
 # from a checkout of this repo (once):
