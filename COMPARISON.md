@@ -2,8 +2,6 @@
 
 Side-by-side look at this open, static reviews widget versus common **hosted review-widget** products and **reputation / review-management** platforms. Features and plans change — check each vendor’s docs for the current product.
 
-> **Scrollable matrices with a sticky first column:** [open the comparison page](https://bristweb.github.io/reviews-widget/docs/comparison.html) (GitHub’s markdown view strips sticky CSS, so the fixed column lives on Pages).
-
 **Key**
 
 | | Meaning |
