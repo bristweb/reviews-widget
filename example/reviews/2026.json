@@ -2,14 +2,14 @@
   {
     "platform": "maps",
     "platform_review_id": "ex-maps-001",
-    "reviewer_name": "Avery Quinn",
+    "reviewer_name": "Riley Chen",
     "reviewer_profile_url": null,
     "rating": 5,
-    "text": "The live portrait at our event was the highlight of the evening. Guests kept stopping by the easel, and the finished piece looks wonderful in our living room.",
+    "text": "Brought my commuter in for a noisy hub. They diagnosed it in minutes, swapped the bearings while I waited, and the ride is quiet again. Fair price and friendly desk staff.",
     "date": "2026-09-14T18:22:00Z",
     "review_url": "https://example.com/maps/reviews/ex-maps-001",
     "owner_reply": {
-      "text": "Thank you, Avery — it was a joy to paint for you!",
+      "text": "Glad we got you rolling quietly again, Riley!",
       "date": "2026-09-14T21:00:00Z"
     },
     "collected_at": "2026-10-01T12:00:00Z",
@@ -19,12 +19,12 @@
   {
     "platform": "directory",
     "platform_review_id": "ex-dir-014",
-    "reviewer_name": "Jordan Lee",
+    "reviewer_name": "Morgan Blake",
     "reviewer_profile_url": null,
     "rating": 5,
-    "text": "Clear communication from the first call through the day of. The painting captured details we did not expect.",
+    "text": "Great selection of city bikes and they took time to fit the saddle height properly. No pressure to buy extras. Will come back for winter tires.",
     "date": "2026-06-02T15:10:00Z",
-    "review_url": "https://example.com/directory/biz/cedar-pine#reviews",
+    "review_url": "https://example.com/directory/biz/northwind-cycles#reviews",
     "owner_reply": null,
     "collected_at": "2026-10-01T12:00:00Z",
     "reviewer_image": "images/reviewers/directory-ex-dir-014.svg",

@@ -1,28 +1,28 @@
-/* Example theme for the bundled fictional data set (Cedar & Pine Studio). */
+/* Example theme for the bundled fictional bike shop (Northwind Cycles). */
 @font-face {
-  font-family: "Example Inter";
+  font-family: "Example Sans";
   font-style: normal;
   font-weight: 400 700;
   font-display: block;
-  src: local("Inter"), local("Helvetica Neue"), local("Arial");
+  src: local("Helvetica Neue"), local("Arial");
 }
 .rw-host {
-  --rw-font: "Example Inter", Arial, Helvetica, sans-serif;
-  --rw-letter-spacing: -.01em;
-  --rw-ink: #1a2b32;
-  --rw-body: #3d4f56;
-  --rw-muted: #7a8b92;
-  --rw-line: #d5dee2;
-  --rw-line-strong: #b7c4ca;
+  --rw-font: "Example Sans", Arial, Helvetica, sans-serif;
+  --rw-letter-spacing: 0;
+  --rw-ink: #1b2e28;
+  --rw-body: #3a4f47;
+  --rw-muted: #6e8178;
+  --rw-line: #d5e0db;
+  --rw-line-strong: #b4c4bc;
   --rw-card: #fff;
-  --rw-tint: #e8f0f3;
-  --rw-accent: #2f6f7e;
-  --rw-accent-2: #1a4a54;
+  --rw-tint: #e8f1ec;
+  --rw-accent: #2f5d50;
+  --rw-accent-2: #1e3f36;
   --rw-on-accent: #fff;
   --rw-on-accent-soft: rgba(255,255,255,.18);
-  --rw-star: #f5b301;
+  --rw-star: #e6a117;
   --rw-star-off: #d5dee3;
-  --rw-nav-shadow: 0 2px 10px rgba(47,111,126,.12);
-  --rw-radius: 12px;
+  --rw-nav-shadow: 0 2px 10px rgba(47,93,80,.14);
+  --rw-radius: 10px;
   --rw-max-width: 1200px;
 }

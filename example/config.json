@@ -1,7 +1,7 @@
 {
   "business": {
-    "name": "Cedar & Pine Studio",
-    "website": "https://example.com/cedar-pine/"
+    "name": "Northwind Cycles",
+    "website": "https://example.com/northwind-cycles/"
   },
   "default_write_platform": "maps",
   "platforms": {
@@ -9,14 +9,14 @@
       "name": "Maps",
       "icon": "icons/maps.svg",
       "write_url": "https://example.com/maps/write-review",
-      "page_url": "https://example.com/maps/cedar-pine",
+      "page_url": "https://example.com/maps/northwind-cycles",
       "card_link": "review"
     },
     "directory": {
       "name": "Directory",
       "icon": "icons/directory.svg",
       "write_url": "https://example.com/directory/write-review",
-      "page_url": "https://example.com/directory/biz/cedar-pine",
+      "page_url": "https://example.com/directory/biz/northwind-cycles",
       "card_link": "page"
     }
   },
@@ -89,14 +89,14 @@
   },
   "avatars": {
     "initials_palette": [
-      "#5b7c8a",
-      "#8a5b6e",
-      "#5b8a6e"
+      "#2f5d50",
+      "#6b4f2a",
+      "#3d5a80"
     ],
     "initials_text_color": "#fff"
   },
   "summary": {
-    "text": "Guests describe the live painting as a highlight of their event: detailed portraits, kind communication, and colors that fit the venue. Several mention recommending the studio to friends.",
+    "text": "Riders praise quick same-day repairs, careful bike fits, and a calm shop floor with no hard sell. Several mention coming back for seasonal gear after a first tune-up.",
     "generated_at": "2026-10-01T12:00:00Z"
   },
   "reviews": {

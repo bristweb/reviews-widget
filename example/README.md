@@ -1,16 +1,14 @@
 # Example data (fictional)
 
-Bundled sample for the reviews widget demos (`index.html` / `embed.html`). **Cedar & Pine Studio** is made up: no real business, people, or reviews.
+Bundled sample for demos. **Northwind Cycles** is an invented neighborhood bike shop — not a real business. Reviewers and review text are made up.
 
 ```html
-<!-- normal embed -->
 <script src="https://bristweb.github.io/reviews-widget/assets/js/reviews-widget.js"
         data-source="https://bristweb.github.io/reviews-widget/example/" defer></script>
 
-<!-- fixed-height box (Google Sites, etc.) -->
 <script src="https://bristweb.github.io/reviews-widget/assets/js/reviews-widget.js"
         data-source="https://bristweb.github.io/reviews-widget/example/"
         data-constrained="true"></script>
 ```
 
-Do not copy these reviews into a real site.
+Do not present this as real testimonials.

@@ -1,6 +1,6 @@
 # Reviews widget
 
-**[Live demo →](https://bristweb.github.io/reviews-widget/?source=https://bristweb.github.io/reviews-widget/example/)** · [iframe](https://bristweb.github.io/reviews-widget/embed.html?source=https://bristweb.github.io/reviews-widget/example/) · fictional [example/](example/) data
+**[Live demo →](https://bristweb.github.io/reviews-widget/?source=https://bristweb.github.io/reviews-widget/example/)** · [iframe](https://bristweb.github.io/reviews-widget/embed.html?source=https://bristweb.github.io/reviews-widget/example/) · fictional bike-shop [example/](example/) data
 
 [![Example reviews widget](docs/example-widget.png)](https://bristweb.github.io/reviews-widget/?source=https://bristweb.github.io/reviews-widget/example/)
 
@@ -83,7 +83,7 @@ When the host gives you a box whose height you set and the code can’t change (
         data-constrained="true"></script>
 ```
 
-`data-constrained="true"` packs the widget into that box: fill the height, arrows inside, nothing painted outside, no hover lift, focus rings drawn inside. It is named “constrained” (not “fixed proportions”) because it follows the box you give it rather than locking an aspect ratio. Stretch the box full width and about **420px** tall; swap `data-source` for your data when you go live. See [Header behavior](#header-behavior) for short heights (tested down to 140px). Individual fitting attributes remain available as overrides ([Options](#options)).
+`data-constrained="true"` packs the widget into that box: fill the height, arrows inside, nothing drawn outside the box, no hover lift, focus rings drawn inside. It is named “constrained” (not “fixed proportions”) because it follows the box you give it rather than locking an aspect ratio. Stretch the box full width and about **420px** tall; swap `data-source` for your data when you go live. See [Header behavior](#header-behavior) for short heights (tested down to 140px). Individual fitting attributes remain available as overrides ([Options](#options)).
 
 ### Iframe
 
@@ -192,7 +192,7 @@ Formal shape: [`schemas/reviews.schema.json`](schemas/reviews.schema.json).
 
 ## Example data
 
-[`example/`](example/) is a **fictional** business (“Cedar & Pine Studio”) with invented reviewers and platforms (`maps`, `directory`). The demo pages load it by default. Do not present it as real testimonials.
+[`example/`](example/) is a **fictional** business (“Northwind Cycles”, a made-up neighborhood bike shop) with invented riders and platforms (`maps`, `directory`). The demo pages load it by default. Do not present it as real testimonials.
 
 ---
 
