@@ -92,13 +92,11 @@
 .rw-ai-icon svg{width:14px;height:14px;fill:var(--rw-on-accent,#fff)}
 .rw-ai-text{margin:0;font-size:14px;line-height:1.55;color:var(--rw-body,#444);flex:1;min-height:0;overflow-y:auto;scrollbar-width:thin}
 .rw-ai-text.rw-ai-more{-webkit-mask-image:linear-gradient(#000 calc(100% - 2.4em),transparent);mask-image:linear-gradient(#000 calc(100% - 2.4em),transparent)}
-/* Accolade badge cards: interspersed in the track by year (or alone on the Awards tab).
-   Centered logo + label description + year. Logo may shrink; caption/year stay visible.
-   Global size via --rw-accolade-size (display.accolade_size, default 120px). */
-.rw-accolade-card{align-items:center;justify-content:center;text-align:center;gap:8px;background:var(--rw-card,#fff)}
-.rw-accolade-card img{flex:1 1 auto;min-height:0;width:auto;height:auto;max-width:var(--rw-accolade-size,120px);max-height:var(--rw-accolade-size,120px);object-fit:contain;object-position:center;display:block;margin:0 auto}
-.rw-accolade-caption{font-size:14px;font-weight:600;text-align:center;max-width:12rem;line-height:1.3;color:var(--rw-ink,#111);flex:none}
-.rw-accolade-year{font-size:12.5px;color:var(--rw-muted,#888);line-height:1.2;flex:none}
+/* Accolade badge cards: same chrome as reviews (title + year up top, link at bottom; badge fills the middle).
+   Interspersed by year in the track, or alone on the Awards tab. Logo size via --rw-accolade-size
+   (display.accolade_size, default 120px). Fixed-height compact rules reuse .rw-who time / .rw-link. */
+.rw-accolade-card{background:var(--rw-card,#fff)}
+.rw-accolade-badge{flex:1 1 auto;min-height:0;width:auto;height:auto;max-width:var(--rw-accolade-size,120px);max-height:var(--rw-accolade-size,120px);object-fit:contain;object-position:center;display:block;align-self:center;margin:0 auto}
 .rw-nav:disabled{opacity:0;pointer-events:none}
 @container rw (max-width:575px){.rw-nav{display:none}}
 
@@ -146,7 +144,7 @@
 .rw-fixed.rw-layout-carousel .rw-text{flex:1 1 auto;min-height:0;overflow-x:hidden;overflow-y:auto;scrollbar-width:thin}
 .rw-fixed.rw-layout-grid .rw-track{overflow-y:auto;align-content:start;scrollbar-width:thin}
 .rw-fixed .rw-card-top,.rw-fixed .rw-stars,.rw-fixed .rw-rec,.rw-fixed .rw-link,.rw-fixed .rw-ai-top{flex:none}
-.rw-fixed .rw-accolade-card{padding:12px;gap:6px}.rw-fixed .rw-accolade-card img{max-width:min(72px,var(--rw-accolade-size,120px));max-height:min(72px,var(--rw-accolade-size,120px))}.rw-fixed .rw-accolade-caption{font-size:13px}.rw-fixed .rw-accolade-year{font-size:12px}
+.rw-fixed .rw-accolade-badge{max-width:min(72px,var(--rw-accolade-size,120px));max-height:min(72px,var(--rw-accolade-size,120px))}
 @container rw (max-height:460px){
   .rw-fixed .rw-header{padding:9px 12px;margin-bottom:10px;gap:8px 12px}.rw-fixed .rw-score{font-size:30px}
   .rw-fixed .rw-label,.rw-fixed .rw-based-pre{display:none}.rw-fixed .rw-card{padding:14px;gap:8px}}

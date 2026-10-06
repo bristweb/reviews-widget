@@ -259,7 +259,7 @@
     },
     "accolades": {
       "type": "array",
-      "description": "Optional award badge cards merged into the review track by date after the platform filter (and listed alone on the Awards tab when present). Each item sorts as YYYY-12-31 so it leads that year (newest first). When any accolades exist, at least one appears before the first review (newest award promoted if its year is older than the newest review). Each item needs url + year plus icon and/or freeform label (name is an alias). Label shows as the card description; year is always visible. Size is global via display.accolade_size. Same optional nofollow/noreferrer/rel as platforms.",
+      "description": "Optional award badge cards merged into the review track by date after the platform filter (and listed alone on the Awards tab when present). Each item sorts as YYYY-12-31 so it leads that year (newest first). When any accolades exist, at least one appears before the first review (newest award promoted if its year is older than the newest review). Each item needs url + year plus icon and/or freeform label (name is an alias). Cards match review chrome: title + year up top, badge in the middle, View award link cue at the bottom. Size is global via display.accolade_size. Same optional nofollow/noreferrer/rel as platforms.",
       "items": {
         "type": "object",
         "required": [
@@ -288,12 +288,12 @@
           "name": {
             "type": "string",
             "minLength": 1,
-            "description": "Optional freeform caption alias for label. Prefer label over name when both are set."
+            "description": "Optional freeform title alias for label. Prefer label over name when both are set."
           },
           "label": {
             "type": "string",
             "minLength": 1,
-            "description": "Freeform description under the logo. Prefer label over name when both are set."
+            "description": "Freeform title at the top of the card (with year). Prefer label over name when both are set."
           },
           "year": {
             "type": [
@@ -301,11 +301,11 @@
               "integer",
               "number"
             ],
-            "description": "Required. Sort key is YYYY-12-31 on the shared review timeline (leads that year when scrolling newest to oldest). Always shown on the accolade card."
+            "description": "Required. Sort key is YYYY-12-31 on the shared review timeline (leads that year when scrolling newest to oldest). Shown as the date under the title on the accolade card."
           },
           "icon": {
             "type": "string",
-            "description": "Image URL or path relative to the data root. When omitted, the caption is shown as text."
+            "description": "Image URL or path relative to the data root. Shown as the badge in the middle of the card; when omitted, title + year + link cue still render."
           },
           "url": {
             "type": "string",

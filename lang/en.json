@@ -15,6 +15,7 @@
   "stars_aria": "{rating} out of 5 stars",
   "recommends": "Recommends",
   "view_on": "View on {platform}",
+  "view_accolade": "View award",
   "card_aria": "Read {name}'s review on {platform} (opens in a new tab)",
   "anonymous": "Anonymous",
   "previous": "Previous reviews",

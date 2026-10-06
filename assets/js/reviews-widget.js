@@ -38,7 +38,7 @@
     write_review: 'Write a review', write_review_short: 'Review',
     based_on: 'Based on ', review_one: 'review', review_many: 'reviews', on_platform: ' on {platform}',
     accolade_one: 'award', accolade_many: 'awards',
-    stars_aria: '{rating} out of 5 stars', recommends: 'Recommends', view_on: 'View on {platform}',
+    stars_aria: '{rating} out of 5 stars', recommends: 'Recommends', view_on: 'View on {platform}', view_accolade: 'View award',
     card_aria: "Read {name}'s review on {platform} (opens in a new tab)", anonymous: 'Anonymous',
     previous: 'Previous reviews', next: 'Next reviews', ai_summary: 'Summary',
     ai_summary_aria: 'Summary of {count} reviews', accolades_aria: 'Awards and accolades',
@@ -590,15 +590,23 @@
       }
 
       const accoladeCard = a => {
-        // Label (preferred) / name as description; year always visible (sorts the timeline too).
+        // Same card chrome as reviews: title + year up top, badge in the middle, link cue at the bottom.
         const rawCap = [a.label, a.name].find(v => v != null && String(v).trim());
         const labelText = rawCap ? String(rawCap).trim() : '';
+        const title = labelText || S.tab_accolades;
         const yearStr = String(a.year).trim();
-        const aria = fill(S.accolade_card_aria, { label: labelText || S.tab_accolades, year: yearStr || '' });
-        const img = a.icon ? `<img src="${esc(url(a.icon))}" alt="" loading="lazy">` : '';
-        const capEl = labelText ? `<span class="rw-accolade-caption">${esc(labelText)}</span>` : '';
-        const yearEl = yearStr ? `<time class="rw-accolade-year" datetime="${esc(yearStr)}">${esc(yearStr)}</time>` : '';
-        return `<a class="rw-card rw-accolade-card" href="${esc(a.url)}" target="_blank" rel="${esc(linkRel(a))}" title="${esc(aria)}" aria-label="${esc(aria)}">${img}${capEl}${yearEl}</a>`;
+        const aria = fill(S.accolade_card_aria, { label: title, year: yearStr || '' });
+        const img = a.icon ? `<img class="rw-accolade-badge" src="${esc(url(a.icon))}" alt="" loading="lazy">` : '';
+        return `<a class="rw-card rw-accolade-card" href="${esc(a.url)}" target="_blank" rel="${esc(linkRel(a))}" title="${esc(aria)}" aria-label="${esc(aria)}">
+          <div class="rw-card-top">
+            <div class="rw-who">
+              <div class="rw-name">${esc(title)}</div>
+              ${yearStr ? `<time datetime="${esc(yearStr)}">${esc(yearStr)}</time>` : ''}
+            </div>
+          </div>
+          ${img}
+          <span class="rw-link" aria-hidden="true">${esc(S.view_accolade)} <span class="rw-arrow">→</span></span>
+        </a>`;
       };
       const reviewCard = r => {
         const name = pname(r.platform);
@@ -642,7 +650,12 @@
       useFallbackIcons(el);
       fitSummary();
       clampText();
-      el.querySelectorAll('.rw-tab').forEach(b => b.addEventListener('click', () => { active = b.dataset.p; render(); }));
+      el.querySelectorAll('.rw-tab').forEach(b => b.addEventListener('click', () => {
+        // Re-clicking the active filter clears it (back to All / unfiltered).
+        const p = b.dataset.p;
+        active = p === active ? 'all' : p;
+        render();
+      }));
       const track = el.querySelector('.rw-track');
       const step = dir => track.scrollBy({ left: dir * track.clientWidth * 0.9, behavior: 'smooth' });
       el.querySelector('.rw-prev')?.addEventListener('click', () => step(-1));
