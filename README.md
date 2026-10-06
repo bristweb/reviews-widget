@@ -302,7 +302,7 @@ index.html, embed.html        demos (default data-source: example/)
 example/                      fictional sample data
 schemas/*.schema.json         config + reviews JSON Schema
 scripts/validate.mjs          Ajv + filesystem checks
-COMPARISON.md                 optional product comparison
+COMPARISON.md                 named product comparison
 .github/workflows/            check (this repo) + reusable validate
 ```
 
