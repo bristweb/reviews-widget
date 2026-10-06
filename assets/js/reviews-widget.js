@@ -881,45 +881,40 @@
       if (pills.length <= 1) return;
 
       const avail = tabsEl.clientWidth;
-      if (avail <= 0) return;
-      const gap = parseFloat(getComputedStyle(tabsEl).columnGap || getComputedStyle(tabsEl).gap) || 0;
-      const widths = pills.map(p => p.getBoundingClientRect().width);
+      if (avail <= 0) return; // hidden or not laid out yet; the ResizeObserver re-fits once it has a width
+      const cs = getComputedStyle(tabsEl);
+      const gap = parseFloat(cs.columnGap || cs.gap) || 0;
+      // Whole pixels, rounded up, so sub-pixel widths never add up to a pill that overlaps the next control.
+      const widths = pills.map(p => Math.ceil(p.getBoundingClientRect().width));
+      const rowWidth = idxs => idxs.reduce((w, i, k) => w + widths[i] + (k ? gap : 0), 0);
 
       // First pass: do all pills fit without More?
-      let total = 0;
-      widths.forEach((w, i) => { total += w + (i ? gap : 0); });
-      if (total <= avail + 0.5) return;
+      if (rowWidth(pills.map((_, i) => i)) <= avail) return;
 
-      // Need More. Measure it, then pick visible set (All + active always; then fill left-to-right).
+      // Need More: reserve its width (plus one gap), then keep All + the active filter and fill left to right.
       overflow.hidden = false;
-      const moreW = moreBtn.getBoundingClientRect().width;
-      const widthOf = (idxs) => {
-        const sorted = [...idxs].sort((a, b) => a - b);
-        let w = 0;
-        sorted.forEach((i, k) => { w += widths[i] + (k ? gap : 0); });
-        return w + gap + moreW;
-      };
-      const must = new Set([0]);
-      const activeIdx = pills.findIndex(p => p.dataset.p === active);
-      if (activeIdx > 0) must.add(activeIdx);
-
-      const visible = new Set(must);
-      for (let i = 1; i < pills.length; i++) {
-        if (visible.has(i)) continue;
-        visible.add(i);
-        if (widthOf(visible) > avail + 0.5) visible.delete(i);
-        // Keep scanning so a promoted active later in the list does not block earlier packing,
-        // and so we still try later pills when an earlier one was too wide.
+      const moreW = Math.ceil(moreBtn.getBoundingClientRect().width);
+      const fits = set => rowWidth([...set].sort((a, b) => a - b)) + (set.size ? gap : 0) + moreW <= avail;
+      const activeIdx = Math.max(0, pills.findIndex(p => p.dataset.p === active));
+      // Very tight rows: keep only the active filter (All when nothing is selected) next to More.
+      let visible = new Set([0, activeIdx]);
+      if (!fits(visible)) visible = new Set([activeIdx]);
+      if (fits(visible)) {
+        for (let i = 1; i < pills.length; i++) {
+          if (visible.has(i)) continue;
+          visible.add(i);
+          if (!fits(visible)) visible.delete(i);
+          // Keep scanning: a narrower pill later in the list may still fit.
+        }
       }
 
-      const overflowed = [];
-      pills.forEach((p, i) => {
-        if (visible.has(i)) p.hidden = false;
-        else {
-          p.hidden = true;
-          overflowed.push(p);
-        }
-      });
+      pills.forEach((p, i) => { p.hidden = !visible.has(i); });
+      // Safety net: if the laid-out row still overflows (e.g. a font swapped mid-measure), drop pills from the
+      // right (never the active one) until it fits.
+      for (let i = pills.length - 1; i >= 0 && tabsEl.scrollWidth > tabsEl.clientWidth + 1; i--) {
+        if (i !== activeIdx && visible.delete(i)) pills[i].hidden = true;
+      }
+      const overflowed = pills.filter((_, i) => !visible.has(i));
 
       if (!overflowed.length) {
         overflow.hidden = true;
@@ -937,6 +932,11 @@
     render();
     reveal();
     new ResizeObserver(() => { fitTabs(); fitSummary(); clampText(); if (!cfg.fixed) notifyHeight(); }).observe(el);
+    // A late webfont changes pill widths without resizing the widget: re-fit when fonts finish loading.
+    if (document.fonts) {
+      document.fonts.ready.then(fitTabs);
+      document.fonts.addEventListener?.('loadingdone', fitTabs);
+    }
   }
 
   // When rendered inside an iframe (embed.html), tell the parent page our height.

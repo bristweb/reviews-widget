@@ -35,8 +35,8 @@
 .rw-tab:focus-visible,.rw-write:focus-visible,.rw-nav:focus-visible,.rw-tabs-more:focus-visible,.rw-accolade-card:focus-visible,.rw-testimonial-card:focus-visible{outline:2px solid var(--rw-accent,#333);outline-offset:2px}
 /* Overflow “More” control: remaining filters in a dropdown; no horizontal scroll / wrap on the pill row. */
 .rw-tabs-overflow{position:relative;flex:none;display:inline-flex;align-items:center}
-.rw-tabs-overflow[hidden]{display:none!important}
-.rw-tabs-more{display:inline-flex;align-items:center;gap:4px;flex:none;border:1px solid var(--rw-line,#e3e3e3);background:var(--rw-card,#fff);border-radius:999px;padding:6px 12px;font:inherit;font-size:13.5px;color:var(--rw-ink,#111);cursor:pointer;transition:all .15s;white-space:nowrap}
+.rw-tabs > .rw-tab[hidden],.rw-tabs-overflow[hidden]{display:none!important}
+.rw-tabs-more{display:inline-flex;align-items:center;gap:4px;flex:none;border:1px solid var(--rw-line,#e3e3e3);background:var(--rw-card,#fff);border-radius:999px;padding:6px 12px;font:inherit;font-size:13.5px;color:var(--rw-ink,#111);cursor:pointer;transition:background-color .15s,border-color .15s,color .15s;white-space:nowrap}
 .rw-tabs-more:hover{border-color:var(--rw-line-strong,#c8c8c8)}
 .rw-tabs-more.is-open{border-color:var(--rw-line-strong,#c8c8c8)}
 .rw-tabs-more-caret{font-size:10px;line-height:1;opacity:.75}
@@ -45,7 +45,7 @@
 .rw-tabs-menu .rw-tab{width:100%;justify-content:flex-start;border-radius:8px}
 /* Menu always shows names (even when the pill row is icon-only ≤1020). */
 .rw-tabs-menu .rw-tab-name,.rw-tabs-menu .rw-tab-long{display:inline!important}
-.rw-tab{display:inline-flex;align-items:center;gap:6px;flex:none;border:1px solid var(--rw-line,#e3e3e3);background:var(--rw-card,#fff);border-radius:999px;padding:6px 12px;font:inherit;font-size:13.5px;color:var(--rw-ink,#111);cursor:pointer;transition:all .15s;white-space:nowrap}
+.rw-tab{display:inline-flex;align-items:center;gap:6px;flex:none;border:1px solid var(--rw-line,#e3e3e3);background:var(--rw-card,#fff);border-radius:999px;padding:6px 12px;font:inherit;font-size:13.5px;color:var(--rw-ink,#111);cursor:pointer;transition:background-color .15s,border-color .15s,color .15s;white-space:nowrap}
 .rw-tab img{width:16px;height:16px}
 .rw-tab em{font-style:normal;font-size:12px;color:var(--rw-accent-2,#555);background:var(--rw-tint,#f1f1f1);border-radius:999px;padding:1px 7px}
 .rw-tab:hover{border-color:var(--rw-line-strong,#c8c8c8)}
