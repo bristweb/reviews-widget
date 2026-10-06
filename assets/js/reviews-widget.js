@@ -540,15 +540,39 @@
         </a>`;
       }).join('');
 
-      const accoladesList = Array.isArray(config.accolades) ? config.accolades.filter(a => a && (a.icon || a.name) && a.url) : [];
+      const accoladesList = Array.isArray(config.accolades)
+        ? config.accolades.filter(a => a && a.url && (a.icon || a.name || a.label))
+        : [];
       const accolades = accoladesList.length ? `<div class="rw-accolades" role="list" aria-label="${esc(S.accolades_aria)}">
         ${accoladesList.map(a => {
-          const label = [a.name, a.year].filter(v => v != null && String(v).trim()).join(' ');
-          const body = a.icon
-            ? `<img src="${esc(url(a.icon))}" alt="" loading="lazy" width="48" height="48">`
-            : `<span class="rw-accolade-name">${esc(a.name || '')}</span>`;
-          const year = a.year != null && String(a.year).trim() ? `<span class="rw-accolade-year">${esc(a.year)}</span>` : '';
-          return `<a class="rw-accolade" role="listitem" href="${esc(a.url)}" target="_blank" rel="${esc(linkRel(a))}" title="${esc(label)}" aria-label="${esc(label)}">${body}${year}</a>`;
+          // Freeform caption: label || name; year only appended when a caption exists (never invent text).
+          const rawCap = [a.label, a.name].find(v => v != null && String(v).trim());
+          const yearStr = a.year != null && String(a.year).trim() ? String(a.year).trim() : '';
+          const caption = rawCap
+            ? (yearStr ? `${String(rawCap).trim()} ${yearStr}` : String(rawCap).trim())
+            : '';
+          const aria = caption || yearStr || 'Award';
+          const sizePreset = a.size === 'sm' || a.size === 'md' || a.size === 'lg' ? a.size : (typeof a.size === 'number' && a.size > 0 ? null : 'md');
+          const sizeClass = sizePreset ? ` rw-accolade-${sizePreset}` : '';
+          let imgStyle = '';
+          if (a.width || a.height) {
+            const parts = [];
+            if (a.width) parts.push(`max-width:${Number(a.width)}px`);
+            if (a.height) parts.push(`max-height:${Number(a.height)}px`);
+            imgStyle = ` style="${parts.join(';')}"`;
+          } else if (typeof a.size === 'number' && a.size > 0) {
+            imgStyle = ` style="max-width:${Number(a.size)}px;max-height:${Number(a.size)}px"`;
+          }
+          const img = a.icon
+            ? `<img src="${esc(url(a.icon))}" alt="" loading="lazy"${imgStyle}>`
+            : '';
+          const capEl = caption
+            ? `<span class="rw-accolade-caption">${esc(caption)}</span>`
+            : '';
+          // Logo-only: no visible text. Text-only (no icon): caption alone.
+          const body = img || capEl;
+          const extra = img && capEl ? capEl : '';
+          return `<a class="rw-accolade${sizeClass}" role="listitem" href="${esc(a.url)}" target="_blank" rel="${esc(linkRel(a))}" title="${esc(aria)}" aria-label="${esc(aria)}">${body}${extra}</a>`;
         }).join('')}
       </div>` : '';
 

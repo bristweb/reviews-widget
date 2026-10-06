@@ -137,7 +137,7 @@ theme/fonts/             optional self-hosted fonts
 | `strings` | optional inline UI copy overrides (object only; merged last) |
 | `rating_labels` | score words (`[{ min, label }, …]`); overrides language-file labels when set |
 | `summary` | `{ "text", "generated_at" }` for the summary card |
-| `accolades` | optional `[{ name, year?, icon, url }]` — badge strip under the summary; each links out (same optional `nofollow` / `noreferrer` / `rel` as platforms) |
+| `accolades` | optional badge strip under the summary: each item needs `url` plus `icon` and/or a freeform caption (`name` or `label`); `year` optional (appended to caption only, never invents text). Logo-only is fine. Optional `size` (`sm` / `md` / `lg` or px; default compact) or `width` / `height` for larger marks without clipping. Same optional `nofollow` / `noreferrer` / `rel` as platforms |
 | `reviews.years` | year files to fetch, newest first, e.g. `[2026, 2025]` |
 
 Formal shape: `schemas/config.schema.json` in this repo.

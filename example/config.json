@@ -89,10 +89,9 @@
   },
   "accolades": [
     {
-      "name": "Local Shop Awards — Editors' Pick",
-      "year": 2025,
       "icon": "icons/award-choice.svg",
-      "url": "https://example.com/awards/local-shop-editors-pick-2025"
+      "url": "https://example.com/awards/local-shop-editors-pick-2025",
+      "size": "lg"
     },
     {
       "name": "Trail Town Best Bike Shop",

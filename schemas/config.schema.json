@@ -247,33 +247,86 @@
     },
     "accolades": {
       "type": "array",
-      "description": "Optional award badges shown as a strip under the summary. Each item links out to a verification or profile URL.",
+      "description": "Optional award badges under the summary. Most awards are logo-only (name/label omitted). Each item links out; same optional nofollow/noreferrer/rel as platforms.",
       "items": {
         "type": "object",
         "required": [
-          "name",
           "url"
         ],
         "additionalProperties": true,
+        "anyOf": [
+          {
+            "required": [
+              "icon"
+            ]
+          },
+          {
+            "required": [
+              "name"
+            ]
+          },
+          {
+            "required": [
+              "label"
+            ]
+          }
+        ],
         "properties": {
           "name": {
             "type": "string",
-            "minLength": 1
+            "minLength": 1,
+            "description": "Optional freeform caption. Prefer omitting when the logo already includes the award text."
+          },
+          "label": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Optional freeform caption alias for name. Prefer label over name when both are set."
           },
           "year": {
             "type": [
               "string",
               "integer",
               "number"
-            ]
+            ],
+            "description": "Optional. When a caption is shown, year is appended to that freeform caption (not a separate title+year layout). Not shown alone."
           },
           "icon": {
             "type": "string",
-            "description": "Image URL or path relative to the data root. When omitted, the name is shown as text."
+            "description": "Image URL or path relative to the data root. When omitted, the caption is shown as text."
           },
           "url": {
             "type": "string",
             "minLength": 1
+          },
+          "size": {
+            "description": "Logo size preset (default md / compact) or a numeric max edge in px.",
+            "oneOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "sm",
+                  "md",
+                  "lg"
+                ]
+              },
+              {
+                "type": "number",
+                "minimum": 16,
+                "maximum": 160
+              }
+            ]
+          },
+          "width": {
+            "type": "number",
+            "minimum": 16,
+            "maximum": 240,
+            "description": "Optional max width hint in px (with height, overrides size preset)."
+          },
+          "height": {
+            "type": "number",
+            "minimum": 16,
+            "maximum": 240,
+            "description": "Optional max height hint in px (with width, overrides size preset)."
           },
           "nofollow": {
             "type": "boolean"
