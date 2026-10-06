@@ -13,7 +13,7 @@ Side-by-side look at this open, static reviews widget versus common **hosted rev
 Columns: **reviews-widget** first; other products sorted by score (✅×2 + 🟡) on that table, high to low. Superscripts point to short notes under the table.
 
 | Feature | **reviews-widget** | [Birdeye](https://birdeye.com/) | [Reputation.com](https://reputation.com/) | [EmbedSocial](https://embedsocial.com/review-widget/) | [Trustpilot](https://www.trustpilot.com/) | [Podium](https://www.podium.com/) | [ProvenExpert](https://www.provenexpert.com/) | [Elfsight](https://elfsight.com/all-in-one-reviews-widget/) | [Tagembed](https://tagembed.com/) | [SociableKIT](https://www.sociablekit.com/) |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|
+|---|---|---|---|---|---|---|---|---|---|---|
 | **Self-hosted** (you serve the embed) | ✅¹ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | **Free to run** at modest traffic | ✅² | ❌ | ❌ | 🟡 | 🟡 | ❌ | 🟡 | 🟡³ | 🟡 | 🟡 |
 | **Static files** (no vendor server for the widget) | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
@@ -47,7 +47,7 @@ Columns: **reviews-widget** first; other products sorted by score (✅×2 + 🟡
 Because this widget is self-hosted, **any platform is supported**: you can gather the records however you like (automation or by hand), so nothing depends on a vendor’s connector catalog (including sources other services may not offer). The table below is about *built-in connectors / official integrations* for the other products (including whether a review platform only “connects” to itself). Rows cover 100+ common review, directory, marketplace, app-store, B2B, vertical, and social surfaces.
 
 | Platform | **reviews-widget** | Birdeye | SociableKIT | Reputation.com | Elfsight | Podium | Tagembed | EmbedSocial | ProvenExpert | Trustpilot |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|
+|---|---|---|---|---|---|---|---|---|---|---|
 | Google Maps / Business Profile | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | 🟡 | ❌ |
 | Yelp¹⁵ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | 🟡 | ❌ | ❌ |
 | Facebook | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | 🟡 | ❌ |
