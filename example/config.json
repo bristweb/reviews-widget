@@ -73,7 +73,7 @@
     "tab_aria": "{name}, {count} reviews",
     "write_review": "Write a review",
     "write_review_short": "Review",
-    "based_on": "Based on",
+    "based_on": "Based on ",
     "review_one": "review",
     "review_many": "reviews",
     "on_platform": "on {platform}",

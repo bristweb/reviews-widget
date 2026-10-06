@@ -372,7 +372,7 @@
           <div>
             <div class="rw-label">${esc(label(avg))}</div>
             ${stars(avg, 'rw-stars-lg')}
-            <div class="rw-based"><span class="rw-based-pre">${esc(S.based_on)}</span><strong>${pool.length}</strong> ${esc(pool.length === 1 ? S.review_one : S.review_many)}<span class="rw-based-pre">${active === 'all' ? '' : esc(fill(S.on_platform, { platform: pname(active) }))}</span></div>
+            <div class="rw-based"><span class="rw-based-pre">${esc((S.based_on || '').trimEnd())} </span><strong>${pool.length}</strong> ${esc(pool.length === 1 ? S.review_one : S.review_many)}<span class="rw-based-pre">${active === 'all' ? '' : esc(fill(S.on_platform, { platform: pname(active) }))}</span></div>
           </div>
         </div>
         <a class="rw-write" href="${esc(write)}" target="_blank" rel="noopener" aria-label="${esc(S.write_review)}"><span class="rw-write-long">${esc(S.write_review)}</span><span class="rw-write-short">${esc(S.write_review_short)}</span></a>
