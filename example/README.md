@@ -12,3 +12,5 @@ Bundled sample for demos. **Northwind Cycles** is an invented neighborhood bike 
 ```
 
 Do not present this as real testimonials.
+
+Includes `.github/workflows/validate.yml` so a copy of this tree as a data repo validates against reviews-widget on push.
