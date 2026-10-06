@@ -37,7 +37,6 @@ Product comparison: [COMPARISON.md](COMPARISON.md).
 10. [Privacy and presentation](#privacy-and-presentation)
 11. [New data repo](#new-data-repo)
 12. [Technical details](#technical-details)
-13. [Repo layout](#repo-layout)
 
 ---
 
@@ -281,22 +280,5 @@ Carousel: 4 / 3 / 2 / 1 cards by width breakpoints.
 - Fixed-height mode: host height 100% or viewport remainder; card text scrolls without blocking horizontal swipe.
 - Icons: data-repo SVG, then Simple Icons CDN fallback.
 - Local preview: serve this repo (and your data) from any static origin with CORS (`Access-Control-Allow-Origin: *`) and open `index.html` or point `data-source` at a local URL.
-
----
-
-## Repo layout
-
-```
-assets/js/reviews-widget.js   widget
-assets/css/reviews-widget.css layout (reads --rw-* from the data theme)
-index.html, embed.html        demos (default data-source: example/)
-example/                      fictional sample data
-schemas/*.schema.json         config + reviews JSON Schema
-scripts/validate.mjs          Ajv + filesystem checks
-docs/example-widget-light-v2.png  README screenshot (light)
-docs/example-widget-dark-v2.png   README screenshot (dark, via <picture>)
-COMPARISON.md                 named product comparison
-.github/workflows/            check (this repo) + reusable validate
-```
 
 Review text belongs to its authors; platform marks belong to their owners.
