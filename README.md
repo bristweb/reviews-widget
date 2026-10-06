@@ -1,10 +1,10 @@
 # Reviews widget
 
-## [▶ Live demo](https://bristweb.github.io/reviews-widget/?source=https://bristweb.github.io/reviews-widget/example/)
+## <a href="https://bristweb.github.io/reviews-widget/?source=https://bristweb.github.io/reviews-widget/example/" target="_blank" rel="noopener">▶ Live demo</a>
 
-**[Open the demo](https://bristweb.github.io/reviews-widget/?source=https://bristweb.github.io/reviews-widget/example/)** · **[iframe version](https://bristweb.github.io/reviews-widget/embed.html?source=https://bristweb.github.io/reviews-widget/example/)** · **[constrained / fixed-height box](https://bristweb.github.io/reviews-widget/embed.html?source=https://bristweb.github.io/reviews-widget/example/&constrained=true)**
+**<a href="https://bristweb.github.io/reviews-widget/?source=https://bristweb.github.io/reviews-widget/example/" target="_blank" rel="noopener">Open the demo</a>** · **<a href="https://bristweb.github.io/reviews-widget/embed.html?source=https://bristweb.github.io/reviews-widget/example/" target="_blank" rel="noopener">iframe version</a>** · **<a href="https://bristweb.github.io/reviews-widget/embed.html?source=https://bristweb.github.io/reviews-widget/example/&constrained=true" target="_blank" rel="noopener">constrained / fixed-height box</a>**
 
-[![Live example: Northwind Cycles (fictional bike shop)](docs/example-widget.png)](https://bristweb.github.io/reviews-widget/?source=https://bristweb.github.io/reviews-widget/example/)
+<a href="https://bristweb.github.io/reviews-widget/?source=https://bristweb.github.io/reviews-widget/example/" target="_blank" rel="noopener"><img src="docs/example-widget.png" alt="Live example: Northwind Cycles (fictional bike shop)" /></a>
 
 ```html
 <script src="https://bristweb.github.io/reviews-widget/assets/js/reviews-widget.js"
