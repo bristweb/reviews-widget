@@ -93,7 +93,18 @@
     },
     "display": {
       "type": "object",
-      "additionalProperties": true
+      "additionalProperties": true,
+      "properties": {
+        "theme": {
+          "type": "string",
+          "enum": [
+            "light",
+            "dark",
+            "auto"
+          ],
+          "description": "Color scheme. auto = follow host page theme (data-theme/class/color-scheme); light|dark force."
+        }
+      }
     },
     "schema": {
       "type": "object",

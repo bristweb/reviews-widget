@@ -24,6 +24,7 @@
  * (assets/css/reviews-widget.css + <source>theme/theme.css) if the page doesn't already have it, then renders.
  * Also: data-summary="off" hides the summary card; data-schema="off" skips the JSON-LD injection.
  * Constrained embeds (Google Sites and other fixed-height boxes): one toggle packs the widget into the box —
+ *   data-theme="light|dark|auto"  color scheme (auto = follow host page theme; also config display.theme).
  *   data-constrained="true"  (= fixed-height + arrows inside + overflow hidden + no hover-lift + focus-ring inside).
  *   Named "constrained" (not "fixed-proportions") because it adapts to the box you give it rather than locking an aspect ratio.
  * Optional fine-grained overrides (still work; defaults in config.json `display`):
@@ -52,7 +53,7 @@
     diversity_window_days: 548, date_locale: 'en-US', date_options: { year: 'numeric', month: 'short', day: 'numeric' },
     font_timeout_ms: 1200, show_rating_only_reviews: false, show_summary: true,
     // fitting options (script data- attributes / URL params override these)
-    constrained: false, fixed_height: false, overflow: 'clip', arrows: 'outside', hover_lift: true, focus_ring: 'outside', cards: 0, padding: null,
+    theme: 'auto', constrained: false, fixed_height: false, overflow: 'clip', arrows: 'outside', hover_lift: true, focus_ring: 'outside', cards: 0, padding: null,
   };
   const RATING_LABELS = [{ min: 4.75, label: 'Excellent' }, { min: 4.25, label: 'Great' }, { min: 3.5, label: 'Good' }, { min: 0, label: 'Reviews' }];
   const STAR = '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 1.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L10 14.9l-5.2 2.7 1-5.8L1.5 7.7l5.9-.9z"/></svg>';
@@ -129,6 +130,36 @@
   //          like centered flex columns, inline-blocks, fit-content or floats size the widget to the available width)
   //        > .rw-root (the widget; container-type:inline-size for the header/carousel container queries).
   // Without the sizer, size containment gives the root an intrinsic width of 0 and it collapses in such parents.
+
+  // Active scheme for data-theme="auto": follow the host page (html/body data-theme / dark class /
+  // color-scheme). Only use prefers-color-scheme when the host itself opts into system (color-scheme:
+  // light dark, or data-theme=auto). No bare OS preference when the page is a light-only site.
+  function detectHostTheme() {
+    const roots = [document.documentElement, document.body].filter(Boolean);
+    const attrNames = ['data-theme', 'data-color-scheme', 'data-bs-theme'];
+    for (const el of roots) {
+      for (const a of attrNames) {
+        const v = (el.getAttribute(a) || '').toLowerCase();
+        if (v === 'dark' || v === 'light') return v;
+        if (v === 'auto' || v === 'system') {
+          return matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+      }
+      const cls = String(el.className || '');
+      if (/\b(dark|theme-dark|dark-mode|darkmode|scheme-dark)\b/i.test(cls)) return 'dark';
+      if (/\b(light|theme-light|light-mode|lightmode|scheme-light)\b/i.test(cls)) return 'light';
+    }
+    for (const el of roots) {
+      const cs = (getComputedStyle(el).colorScheme || '').trim().toLowerCase();
+      if (!cs || cs === 'normal') continue;
+      const hasL = /\blight\b/.test(cs), hasD = /\bdark\b/.test(cs);
+      if (hasD && !hasL) return 'dark';
+      if (hasL && !hasD) return 'light';
+      if (hasL && hasD) return matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    }
+    return 'light';
+  }
+
   async function mount(host, opts) {
     const q = new URLSearchParams(location.search);
     let code = opts.base || DEFAULT_BASE;
@@ -211,6 +242,22 @@
     if (cfg.focus === 'inside') el.classList.add('rw-focus-inside');
     if (cfg.cards) el.classList.add('rw-cards-' + cfg.cards);
     if (cfg.padding != null && cfg.padding !== '' && isFinite(cfg.padding)) el.style.setProperty('--rw-pad', Math.max(0, +cfg.padding) + 'px');
+    // Theme: light | dark | auto (follow host). Query / data-theme / display.theme.
+    let themePref = String(opt('theme', 'theme', 'theme') || 'auto').toLowerCase();
+    if (!/^(light|dark|auto)$/.test(themePref)) themePref = 'auto';
+    host.dataset.theme = themePref;
+    const applyTheme = () => {
+      const resolved = themePref === 'auto' ? detectHostTheme() : themePref;
+      host.classList.toggle('rw-dark', resolved === 'dark');
+    };
+    applyTheme();
+    if (themePref === 'auto') {
+      const mo = new MutationObserver(applyTheme);
+      [document.documentElement, document.body].filter(Boolean).forEach(el => {
+        mo.observe(el, { attributes: true, attributeFilter: ['class', 'data-theme', 'data-color-scheme', 'data-bs-theme'] });
+      });
+      try { matchMedia('(prefers-color-scheme: dark)').addEventListener('change', applyTheme); } catch (_) {}
+    }
     if (cfg.fixed) {
       host.classList.add('rw-fixed-host');
       el.classList.add('rw-fixed');
@@ -460,7 +507,7 @@
 
   // ---- where to render (no class-name selectors) ----
   const OPTION_KEYS = ['source', 'layout', 'platform', 'limit', 'base', 'overflow', 'schema', 'summary',
-    'constrained', 'fixedHeight', 'arrows', 'hoverLift', 'focusRing', 'cards', 'padding'];
+    'theme', 'constrained', 'fixedHeight', 'arrows', 'hoverLift', 'focusRing', 'cards', 'padding'];
   const BOOL_KEYS = ['constrained', 'fixedHeight', 'hoverLift']; // a bare attribute (data-constrained) means true
   const pick = ds => Object.fromEntries(OPTION_KEYS.filter(k => ds && ds[k] != null && (ds[k] !== '' || BOOL_KEYS.includes(k)))
     .map(k => [k, ds[k] === '' ? 'true' : ds[k]]));

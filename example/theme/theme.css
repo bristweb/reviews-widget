@@ -26,3 +26,21 @@
   --rw-radius: 10px;
   --rw-max-width: 1200px;
 }
+/* Dark: applied when the widget resolves dark (host page theme, or data-theme="dark"). */
+.rw-host.rw-dark,
+.rw-host[data-theme="dark"] {
+  --rw-ink: #e8f0ec;
+  --rw-body: #c5d4cd;
+  --rw-muted: #8fa399;
+  --rw-line: #2a3d36;
+  --rw-line-strong: #3d534a;
+  --rw-card: #15241f;
+  --rw-tint: #1e322b;
+  --rw-accent: #7eb8a4;
+  --rw-accent-2: #a8d4c4;
+  --rw-on-accent: #0f1c18;
+  --rw-on-accent-soft: rgba(15,28,24,.22);
+  --rw-star: #e6a117;
+  --rw-star-off: #3d534a;
+  --rw-nav-shadow: 0 2px 12px rgba(0,0,0,.45);
+}

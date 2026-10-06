@@ -115,6 +115,7 @@ When the host gives you a box whose height you set and the code can’t change (
 | `data-platform` | `platform` | `all` or a `platforms` key | `all` |
 | `data-limit` | `limit` | max review cards (`0` = no limit) | `0` |
 | `data-summary` | `summary` | `off` hides the summary card | shown |
+| `data-theme` | `theme` | `light` \| `dark` \| `auto` (follow host page theme) | `display.theme` or `auto` |
 | `data-schema` | n/a | `off` skips JSON-LD | injected |
 | `data-base` | n/a | this code repo’s root | from the script URL |
 | `data-constrained` | `constrained` | `true` = tight-box preset (fixed height, arrows inside, overflow hidden, no hover lift, focus rings inside). Prefer this over setting the fine-grained attrs below | `false` |
@@ -189,6 +190,8 @@ Formal shape: `schemas/reviews.schema.json` in this repo.
 ### Theme
 
 `theme/theme.css` sets `--rw-font`, `--rw-ink`, `--rw-accent`, `--rw-star`, `--rw-radius`, `--rw-max-width`, and related variables on `.rw-host`. Font URLs are relative to that file.
+
+**Light / dark:** by default (`data-theme="auto"` or `display.theme: "auto"`) the widget matches the **host page** — `data-theme` / `data-bs-theme` on `html` or `body`, common `dark` / `light` classes, or the page’s CSS `color-scheme`. It only tracks the OS `prefers-color-scheme` when the host itself opts into system (e.g. `color-scheme: light dark`). Force with `data-theme="light"` or `"dark"`. Define dark brand tokens under `.rw-host.rw-dark, .rw-host[data-theme="dark"]` in your theme CSS (see `example/theme/theme.css`).
 
 ---
 

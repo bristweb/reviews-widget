@@ -7,6 +7,18 @@
 .rw-host.rw-host{display:block;box-sizing:border-box;width:100%;max-width:100%;min-width:0;flex:1 1 100%;align-self:stretch;justify-self:stretch;float:none;text-align:left}
 .rw-host.rw-clip{overflow-x:clip}
 .rw-host.rw-overflow-hidden{overflow:hidden}
+
+/* Color scheme: light by default. Dark when JS adds .rw-dark (auto → host page theme) or data-theme="dark".
+   Data themes redefine these --rw-* for brand colors in both modes. */
+.rw-host{color-scheme:light}
+.rw-host.rw-dark,.rw-host[data-theme="dark"]{
+  color-scheme:dark;
+  --rw-ink:#e8e8e8;--rw-body:#c4c4c4;--rw-muted:#9a9a9a;
+  --rw-line:#333;--rw-line-strong:#444;--rw-card:#1c1c1c;--rw-tint:#2a2a2a;
+  --rw-accent:#c8c8c8;--rw-accent-2:#e8e8e8;--rw-on-accent:#111;
+  --rw-on-accent-soft:rgba(0,0,0,.22);--rw-star:#f5b301;--rw-star-off:#555;
+  --rw-nav-shadow:0 2px 12px rgba(0,0,0,.45);
+}
 /* Intrinsic width for shrink-to-fit parents: max-content = --rw-max-width, min-content = 1/24 of it. Zero height. */
 .rw-sizer{display:block;height:0;overflow:hidden;visibility:hidden;font-size:0;line-height:0;margin:0;padding:0;white-space:normal}
 .rw-sizer i{display:inline-block;width:calc(var(--rw-max-width,1200px) / 24);height:0;vertical-align:top}
