@@ -1,6 +1,17 @@
 # Reviews widget
 
-A static, dependency-free reviews widget for any site. Host the files anywhere that can serve static assets (GitHub Pages works out of the box; any other static host is fine). This repository holds **only the code**: the widget script and stylesheet, two bare demo pages, JSON Schemas for the data format, a validator, and a fictional [example/](example/) data set. It holds no real reviews. License is TBD — there is no LICENSE file yet.
+**[Live demo →](https://bristweb.github.io/reviews-widget/?source=https://bristweb.github.io/reviews-widget/example/)** · [iframe](https://bristweb.github.io/reviews-widget/embed.html?source=https://bristweb.github.io/reviews-widget/example/) · fictional [example/](example/) data
+
+[![Example reviews widget](docs/example-widget.png)](https://bristweb.github.io/reviews-widget/?source=https://bristweb.github.io/reviews-widget/example/)
+
+```html
+<script src="https://bristweb.github.io/reviews-widget/assets/js/reviews-widget.js"
+        data-source="https://bristweb.github.io/reviews-widget/example/" defer></script>
+```
+
+Paste that tag to try it; for a real site keep the script `src` and point `data-source` at your own data store. More embeds (Google Sites, iframe, mount targets): [Embed](#embed).
+
+A static, dependency-free reviews widget for any site. Host the files anywhere that can serve static assets (GitHub Pages works out of the box; any other static host is fine). This repository holds **only the code**: the widget script and stylesheet, two bare demo pages, JSON Schemas for the data format, a validator, and the fictional example above. It holds no real reviews. License is TBD — there is no LICENSE file yet.
 
 Each site you embed on points the widget at its own **data repo** (or folder) with `data-source`. Counts, averages, card order and schema.org JSON-LD are computed in the browser. There is no build step and no generated index file.
 
@@ -27,7 +38,7 @@ See [COMPARISON.md](COMPARISON.md) for a side-by-side with named review widgets 
 
 ## Embed
 
-Snippets below use this repo’s published URL and the bundled fictional [example/](example/) data so you can paste and see something working. For a real site, keep the script `src` and change only `data-source` (or the iframe `?source=`) to your own data store URL.
+Same [example/](example/) URLs as at the top of this README. For a real site, keep the script `src` and change only `data-source` (or the iframe `?source=`) to your own data store URL.
 
 ### JavaScript (preferred)
 
@@ -302,6 +313,7 @@ index.html, embed.html        demos (default data-source: example/)
 example/                      fictional sample data
 schemas/*.schema.json         config + reviews JSON Schema
 scripts/validate.mjs          Ajv + filesystem checks
+docs/example-widget.png       README screenshot of example/
 COMPARISON.md                 named product comparison
 .github/workflows/            check (this repo) + reusable validate
 ```
