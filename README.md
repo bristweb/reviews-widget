@@ -22,7 +22,7 @@ A static, dependency-free reviews widget. Host the files on any static host (Git
 
 Each site points the widget at its own data with `data-source`. Counts, averages, card order and JSON-LD are computed in the browser.
 
-Product comparison: [COMPARISON.md](COMPARISON.md).
+Product comparison: [interactive page (sticky first column)](https://bristweb.github.io/reviews-widget/docs/comparison.html) · [COMPARISON.md](COMPARISON.md).
 
 ## Contents
 
@@ -327,6 +327,7 @@ scripts/validate.mjs          Ajv + filesystem checks
 docs/example-widget.png       README screenshot (light)
 docs/example-widget-dark.png  README screenshot (dark, via <picture>)
 COMPARISON.md                 named product comparison
+docs/comparison.html          sticky-column matrices (GitHub Pages)
 .github/workflows/            check (this repo) + reusable validate
 ```
 

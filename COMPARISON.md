@@ -2,6 +2,8 @@
 
 Side-by-side look at this open, static reviews widget versus common **hosted review-widget** products and **reputation / review-management** platforms. Features and plans change — check each vendor’s docs for the current product.
 
+> **Scrollable matrices with a sticky first column:** [open the comparison page](https://bristweb.github.io/reviews-widget/docs/comparison.html) (GitHub’s markdown view strips sticky CSS, so the fixed column lives on Pages).
+
 **Key**
 
 | | Meaning |
@@ -12,7 +14,7 @@ Side-by-side look at this open, static reviews widget versus common **hosted rev
 
 Columns: this widget → representative **embeddable review widgets** → **platforms** that own the review graph and/or sell reputation tooling (some also ship a website badge or widget). Superscripts point to short notes under the table.
 
-| | **reviews-widget** | [Elfsight](https://elfsight.com/all-in-one-reviews-widget/) | [EmbedSocial](https://embedsocial.com/review-widget/) | [SociableKIT](https://www.sociablekit.com/) | [Tagembed](https://tagembed.com/) | [ProvenExpert](https://www.provenexpert.com/) | [Trustpilot](https://www.trustpilot.com/) | [Google Business Profile](https://business.google.com/) | [Yelp](https://www.yelp.com/) | [Birdeye](https://birdeye.com/) | [Podium](https://www.podium.com/) | [Reputation.com](https://reputation.com/) |
+| Feature | **reviews-widget** | [Elfsight](https://elfsight.com/all-in-one-reviews-widget/) | [EmbedSocial](https://embedsocial.com/review-widget/) | [SociableKIT](https://www.sociablekit.com/) | [Tagembed](https://tagembed.com/) | [ProvenExpert](https://www.provenexpert.com/) | [Trustpilot](https://www.trustpilot.com/) | [Google Business Profile](https://business.google.com/) | [Yelp](https://www.yelp.com/) | [Birdeye](https://birdeye.com/) | [Podium](https://www.podium.com/) | [Reputation.com](https://reputation.com/) |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
 | **Self-hosted** (you serve the embed) | ✅¹ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | **Free to run** at modest traffic | ✅² | 🟡³ | 🟡 | 🟡 | 🟡 | 🟡 | 🟡 | ✅ | 🟡 | ❌ | ❌ | ❌ |

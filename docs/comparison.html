@@ -1,0 +1,2449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>reviews-widget — Comparison</title>
+<meta name="description" content="Feature and platform comparison for bristweb/reviews-widget" />
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #fafafa; --ink: #1a1a1a; --muted: #555; --line: #ddd; --card: #fff;
+    --sticky: #f3f3f3; --link: #0b57d0; --head: #eee;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #121212; --ink: #e8e8e8; --muted: #aaa; --line: #333; --card: #1c1c1c;
+      --sticky: #222; --link: #8ab4f8; --head: #2a2a2a;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    background: var(--bg); color: var(--ink); padding: 24px 16px 64px;
+  }
+  main { max-width: 100%; margin: 0 auto; }
+  h1 { font-size: 1.75rem; margin: 0 0 .5rem; }
+  h2 { font-size: 1.2rem; margin: 2rem 0 .75rem; }
+  p, li { color: var(--ink); max-width: 72rem; }
+  .note { color: var(--muted); }
+  .note .n { font-weight: 600; color: var(--ink); margin-right: .25rem; }
+  a { color: var(--link); }
+  .banner {
+    background: var(--card); border: 1px solid var(--line); border-radius: 10px;
+    padding: 12px 16px; margin: 0 0 1.25rem; max-width: 72rem;
+  }
+  .wrap {
+    overflow: auto; max-width: 100%; max-height: min(70vh, 720px);
+    border: 1px solid var(--line); border-radius: 10px;
+    background: var(--card); margin: .75rem 0 1.5rem; -webkit-overflow-scrolling: touch;
+  }
+  table.cmp {
+    border-collapse: separate; border-spacing: 0; width: max-content; min-width: 100%;
+    font-size: 13.5px;
+  }
+  table.cmp th, table.cmp td {
+    padding: 8px 12px; border-bottom: 1px solid var(--line); border-right: 1px solid var(--line);
+    white-space: nowrap; vertical-align: middle; background: var(--card);
+  }
+  table.cmp thead th {
+    position: sticky; top: 0; z-index: 3; background: var(--head); font-weight: 650;
+  }
+  table.sticky th:first-child,
+  table.sticky td:first-child {
+    position: sticky; left: 0; z-index: 2;
+    min-width: 16rem; width: 16rem; max-width: 22rem;
+    white-space: normal; text-align: left; font-weight: 650;
+    background: var(--sticky);
+    box-shadow: 4px 0 8px -4px rgba(0,0,0,.18);
+  }
+  table.sticky thead th:first-child { z-index: 4; background: var(--head); }
+  table.key th:first-child, table.key td:first-child { min-width: 3rem; font-weight: 650; }
+  code { font-size: .92em; }
+</style>
+</head>
+<body>
+<main>
+<div class="banner">Sticky first column (16rem) + sticky header. Markdown source: <a href="https://github.com/bristweb/reviews-widget/blob/main/COMPARISON.md">COMPARISON.md</a> (GitHub strips sticky CSS from .md). · <a href="../">reviews-widget</a></div>
+<h1>Comparison</h1>
+<p>Side-by-side look at this open, static reviews widget versus common <strong>hosted review-widget</strong> products and <strong>reputation / review-management</strong> platforms. Features and plans change — check each vendor’s docs for the current product.</p>
+<h2>Key</h2>
+<div class="wrap"><table class="cmp key">
+<thead><tr>
+<th scope="col">&nbsp;</th>
+<th scope="col">Meaning</th>
+</tr></thead><tbody>
+<tr>
+<th scope="row">✅</th>
+<td>Built-in or a normal part of the product</td>
+</tr>
+<tr>
+<th scope="row">🟡</th>
+<td>Partial — limits, paid tiers, add-ons, or a different product shape</td>
+</tr>
+<tr>
+<th scope="row">❌</th>
+<td>Not offered, or not the product’s model</td>
+</tr>
+</tbody></table></div>
+<p>Columns: this widget → representative <strong>embeddable review widgets</strong> → <strong>platforms</strong> that own the review graph and/or sell reputation tooling (some also ship a website badge or widget). Superscripts point to short notes under the table.</p>
+<div class="wrap"><table class="cmp sticky">
+<thead><tr>
+<th scope="col">Feature</th>
+<th scope="col"><strong>reviews-widget</strong></th>
+<th scope="col"><a href="https://elfsight.com/all-in-one-reviews-widget/" rel="noopener">Elfsight</a></th>
+<th scope="col"><a href="https://embedsocial.com/review-widget/" rel="noopener">EmbedSocial</a></th>
+<th scope="col"><a href="https://www.sociablekit.com/" rel="noopener">SociableKIT</a></th>
+<th scope="col"><a href="https://tagembed.com/" rel="noopener">Tagembed</a></th>
+<th scope="col"><a href="https://www.provenexpert.com/" rel="noopener">ProvenExpert</a></th>
+<th scope="col"><a href="https://www.trustpilot.com/" rel="noopener">Trustpilot</a></th>
+<th scope="col"><a href="https://business.google.com/" rel="noopener">Google Business Profile</a></th>
+<th scope="col"><a href="https://www.yelp.com/" rel="noopener">Yelp</a></th>
+<th scope="col"><a href="https://birdeye.com/" rel="noopener">Birdeye</a></th>
+<th scope="col"><a href="https://www.podium.com/" rel="noopener">Podium</a></th>
+<th scope="col"><a href="https://reputation.com/" rel="noopener">Reputation.com</a></th>
+</tr></thead><tbody>
+<tr>
+<th scope="row"><strong>Self-hosted</strong> (you serve the embed)</th>
+<td>✅¹</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<th scope="row"><strong>Free to run</strong> at modest traffic</th>
+<td>✅²</td>
+<td>🟡³</td>
+<td>🟡</td>
+<td>🟡</td>
+<td>🟡</td>
+<td>🟡</td>
+<td>🟡</td>
+<td>✅</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<th scope="row"><strong>Static files</strong> (no vendor server for the widget)</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<th scope="row"><strong>Full copy of the review data you display</strong></th>
+<td>✅⁴</td>
+<td>🟡</td>
+<td>🟡</td>
+<td>🟡</td>
+<td>🟡</td>
+<td>🟡</td>
+<td>🟡</td>
+<td>🟡</td>
+<td>🟡</td>
+<td>🟡</td>
+<td>🟡</td>
+<td>🟡</td>
+</tr>
+<tr>
+<th scope="row"><strong>No vendor account</strong> to show reviews on your site</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<th scope="row"><strong>schema.org JSON-LD</strong> on the host page</th>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>🟡</td>
+<td>🟡</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>🟡</td>
+<td>✅</td>
+<td>🟡</td>
+<td>✅</td>
+</tr>
+<tr>
+<th scope="row"><strong>Summary card</strong> on the site</th>
+<td>✅⁶</td>
+<td>🟡</td>
+<td>✅⁷</td>
+<td>❌</td>
+<td>🟡</td>
+<td>🟡</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>🟡</td>
+<td>✅</td>
+</tr>
+<tr>
+<th scope="row"><strong>Custom theme</strong> (your fonts / colors / CSS)</th>
+<td>✅</td>
+<td>🟡</td>
+<td>🟡</td>
+<td>🟡</td>
+<td>🟡</td>
+<td>🟡</td>
+<td>🟡</td>
+<td>🟡</td>
+<td>🟡</td>
+<td>🟡</td>
+<td>🟡</td>
+<td>🟡</td>
+</tr>
+<tr>
+<th scope="row"><strong>Sync / collection you control</strong></th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<th scope="row"><strong>Multi-source aggregate widget</strong></th>
+<td>✅</td>
+<td>✅⁸</td>
+<td>✅⁹</td>
+<td>✅</td>
+<td>✅</td>
+<td>🟡</td>
+<td>🟡¹¹</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<th scope="row"><strong>Review request / outreach</strong></th>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>✅</td>
+<td>🟡</td>
+<td>🟡</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<th scope="row"><strong>Inbox / respond across platforms</strong></th>
+<td>🟡¹⁴</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<th scope="row"><strong>Vendor lock-in for the on-site widget</strong></th>
+<td>❌¹²</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>—¹³</td>
+<td>—¹³</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+</tbody></table></div>
+<h2>Notes</h2>
+<p class="note"><span class="n">1.</span> Static files; e.g. GitHub Pages or any static host.</p>
+<p class="note"><span class="n">2.</span> e.g. GitHub Pages or another free static host.</p>
+<p class="note"><span class="n">3.</span> Free tiers usually mean view caps and/or vendor branding.</p>
+<p class="note"><span class="n">4.</span> Your data repo (or folder) is the copy the widget reads.</p>
+<p class="note"><span class="n">6.</span> Summary text you store in <code>config.json</code> (labeled “Summary” in the widget).</p>
+<p class="note"><span class="n">7.</span> AI summaries / tagging on higher plans.</p>
+<p class="note"><span class="n">8.</span> 30+ review sources.</p>
+<p class="note"><span class="n">9.</span> Google, Facebook, Trustpilot, Yelp, and more.</p>
+<p class="note"><span class="n">11.</span> Trustpilot-first; third-party re-embeds are restricted.</p>
+<p class="note"><span class="n">12.</span> Plain JSON + JS you can fork; no account required.</p>
+<p class="note"><span class="n">13.</span> Not applicable — Google / Yelp are the review surfaces themselves, not a third-party embed you swap out.</p>
+<p class="note"><span class="n">14.</span> No built-in inbox or reply UI — but you keep the full review records (including stored owner replies), so you can build your own response / follow-up workflows on top of that data.</p>
+<h2>Review / social platforms you can show</h2>
+<p>Because this widget is self-hosted, <strong>any platform is supported</strong>: you store the records yourself, so nothing depends on a vendor’s connector catalog (including sources other services may not offer). The table below is about *built-in connectors / official integrations* for the other products — not whether a human could paste text by hand. Rows cover 100+ common review, directory, marketplace, app-store, B2B, vertical, and social surfaces.</p>
+<div class="wrap"><table class="cmp sticky">
+<thead><tr>
+<th scope="col">Platform</th>
+<th scope="col"><strong>reviews-widget</strong></th>
+<th scope="col">Elfsight</th>
+<th scope="col">EmbedSocial</th>
+<th scope="col">SociableKIT</th>
+<th scope="col">Tagembed</th>
+<th scope="col">ProvenExpert</th>
+<th scope="col">Trustpilot</th>
+<th scope="col">Google Business Profile</th>
+<th scope="col">Yelp</th>
+<th scope="col">Birdeye</th>
+<th scope="col">Podium</th>
+<th scope="col">Reputation.com</th>
+</tr></thead><tbody>
+<tr>
+<th scope="row">Google Maps / Business Profile</th>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>🟡</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<th scope="row">Yelp¹⁵</th>
+<td>✅</td>
+<td>✅</td>
+<td>🟡</td>
+<td>✅</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<th scope="row">Facebook</th>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<th scope="row">BBB</th>
+<td>✅</td>
+<td>✅</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>🟡</td>
+<td>✅</td>
+</tr>
+<tr>
+<th scope="row">Yellow Pages</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<th scope="row">Citysearch</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<th scope="row">Foursquare</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<th scope="row">Superpages</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<th scope="row">Hotfrog</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<th scope="row">Cylex</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<th scope="row">Golocal247</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<th scope="row">Nextdoor</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<th scope="row">TripAdvisor</th>
+<td>✅</td>
+<td>✅</td>
+<td>🟡</td>
+<td>✅</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>🟡</td>
+<td>✅</td>
+</tr>
+<tr>
+<th scope="row">Booking.com</th>
+<td>✅</td>
+<td>✅</td>
+<td>🟡</td>
+<td>✅</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>🟡</td>
+<td>✅</td>
+</tr>
+<tr>
+<th scope="row">Airbnb</th>
+<td>✅</td>
+<td>✅</td>
+<td>🟡</td>
+<td>✅</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>🟡</td>
+<td>✅</td>
+</tr>
+<tr>
+<th scope="row">Expedia</th>
+<td>✅</td>
+<td>✅</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<th scope="row">Hotels.com</th>
+<td>✅</td>
+<td>✅</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<th scope="row">Vrbo</th>
+<td>✅</td>
+<td>✅</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<th scope="row">Agoda</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<th scope="row">Kayak</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<th scope="row">Orbitz</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<th scope="row">Travelocity</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<th scope="row">Priceline</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<th scope="row">HolidayCheck</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<th scope="row">TheFork</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<th scope="row">OpenTable</th>
+<td>✅</td>
+<td>✅</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>🟡</td>
+<td>✅</td>
+</tr>
+<tr>
+<th scope="row">Resy</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<th scope="row">DoorDash</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<th scope="row">Uber Eats</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<th scope="row">Grubhub</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<th scope="row">Deliveroo</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<th scope="row">Just Eat</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<th scope="row">Postmates</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<th scope="row">Amazon¹⁶</th>
+<td>✅</td>
+<td>✅</td>
+<td>🟡</td>
+<td>✅</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>🟡</td>
+<td>✅</td>
+</tr>
+<tr>
+<th scope="row">Etsy</th>
+<td>✅</td>
+<td>✅</td>
+<td>🟡</td>
+<td>✅</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>🟡</td>
+</tr>
+<tr>
+<th scope="row">eBay</th>
+<td>✅</td>
+<td>✅</td>
+<td>🟡</td>
+<td>✅</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>🟡</td>
+</tr>
+<tr>
+<th scope="row">AliExpress</th>
+<td>✅</td>
+<td>✅</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>🟡</td>
+</tr>
+<tr>
+<th scope="row">Walmart</th>
+<td>✅</td>
+<td>🟡</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<th scope="row">Target</th>
+<td>✅</td>
+<td>🟡</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<th scope="row">Best Buy</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<th scope="row">Shopify App Store</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>🟡</td>
+</tr>
+<tr>
+<th scope="row">Flipkart</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<th scope="row">Bol.com</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<th scope="row">Newegg</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<th scope="row">Costco</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<th scope="row">Wayfair</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<th scope="row">Apple App Store</th>
+<td>✅</td>
+<td>✅</td>
+<td>❌</td>
+<td>✅</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>🟡</td>
+<td>✅</td>
+</tr>
+<tr>
+<th scope="row">Google Play</th>
+<td>✅</td>
+<td>✅</td>
+<td>❌</td>
+<td>✅</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>🟡</td>
+<td>✅</td>
+</tr>
+<tr>
+<th scope="row">Microsoft Store</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<th scope="row">Samsung Galaxy Store</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<th scope="row">G2</th>
+<td>✅</td>
+<td>✅</td>
+<td>❌</td>
+<td>✅</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>🟡</td>
+</tr>
+<tr>
+<th scope="row">Capterra</th>
+<td>✅</td>
+<td>✅</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>🟡</td>
+</tr>
+<tr>
+<th scope="row">TrustRadius</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>🟡</td>
+</tr>
+<tr>
+<th scope="row">GetApp</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<th scope="row">Software Advice</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<th scope="row">Product Hunt</th>
+<td>✅</td>
+<td>🟡</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>🟡</td>
+</tr>
+<tr>
+<th scope="row">Clutch</th>
+<td>✅</td>
+<td>🟡</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>🟡</td>
+</tr>
+<tr>
+<th scope="row">The Manifest</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<th scope="row">DesignRush</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<th scope="row">Sortlist</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<th scope="row">PeerSpot</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<th scope="row">Gartner Peer Insights</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<th scope="row">Slashdot</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<th scope="row">AlternativeTo</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<th scope="row">FinancesOnline</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<th scope="row">Trustpilot¹⁷</th>
+<td>✅</td>
+<td>🟡</td>
+<td>✅</td>
+<td>✅</td>
+<td>🟡</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>🟡</td>
+</tr>
+<tr>
+<th scope="row">ProvenExpert</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<th scope="row">Sitejabber</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<th scope="row">Reviews.io</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<th scope="row">Feefo</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<th scope="row">ResellerRatings</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<th scope="row">Trusted Shops</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<th scope="row">ConsumerAffairs</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<th scope="row">Reviewcentre</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<th scope="row">ProductReview.com.au</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<th scope="row">Angi</th>
+<td>✅</td>
+<td>✅</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>🟡</td>
+<td>✅</td>
+</tr>
+<tr>
+<th scope="row">HomeAdvisor</th>
+<td>✅</td>
+<td>✅</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>🟡</td>
+<td>✅</td>
+</tr>
+<tr>
+<th scope="row">Thumbtack</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>🟡</td>
+<td>✅</td>
+</tr>
+<tr>
+<th scope="row">Bark</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<th scope="row">Houzz</th>
+<td>✅</td>
+<td>✅</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>🟡</td>
+<td>✅</td>
+</tr>
+<tr>
+<th scope="row">Checkatrade</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<th scope="row">Hipages</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<th scope="row">HomeStars</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<th scope="row">TaskRabbit</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<th scope="row">Zola</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>🟡</td>
+</tr>
+<tr>
+<th scope="row">WeddingWire</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<th scope="row">The Knot</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<th scope="row">Here Comes The Guide</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<th scope="row">Joy</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<th scope="row">DealerRater</th>
+<td>✅</td>
+<td>✅</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<th scope="row">Edmunds</th>
+<td>✅</td>
+<td>✅</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<th scope="row">Cars.com</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<th scope="row">CarGurus</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<th scope="row">Autotrader</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<th scope="row">Carfax</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<th scope="row">Kelly Blue Book</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<th scope="row">Healthgrades</th>
+<td>✅</td>
+<td>✅</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<th scope="row">Vitals</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<th scope="row">RateMDs</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<th scope="row">Zocdoc</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<th scope="row">WebMD</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<th scope="row">Caring.com</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<th scope="row">A Place for Mom</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<th scope="row">FertilityIQ</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<th scope="row">Psychology Today</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<th scope="row">RealSelf</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<th scope="row">Avvo</th>
+<td>✅</td>
+<td>✅</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<th scope="row">Martindale</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<th scope="row">Lawyers.com</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<th scope="row">FindLaw</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<th scope="row">Justia</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<th scope="row">Glassdoor</th>
+<td>✅</td>
+<td>🟡</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<th scope="row">Indeed</th>
+<td>✅</td>
+<td>🟡</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<th scope="row">Comparably</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<th scope="row">Kununu</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<th scope="row">Blind</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<th scope="row">Zillow</th>
+<td>✅</td>
+<td>✅</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<th scope="row">Apartments.com</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<th scope="row">ApartmentRatings</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<th scope="row">Realtor.com</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<th scope="row">Redfin</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<th scope="row">GreatSchools</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<th scope="row">Niche</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<th scope="row">Rate My Professors</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<th scope="row">Course Report</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<th scope="row">Reddit¹⁸</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>🟡</td>
+</tr>
+<tr>
+<th scope="row">X (Twitter)¹⁸</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>🟡</td>
+</tr>
+<tr>
+<th scope="row">Instagram¹⁸</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>🟡</td>
+</tr>
+<tr>
+<th scope="row">LinkedIn</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>🟡</td>
+</tr>
+<tr>
+<th scope="row">TikTok</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<th scope="row">YouTube</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<th scope="row">Steam</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>🟡</td>
+</tr>
+<tr>
+<th scope="row">Goodreads</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>🟡</td>
+</tr>
+<tr>
+<th scope="row">Influenster</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<th scope="row">Weedmaps</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<th scope="row">ClassPass</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<th scope="row">LendingTree</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<th scope="row">Credit Karma</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<th scope="row">Bass Pro / Cabela&#x27;s</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<th scope="row">Michaels</th>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>🟡</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+</tbody></table></div>
+<p class="note"><span class="n">15.</span> Yelp via EmbedSocial is capped (about three random reviews per business) because of Yelp’s API limits.</p>
+<p class="note"><span class="n">16.</span> Amazon often needs a manual / CSV-style import on several hosted widgets; not always a full live API sync.</p>
+<p class="note"><span class="n">17.</span> Trustpilot generally does not allow third-party widgets to re-embed Trustpilot reviews; use Trustpilot’s own embeds or store a copy yourself (as with this widget).</p>
+<p class="note"><span class="n">18.</span> Instagram / X / Reddit are not classic star-review graphs; some vendors treat them as social feeds or recommendations. This widget can still store and display whatever review-shaped records you collect there.</p>
+<p>Marks for other vendors are based on their public docs and connector lists (and may change). Treat 🟡 as “partial, plan-gated, manual import, monitoring-only, or limited API.” <strong>reviews-widget</strong> is ✅ on every row because any source you can turn into the data format can be displayed. Elfsight also offers a custom/manual source for platforms without a connector — that is still not a live connector, so unlisted rows stay ❌ here.</p>
+<h2>Reading the columns</h2>
+<ul>
+<li><strong>reviews-widget</strong> is only the on-site display layer plus a data format. Collection (scrapers, hand entry, …) and any owner-reply / response automation live in each data store’s own tooling if you want them — there is no native inbox, but the data you own makes those workflows possible.</li>
+<li><strong>Elfsight</strong>, <strong>EmbedSocial</strong>, <strong>SociableKIT</strong>, <strong>Tagembed</strong> — hosted multi-source review embeds.</li>
+<li><strong>ProvenExpert</strong>, <strong>Trustpilot</strong>, <strong>Google Business Profile</strong>, <strong>Yelp</strong> — review platforms with their own badges/widgets; not drop-in self-hosted multi-source carousels.</li>
+<li><strong>Birdeye</strong>, <strong>Podium</strong>, <strong>Reputation.com</strong> — reputation / messaging suites: widgets exist, but the core product is listing management, outreach, and inbox.</li>
+</ul>
+<p>Corrections welcome via PR.</p>
+</main>
+</body>
+</html>
